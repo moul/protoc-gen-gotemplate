@@ -19,6 +19,8 @@ func NewGenericTemplateBasedEncoder(service *descriptor.ServiceDescriptorProto, 
 }
 
 func (e *GenericTemplateBasedEncoder) Files() []*plugin_go.CodeGeneratorResponse_File {
+	//log.Printf("file: %v\n", e.file)
+	//log.Printf("service: %v\n", e.service)
 	var content string = "hello world"
 	var fileName string = "test.txt"
 	return []*plugin_go.CodeGeneratorResponse_File{

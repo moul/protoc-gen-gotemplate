@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dummy;
+
+message Dummy1 {
+  float aaa = 1;
+  string bbb = 2;
+  int32 ccc = 3;
+  int64 ddd = 4;
+  repeated string eee = 5;
+}
+
+message Dummy2 {
+  float fff = 1;
+  Dummy1 ggg = 2;
+}
+
+message Dummy3 {}
+
+service DummyService {
+  rpc Hhh(Dummy1) returns (Dummy2) {}
+  rpc Iii(Dummy2) returns (Dummy1) {}
+}
+
+/*
+service DummyService2 {
+  rpc Jjj(Dummy2) returns (Dummy2) {}
+}
+
+service DummyService3 {
+}
+*/
