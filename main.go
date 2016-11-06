@@ -29,7 +29,7 @@ func main() {
 	// Generate the clients
 	for _, file := range g.Request.GetProtoFile() {
 		for _, service := range file.GetService() {
-			encoder := NewGenericTemplateBasedEncoder(service, file)
+			encoder := NewGenericTemplateBasedEncoder("templates", service, file)
 			g.Response.File = append(g.Response.File, encoder.Files()...)
 		}
 	}
