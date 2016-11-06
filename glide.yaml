@@ -1,0 +1,11 @@
+package: github.com/moul/protoc-gen-gotemplate
+import:
+- package: github.com/golang/protobuf
+  subpackages:
+  - proto
+  - protoc-gen-go/descriptor
+  - protoc-gen-go/generator
+  - protoc-gen-go/plugin
+- package: github.com/kr/fs
+- package: github.com/moul/funcmap
+  version: ~1.0.0
