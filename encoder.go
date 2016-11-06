@@ -1,17 +1,26 @@
 package main
 
 import (
+	"bytes"
 	"path/filepath"
+	"text/template"
 
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/kr/fs"
+	"github.com/moul/funcmap"
 )
 
 type GenericTemplateBasedEncoder struct {
 	templateDir string
 	service     *descriptor.ServiceDescriptorProto
 	file        *descriptor.FileDescriptorProto
+}
+
+type Ast struct {
+	Filename string
+	Service  *descriptor.ServiceDescriptorProto
+	File     *descriptor.FileDescriptorProto
 }
 
 func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.ServiceDescriptorProto, file *descriptor.FileDescriptorProto) (e *GenericTemplateBasedEncoder) {
@@ -51,6 +60,28 @@ func (e *GenericTemplateBasedEncoder) templates() ([]string, error) {
 	return filenames, nil
 }
 
+func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (string, error) {
+	fullPath := filepath.Join(e.templateDir, templateFilename)
+
+	tmpl, err := template.New(templateFilename).Funcs(funcmap.FuncMap).ParseFiles(fullPath)
+	if err != nil {
+		return "", err
+	}
+
+	ast := Ast{
+		Filename: templateFilename,
+		Service:  e.service,
+		File:     e.file,
+	}
+
+	buffer := new(bytes.Buffer)
+	if err := tmpl.Execute(buffer, ast); err != nil {
+		return "", err
+	}
+
+	return buffer.String(), nil
+}
+
 func (e *GenericTemplateBasedEncoder) Files() []*plugin_go.CodeGeneratorResponse_File {
 	files := []*plugin_go.CodeGeneratorResponse_File{}
 
@@ -62,7 +93,11 @@ func (e *GenericTemplateBasedEncoder) Files() []*plugin_go.CodeGeneratorResponse
 	for _, templateFilename := range templates {
 		filename := templateFilename[0 : len(templateFilename)-len(".tmpl")]
 
-		content := "hello world"
+		content, err := e.buildContent(templateFilename)
+		if err != nil {
+			panic(err)
+		}
+
 		files = append(files, &plugin_go.CodeGeneratorResponse_File{
 			Content: &content,
 			Name:    &filename,
