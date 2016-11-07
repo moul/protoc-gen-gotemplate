@@ -3,8 +3,10 @@ package main
 import (
 	"bytes"
 	"log"
+	"os"
 	"path/filepath"
 	"text/template"
+	"time"
 
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
@@ -20,9 +22,13 @@ type GenericTemplateBasedEncoder struct {
 }
 
 type Ast struct {
-	Filename string
-	Service  *descriptor.ServiceDescriptorProto
-	File     *descriptor.FileDescriptorProto
+	BuildDate     time.Time                          `json:"build-date"`
+	BuildHostname string                             `json:"build-hostname"`
+	BuildUser     string                             `json:"build-user"`
+	Debug         bool                               `json:"debug"`
+	File          *descriptor.FileDescriptorProto    `json:"file"`
+	Filename      string                             `json:"filename"`
+	Service       *descriptor.ServiceDescriptorProto `json:"service"`
 }
 
 func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.ServiceDescriptorProto, file *descriptor.FileDescriptorProto, debug bool) (e *GenericTemplateBasedEncoder) {
@@ -79,10 +85,14 @@ func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (str
 		return "", err
 	}
 
+	hostname, _ := os.Hostname()
 	ast := Ast{
-		Filename: templateFilename,
-		Service:  e.service,
-		File:     e.file,
+		BuildDate:     time.Now(),
+		BuildHostname: hostname,
+		BuildUser:     os.Getenv("USER"),
+		File:          e.file,
+		Filename:      templateFilename,
+		Service:       e.service,
 	}
 
 	buffer := new(bytes.Buffer)
