@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 	"time"
 
@@ -25,6 +26,8 @@ type Ast struct {
 	BuildDate     time.Time                          `json:"build-date"`
 	BuildHostname string                             `json:"build-hostname"`
 	BuildUser     string                             `json:"build-user"`
+	GoPWD         string                             `json:"go-pwd",omitempty`
+	PWD           string                             `json:"pwd"`
 	Debug         bool                               `json:"debug"`
 	File          *descriptor.FileDescriptorProto    `json:"file"`
 	Filename      string                             `json:"filename"`
@@ -86,10 +89,20 @@ func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (str
 	}
 
 	hostname, _ := os.Hostname()
+	pwd, _ := os.Getwd()
+	goPwd := ""
+	if os.Getenv("GOPATH") != "" {
+		goPwd, _ = filepath.Rel(os.Getenv("GOPATH")+"/src", pwd)
+		if strings.Contains(goPwd, "../") {
+			goPwd = ""
+		}
+	}
 	ast := Ast{
 		BuildDate:     time.Now(),
 		BuildHostname: hostname,
 		BuildUser:     os.Getenv("USER"),
+		PWD:           pwd,
+		GoPWD:         goPwd,
 		File:          e.file,
 		Filename:      templateFilename,
 		Service:       e.service,

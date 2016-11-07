@@ -1,7 +1,9 @@
 {
-  "build-date": "2016-11-07T09:21:48.495773574+01:00",
+  "build-date": "2016-11-07T10:27:35.986181944+01:00",
   "build-hostname": "moul-rose.local",
   "build-user": "moul",
+  "go-pwd": "github.com/moul/protoc-gen-gotemplate/examples/dummy",
+  "pwd": "/Users/moul/go/src/github.com/moul/protoc-gen-gotemplate/examples/dummy",
   "debug": false,
   "file": {
     "name": "dummy.proto",
