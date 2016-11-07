@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"log"
 	"path/filepath"
 	"text/template"
 
@@ -31,6 +32,11 @@ func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.Serv
 		templateDir: templateDir,
 		debug:       debug,
 	}
+
+	if debug {
+		log.Printf("new encoder: file=%q service=%q template-dir=%q", templateDir, service.GetName(), file.GetName())
+	}
+
 	return
 }
 
@@ -54,6 +60,9 @@ func (e *GenericTemplateBasedEncoder) templates() ([]string, error) {
 		rel, err := filepath.Rel(e.templateDir, walker.Path())
 		if err != nil {
 			return nil, err
+		}
+		if e.debug {
+			log.Printf("new template: %q", rel)
 		}
 
 		filenames = append(filenames, rel)
@@ -89,7 +98,7 @@ func (e *GenericTemplateBasedEncoder) Files() []*plugin_go.CodeGeneratorResponse
 
 	templates, err := e.templates()
 	if err != nil {
-		panic(err)
+		log.Fatalf("cannot get templates from %q: %v", e.templateDir, err)
 	}
 
 	for _, templateFilename := range templates {
