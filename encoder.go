@@ -15,6 +15,7 @@ type GenericTemplateBasedEncoder struct {
 	templateDir string
 	service     *descriptor.ServiceDescriptorProto
 	file        *descriptor.FileDescriptorProto
+	debug       bool
 }
 
 type Ast struct {
@@ -23,11 +24,12 @@ type Ast struct {
 	File     *descriptor.FileDescriptorProto
 }
 
-func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.ServiceDescriptorProto, file *descriptor.FileDescriptorProto) (e *GenericTemplateBasedEncoder) {
+func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.ServiceDescriptorProto, file *descriptor.FileDescriptorProto, debug bool) (e *GenericTemplateBasedEncoder) {
 	e = &GenericTemplateBasedEncoder{
 		service:     service,
 		file:        file,
 		templateDir: templateDir,
+		debug:       debug,
 	}
 	return
 }

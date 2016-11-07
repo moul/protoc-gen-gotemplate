@@ -2,7 +2,9 @@ package main
 
 import (
 	"io/ioutil"
+	"log"
 	"os"
+	"strings"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/generator"
@@ -26,10 +28,37 @@ func main() {
 
 	g.CommandLineParameters(g.Request.GetParameter())
 
-	// Generate the clients
+	// Parse parameters
+	templateDir := "./templates"
+	debug := false
+	if parameter := g.Request.GetParameter(); parameter != "" {
+		for _, param := range strings.Split(parameter, ",") {
+			parts := strings.Split(param, "=")
+			if len(parts) != 2 {
+				log.Printf("Err: invalid parameter: %q", param)
+				continue
+			}
+			switch parts[0] {
+			case "template_dir":
+				templateDir = parts[1]
+				break
+			case "debug":
+				if parts[1] == "true" {
+					debug = true
+				} else {
+					log.Printf("Err: invalid value for debug: %q", parts[1])
+				}
+				break
+			default:
+				log.Printf("Err: unknown parameter: %q", param)
+			}
+		}
+	}
+
+	// Generate the encoders
 	for _, file := range g.Request.GetProtoFile() {
 		for _, service := range file.GetService() {
-			encoder := NewGenericTemplateBasedEncoder("templates", service, file)
+			encoder := NewGenericTemplateBasedEncoder(templateDir, service, file, debug)
 			g.Response.File = append(g.Response.File, encoder.Files()...)
 		}
 	}
