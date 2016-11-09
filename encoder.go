@@ -30,6 +30,7 @@ type Ast struct {
 	PWD           string                             `json:"pwd"`
 	Debug         bool                               `json:"debug"`
 	File          *descriptor.FileDescriptorProto    `json:"file"`
+	RawFilename   string                             `json:"raw-filename"`
 	Filename      string                             `json:"filename"`
 	Service       *descriptor.ServiceDescriptorProto `json:"service"`
 }
@@ -80,14 +81,8 @@ func (e *GenericTemplateBasedEncoder) templates() ([]string, error) {
 	return filenames, nil
 }
 
-func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (string, error) {
-	fullPath := filepath.Join(e.templateDir, templateFilename)
-
-	tmpl, err := template.New(templateFilename).Funcs(funcmap.FuncMap).ParseFiles(fullPath)
-	if err != nil {
-		return "", err
-	}
-
+func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, error) {
+	// prepare the ast passed to the template engine
 	hostname, _ := os.Hostname()
 	pwd, _ := os.Getwd()
 	goPwd := ""
@@ -104,15 +99,57 @@ func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (str
 		PWD:           pwd,
 		GoPWD:         goPwd,
 		File:          e.file,
-		Filename:      templateFilename,
-		Service:       e.service,
+		RawFilename:   templateFilename,
+		// Filename:      "",
+		Service: e.service,
+	}
+	return &ast, nil
+}
+
+func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (string, error) {
+	// initialize template engine
+	fullPath := filepath.Join(e.templateDir, templateFilename)
+	templateName := filepath.Base(fullPath)
+	tmpl, err := template.New(templateName).Funcs(funcmap.FuncMap).ParseFiles(fullPath)
+	if err != nil {
+		return "", err
 	}
 
+	ast, err := e.genAst(templateFilename)
+	if err != nil {
+		return "", err
+	}
+
+	// translate the filename
+	ast.Filename, err = e.translateString(templateFilename, templateFilename)
+	if err != nil {
+		return "", err
+	}
+
+	// generate the content
 	buffer := new(bytes.Buffer)
 	if err := tmpl.Execute(buffer, ast); err != nil {
 		return "", err
 	}
 
+	return buffer.String(), nil
+}
+
+func (e *GenericTemplateBasedEncoder) translateString(input string, templateFilename string) (string, error) {
+	buffer := new(bytes.Buffer)
+	tmpl, err := template.New("").Funcs(funcmap.FuncMap).Parse(input)
+	if err != nil {
+		return "", err
+	}
+
+	ast, err := e.genAst(templateFilename)
+	if err != nil {
+		return "", err
+	}
+
+	if err := tmpl.Execute(buffer, ast); err != nil {
+		return "", err
+	}
 	return buffer.String(), nil
 }
 
@@ -125,12 +162,16 @@ func (e *GenericTemplateBasedEncoder) Files() []*plugin_go.CodeGeneratorResponse
 	}
 
 	for _, templateFilename := range templates {
-		filename := templateFilename[0 : len(templateFilename)-len(".tmpl")]
-
 		content, err := e.buildContent(templateFilename)
 		if err != nil {
 			panic(err)
 		}
+
+		translatedFilename, err := e.translateString(templateFilename, templateFilename)
+		if err != nil {
+			panic(err)
+		}
+		filename := translatedFilename[0 : len(translatedFilename)-len(".tmpl")]
 
 		files = append(files, &plugin_go.CodeGeneratorResponse_File{
 			Content: &content,

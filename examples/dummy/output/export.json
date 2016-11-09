@@ -1,5 +1,5 @@
 {
-  "build-date": "2016-11-07T10:27:35.986181944+01:00",
+  "build-date": "2016-11-09T18:39:15.154031816+01:00",
   "build-hostname": "moul-rose.local",
   "build-user": "moul",
   "go-pwd": "github.com/moul/protoc-gen-gotemplate/examples/dummy",
@@ -820,6 +820,7 @@
     },
     "syntax": "proto3"
   },
+  "raw-filename": "export.json.tmpl",
   "filename": "export.json.tmpl",
   "service": {
     "name": "DummyService",
