@@ -43,7 +43,7 @@ func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.Serv
 	}
 
 	if debug {
-		log.Printf("new encoder: file=%q service=%q template-dir=%q", templateDir, service.GetName(), file.GetName())
+		log.Printf("new encoder: file=%q service=%q template-dir=%q", file.GetName(), service.GetName(), templateDir)
 	}
 
 	return
