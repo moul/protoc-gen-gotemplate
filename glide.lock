@@ -1,5 +1,5 @@
-hash: 6f0ff21a03d407a4a24bf299f8b80acc931e116457f5378867626c2de5c4265e
-updated: 2016-11-06T18:32:18.567649309+01:00
+hash: 8e73e008df139d080692c91cd6c55549bbb6490f00ea67ee7ae1fbf6facedc86
+updated: 2016-12-01T10:08:09.672752932+01:00
 imports:
 - name: github.com/golang/protobuf
   version: 98fa357170587e470c5f27d3c3ea0947b71eb455
@@ -11,5 +11,5 @@ imports:
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
 - name: github.com/moul/funcmap
-  version: 916897fb9db8a358561b3c2cdb7bd4d7cf2eb1c7
+  version: f798117cf01752496ce9b8739b2b1ed21e3a6c1c
 testImports: []
