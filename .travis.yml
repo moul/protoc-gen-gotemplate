@@ -1,0 +1,12 @@
+language: go
+go: 1.7.x
+install: wget https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/.travis/install-protoc.sh && chmod +x install-protoc.sh && ./install-protoc.sh 3.1.0
+script:
+- make install
+- make test
+cache:
+  directories:
+  - $HOME/local
+env:
+  global:
+  - "PATH=$PATH:$HOME/local/bin"
