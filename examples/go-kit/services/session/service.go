@@ -17,7 +17,3 @@ func New() pb.SessionServiceServer {
 func (svc *Service) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginResponse, error) {
 	return nil, fmt.Errorf("not implemented")
 }
-
-func (svc *Service) Logout(ctx context.Context, in *pb.LogoutRequest) (*pb.LogoutResponse, error) {
-	return nil, fmt.Errorf("not implemented")
-}
