@@ -50,13 +50,15 @@ func main() {
 
 # pros
 
-* blah blah
+* commit the templates with the code
+*
 
 ---
 
 # cons
 
-* blah blah
+* the author needs to write its own templates
+*
 
 ---
 
