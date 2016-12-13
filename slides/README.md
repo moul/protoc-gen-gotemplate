@@ -76,8 +76,102 @@ func (svc *Service) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginRe
 
 ---
 
-![fit](assets/session-wc.png)
+##### example: `{{.File.Package}}/gen/transports/http/http.go.tmpl`
 
+```go
+// source: templates/{{.File.Package}}/gen/transports/http/http.go.tmpl
+package {{.File.Package}}_httptransport
+import (
+	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/pb"
+    gokit_endpoint "github.com/go-kit/kit/endpoint"
+	httptransport "github.com/go-kit/kit/transport/http"
+	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/endpoints"
+)
+```
+
+```go
+// result: services/user/gen/transports/http/http.go
+package user_httptransport
+import (
+	gokit_endpoint "github.com/go-kit/kit/endpoint"
+	httptransport "github.com/go-kit/kit/transport/http"
+	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/endpoints"
+	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/pb"
+)
+```
+
+---
+
+##### example: `{{.File.Package}}/gen/transports/http/http.go.tmpl`
+
+```go
+// source: templates/{{.File.Package}}/gen/transports/http/http.go.tmpl
+{{range .Service.Method}}
+func Make{{.Name}}Handler(ctx context.Context, svc pb.{{$file.Package | title}}ServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
+	return httptransport.NewServer(
+		ctx,
+		endpoint,
+		decode{{.Name}}Request,
+		encode{{.Name}}Response,
+                []httptransport.ServerOption{}...,
+	)
+}
+{{end}}
+```
+
+```go
+// result: services/user/gen/transports/http/http.go
+func MakeGetUserHandler(ctx context.Context, svc pb.UserServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
+	return httptransport.NewServer(
+		ctx,
+		endpoint,
+		decodeGetUserRequest,
+		encodeGetUserResponse,
+		[]httptransport.ServerOption{}...,
+	)
+}
+```
+
+---
+
+##### example: `{{.File.Package}}/gen/transports/http/http.go.tmpl`
+
+```go
+// source: templates/{{.File.Package}}/gen/transports/http/http.go.tmpl
+func RegisterHandlers(ctx context.Context, svc pb.{{$file.Package | title}}ServiceServer, mux *http.ServeMux, endpoints endpoints.Endpoints) error {
+	{{range .Service.Method}}
+        log.Println("new HTTP endpoint: \"/{{.Name}}\" (service={{$file.Package | title}})")
+	mux.Handle("/{{.Name}}", Make{{.Name}}Handler(ctx, svc, endpoints.{{.Name}}Endpoint))
+	{{end}}
+	return nil
+}
+```
+
+```go
+// result: services/user/gen/transports/http/http.go
+func RegisterHandlers(ctx context.Context, svc pb.UserServiceServer, mux *http.ServeMux, endpoints endpoints.Endpoints) error {
+
+	log.Println("new HTTP endpoint: \"/CreateUser\" (service=User)")
+	mux.Handle("/CreateUser", MakeCreateUserHandler(ctx, svc, endpoints.CreateUserEndpoint))
+
+	log.Println("new HTTP endpoint: \"/GetUser\" (service=User)")
+	mux.Handle("/GetUser", MakeGetUserHandler(ctx, svc, endpoints.GetUserEndpoint))
+
+	return nil
+}
+```
+
+---
+
+#### `protoc --gogo_out=plugins=grpc:. ./services/*/*.proto`
+
+---
+
+#### `protoc --gotemplate_out=template_dir=./templates:services ./services/*/*.proto`
+
+---
+
+![fit](assets/session-wc.png)
 
 ---
 
