@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package nginx;
+
+message Empty {
+}
+
+service Nginx {
+  rpc Hello(Empty) returns (Empty) {}
+  rpc World(Empty) returns (Empty) {}
+}
