@@ -1,11 +1,11 @@
-syntax "proto3";
+syntax = "proto3";
 
 package sprint;
 
 service SprintService {
-  rpc AddSprint(AddSprintRequest) returns AddSprintResponse {}
-  rpc CloseSprint(CloseSprintRequest) returns CloseSprintResponse {}
-  rpc GetSprint(GetSprintRequest) returns GetSprintResponse {}
+  rpc AddSprint(AddSprintRequest) returns (AddSprintResponse) {}
+  rpc CloseSprint(CloseSprintRequest) returns (CloseSprintResponse) {}
+  rpc GetSprint(GetSprintRequest) returns (GetSprintResponse) {}
 }
 
 message AddSprintRequest {
