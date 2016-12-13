@@ -1,0 +1,59 @@
+package {{.File.Package}}_grpctransport
+
+{{$file := .File}}
+
+import (
+        "fmt"
+
+	context "golang.org/x/net/context"
+	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/pb"
+	grpctransport "github.com/go-kit/kit/transport/grpc"
+	endpoint "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/endpoints"
+)
+
+// avoid import errors
+var _ = fmt.Errorf
+
+func MakeGRPCServer(ctx context.Context, endpoints endpoint.Endpoints) pb.{{.File.Package | title}}ServiceServer {
+	options := []grpctransport.ServerOption{}
+	return &grpcServer{
+		{{range .Service.Method}}
+                {{if not .ServerStreaming}}
+                {{if not .ClientStreaming}}
+		{{.Name | lower}}: grpctransport.NewServer(
+			ctx,
+			endpoints.{{.Name}}Endpoint,
+			decode{{.Name}}Request,
+			encode{{.Name}}Response,
+			options...,
+		),
+                {{end}}
+		{{end}}
+                {{end}}
+	}
+}
+
+type grpcServer struct {
+	{{range .Service.Method}}
+	{{.Name | lower}} grpctransport.Handler
+	{{end}}
+}
+
+{{range .Service.Method}}
+func (s *grpcServer) {{.Name}}(ctx context.Context, req *pb.{{.Name}}Request) (*pb.{{.Name}}Response, error) {
+	_, rep, err := s.{{.Name | lower}}.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.{{.Name}}Response), nil
+}
+
+func decode{{.Name}}Request(ctx context.Context, grpcReq interface{}) (interface{}, error) {
+	return grpcReq, nil
+}
+
+func encode{{.Name}}Response(ctx context.Context, response interface{}) (interface{}, error) {
+	resp := response.(*pb.{{.Name}}Response)
+	return resp, nil
+}
+{{end}}

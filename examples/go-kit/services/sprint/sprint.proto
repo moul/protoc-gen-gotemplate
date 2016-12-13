@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package sprint;
+
+service SprintService {
+  rpc AddSprint(AddSprintRequest) returns (AddSprintResponse) {}
+  rpc CloseSprint(CloseSprintRequest) returns (CloseSprintResponse) {}
+  rpc GetSprint(GetSprintRequest) returns (GetSprintResponse) {}
+}
+
+message AddSprintRequest {
+  string name = 1;
+}
+message AddSprintResponse {
+  Sprint sprint = 1;
+  string err_msg = 2;
+}
+
+message CloseSprintRequest {
+  string id = 1;
+}
+message CloseSprintResponse {
+  string err_msg = 1;
+}
+
+message GetSprintRequest {
+  string id = 1;
+}
+message GetSprintResponse {
+  Sprint sprint = 1;
+  string err_msg = 2;
+}
+
+message Sprint {
+  string id = 1;
+  uint32 created_at = 2;
+  string name = 3;
+}

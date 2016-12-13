@@ -1,0 +1,49 @@
+package {{.File.Package}}_endpoints
+
+{{$file := .File}}
+
+import (
+	"fmt"
+	context "golang.org/x/net/context"
+	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/pb"
+	"github.com/go-kit/kit/endpoint"
+)
+
+var _ = fmt.Errorf
+
+type Endpoints struct {
+	{{range .Service.Method}}
+	{{.Name}}Endpoint endpoint.Endpoint
+	{{end}}
+}
+
+{{range .Service.Method}}
+func (e *Endpoints){{.Name}}(ctx context.Context, in *pb.{{.Name}}Request) (*pb.{{.Name}}Response, error) {
+	out, err := e.{{.Name}}Endpoint(ctx, in)
+	if err != nil {
+		return &pb.{{.Name}}Response{ErrMsg: err.Error()}, err
+	}
+	return out.(*pb.{{.Name}}Response), err
+}
+{{end}}
+
+{{range .Service.Method}}
+func Make{{.Name}}Endpoint(svc pb.{{$file.Package | title}}ServiceServer) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(*pb.{{.Name}}Request)
+		rep, err := svc.{{.Name}}(ctx, req)
+		if err != nil {
+			return &pb.{{.Name}}Response{ErrMsg: err.Error()}, err
+		}
+		return rep, nil
+	}
+}
+{{end}}
+
+func MakeEndpoints(svc pb.{{.File.Package | title}}ServiceServer) Endpoints {
+	return Endpoints{
+		{{range .Service.Method}}
+		{{.Name}}Endpoint: Make{{.Name}}Endpoint(svc),
+		{{end}}
+	}
+}
