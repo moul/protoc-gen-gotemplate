@@ -28,21 +28,65 @@
 
 ---
 
-# demo
+# example: `session.proto`
 
-```go
-func main() {
-        fmt.Println("blah blah!")
+```protobuf
+syntax = "proto3";
+package session;
+
+service SessionService {
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+  string err_msg = 2;
 }
 ```
 
 ---
 
+# example: `session.go`
+
+```go
+package sessionsvc
+
+import (
+	"fmt"
+	"golang.org/x/net/context"
+	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
+)
+
+type Service struct{}
+
+func New() pb.SessionServiceServer {
+	return &Service{}
+}
+
+func (svc *Service) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginResponse, error) {
+    // custon code here
+	return nil, fmt.Errorf("not implemented")
+}
+```
+
+---
+
+![fit](assets/session-wc.png)
+
+
+---
+
 ![right fit](assets/wc.png)
 
-## 2 services
-## 112 custom lines
-## 1 094 generated lines
+## 3 services
+## 6 methods
+## 149 custom lines
+## 1429 generated lines
 ## business focus
 
 ---
