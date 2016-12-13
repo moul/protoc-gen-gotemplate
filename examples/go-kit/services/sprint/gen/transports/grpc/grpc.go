@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	grpctransport "github.com/go-kit/kit/transport/grpc"
-	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint"
 	endpoint "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/endpoints"
+	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/pb"
 	context "golang.org/x/net/context"
 )
 

@@ -8,8 +8,8 @@ import (
 
 	gokit_endpoint "github.com/go-kit/kit/endpoint"
 	httptransport "github.com/go-kit/kit/transport/http"
-	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint"
 	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/endpoints"
+	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/pb"
 )
 
 func MakeAddSprintHandler(ctx context.Context, svc pb.SprintServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {

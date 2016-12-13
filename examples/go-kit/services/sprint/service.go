@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/net/context"
 
-	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint"
+	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/pb"
 )
 
 type Service struct{}

@@ -13,11 +13,17 @@ import (
 	"github.com/gorilla/handlers"
 	"google.golang.org/grpc"
 
-	session_pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session"
+	session_svc "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session"
 	session_endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/endpoints"
+	session_pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
 	session_grpctransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/transports/grpc"
 	session_httptransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/transports/http"
-	sessionsvc "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/svc"
+
+	sprint_svc "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint"
+	sprint_endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/endpoints"
+	sprint_pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/pb"
+	sprint_grpctransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/transports/grpc"
+	sprint_httptransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/transports/http"
 )
 
 func main() {
@@ -34,15 +40,18 @@ func main() {
 
 	// initialize services
 	{
-		svc := sessionsvc.New()
+		svc := session_svc.New()
 		endpoints := session_endpoints.MakeEndpoints(svc)
 		srv := session_grpctransport.MakeGRPCServer(ctx, endpoints)
 		session_pb.RegisterSessionServiceServer(s, srv)
 		session_httptransport.RegisterHandlers(ctx, svc, mux, endpoints)
 	}
 	{
-		//svc := sprintsvc.New()
-
+		svc := sprint_svc.New()
+		endpoints := sprint_endpoints.MakeEndpoints(svc)
+		srv := sprint_grpctransport.MakeGRPCServer(ctx, endpoints)
+		sprint_pb.RegisterSprintServiceServer(s, srv)
+		sprint_httptransport.RegisterHandlers(ctx, svc, mux, endpoints)
 	}
 
 	// start servers
