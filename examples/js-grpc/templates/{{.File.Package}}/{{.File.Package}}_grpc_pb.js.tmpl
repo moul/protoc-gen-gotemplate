@@ -1,0 +1,56 @@
+// GENERATED CODE -- DO NOT EDIT!
+
+'use strict';
+{{$file:=.File}}{{$service:=.Service}}
+
+var {{$file.Package}}_pb = require('../{{$file.Package}}/{{$file.Package}}_pb.js');
+var grpc = require('grpc');
+var base64 = require('base64-js');
+
+function serializeToBase64(req) {
+    return base64.fromByteArray(req)
+}
+
+function deserializeFromBase64(b64) {
+    return new Uint8Array(base64.toByteArray(b64))
+}
+{{range .Service.Method}}
+function serialize_{{$file.Package}}_{{.Name}}Request(arg) {
+    if (!(arg instanceof {{$file.Package}}_pb.{{.Name}}Request)) {
+        throw new Error('Expected argument of type {{$file.Package}}.{{.Name}}Request');
+    }
+    return serializeToBase64(arg.serializeBinary());
+}
+
+function deserialize_{{$file.Package}}_{{.Name}}Request(base64) {
+    return {{$file.Package}}_pb.{{.Name}}Request.deserializeBinary(deserializeFromBase64(base64));
+}
+
+function serialize_{{$file.Package}}_{{.Name}}Reply(arg) {
+    if (!(arg instanceof {{$file.Package}}_pb.{{.Name}}Reply)) {
+        throw new Error('Expected argument of type {{$file.Package}}.{{.Name}}Reply');
+    }
+    return serializeToBase64(arg.serializeBinary());
+}
+
+function deserialize_{{$file.Package}}_{{.Name}}Reply(base64) {
+    return {{$file.Package}}_pb.{{.Name}}Reply.deserializeBinary(deserializeFromBase64(base64));
+}
+{{end}}
+var TestServiceService = {
+    {{range .Service.Method}}
+    {{.Name}}: {
+        path: '/{{$file.Package}}.{{$service.Name}}/{{.Name}}',
+        requestStream: {{if .ClientStreaming}}true{{else}}false{{end}},
+        responseStream: {{if .ServerStreaming}}true{{else}}false{{end}},
+        requestType: {{$file.Package}}_pb.{{.Name}}Request,
+        responseType: {{$file.Package}}_pb.{{.Name}}Reply,
+        requestSerialize: serialize_{{$file.Package}}_{{.Name}}Request,
+        requestDeserialize: deserialize_{{$file.Package}}_{{.Name}}Request,
+        responseSerialize: serialize_{{$file.Package}}_{{.Name}}Reply,
+        responseDeserialize: deserialize_{{$file.Package}}_{{.Name}}Reply,
+    },
+    {{end}}
+};
+
+exports.TestServiceClient = grpc.makeGenericClientConstructor({{.Service.Name}}Service);
