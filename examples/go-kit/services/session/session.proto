@@ -4,7 +4,6 @@ package session;
 
 service SessionService {
   rpc Login(LoginRequest) returns (LoginResponse) {}
-  rpc Logout(LogoutRequest) returns (LogoutResponse) {}
 }
 
 message LoginRequest {
@@ -15,12 +14,4 @@ message LoginRequest {
 message LoginResponse {
   string token = 1;
   string err_msg = 2;
-}
-
-message LogoutRequest {
-  string token = 1;
-}
-
-message LogoutResponse {
-  string err_msg = 1;
 }

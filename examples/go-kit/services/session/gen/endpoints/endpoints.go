@@ -11,8 +11,6 @@ var _ = fmt.Errorf
 
 type Endpoints struct {
 	LoginEndpoint endpoint.Endpoint
-
-	LogoutEndpoint endpoint.Endpoint
 }
 
 func (e *Endpoints) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginResponse, error) {
@@ -21,14 +19,6 @@ func (e *Endpoints) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginRe
 		return &pb.LoginResponse{ErrMsg: err.Error()}, err
 	}
 	return out.(*pb.LoginResponse), err
-}
-
-func (e *Endpoints) Logout(ctx context.Context, in *pb.LogoutRequest) (*pb.LogoutResponse, error) {
-	out, err := e.LogoutEndpoint(ctx, in)
-	if err != nil {
-		return &pb.LogoutResponse{ErrMsg: err.Error()}, err
-	}
-	return out.(*pb.LogoutResponse), err
 }
 
 func MakeLoginEndpoint(svc pb.SessionServiceServer) endpoint.Endpoint {
@@ -42,22 +32,9 @@ func MakeLoginEndpoint(svc pb.SessionServiceServer) endpoint.Endpoint {
 	}
 }
 
-func MakeLogoutEndpoint(svc pb.SessionServiceServer) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(*pb.LogoutRequest)
-		rep, err := svc.Logout(ctx, req)
-		if err != nil {
-			return &pb.LogoutResponse{ErrMsg: err.Error()}, err
-		}
-		return rep, nil
-	}
-}
-
 func MakeEndpoints(svc pb.SessionServiceServer) Endpoints {
 	return Endpoints{
 
 		LoginEndpoint: MakeLoginEndpoint(svc),
-
-		LogoutEndpoint: MakeLogoutEndpoint(svc),
 	}
 }
