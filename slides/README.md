@@ -239,6 +239,8 @@ func RegisterHandlers(ctx context.Context, svc pb.UserServiceServer, mux *http.S
 * The awesomeness of go-kit without the hassle of writing boilerplate code
 * Always up-to-date with the contracts
 
+---
+
 # questions?
 
 ### github.com/moul/protoc-gen-gotemplate
