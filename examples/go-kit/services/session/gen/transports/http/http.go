@@ -1,4 +1,4 @@
-package session_transporthttp
+package session_httptransport
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	gokit_endpoint "github.com/go-kit/kit/endpoint"
 	httptransport "github.com/go-kit/kit/transport/http"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session"
-	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/session/gen/endpoints"
+	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/endpoints"
 )
 
 func MakeLoginHandler(ctx context.Context, svc pb.SessionServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
@@ -18,7 +18,7 @@ func MakeLoginHandler(ctx context.Context, svc pb.SessionServiceServer, endpoint
 		endpoint,
 		decodeLoginRequest,
 		encodeLoginResponse,
-		append([]httptransport.ServerOption{}, httptransport.ServerBefore(jwt.ToHTTPContext()))...,
+		[]httptransport.ServerOption{}...,
 	)
 }
 
@@ -40,7 +40,7 @@ func MakeLogoutHandler(ctx context.Context, svc pb.SessionServiceServer, endpoin
 		endpoint,
 		decodeLogoutRequest,
 		encodeLogoutResponse,
-		append([]httptransport.ServerOption{}, httptransport.ServerBefore(jwt.ToHTTPContext()))...,
+		[]httptransport.ServerOption{}...,
 	)
 }
 

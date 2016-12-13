@@ -20,7 +20,7 @@ func (e *Endpoints) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginRe
 	if err != nil {
 		return &pb.LoginResponse{ErrMsg: err.Error()}, err
 	}
-	return out.(*pb.LoginReply), err
+	return out.(*pb.LoginResponse), err
 }
 
 func (e *Endpoints) Logout(ctx context.Context, in *pb.LogoutRequest) (*pb.LogoutResponse, error) {
@@ -28,7 +28,7 @@ func (e *Endpoints) Logout(ctx context.Context, in *pb.LogoutRequest) (*pb.Logou
 	if err != nil {
 		return &pb.LogoutResponse{ErrMsg: err.Error()}, err
 	}
-	return out.(*pb.LogoutReply), err
+	return out.(*pb.LogoutResponse), err
 }
 
 func MakeLoginEndpoint(svc pb.SessionServiceServer) endpoint.Endpoint {
@@ -36,7 +36,7 @@ func MakeLoginEndpoint(svc pb.SessionServiceServer) endpoint.Endpoint {
 		req := request.(*pb.LoginRequest)
 		rep, err := svc.Login(ctx, req)
 		if err != nil {
-			return &pb.LoginReply{ErrMsg: err.Error()}, err
+			return &pb.LoginResponse{ErrMsg: err.Error()}, err
 		}
 		return rep, nil
 	}
@@ -47,7 +47,7 @@ func MakeLogoutEndpoint(svc pb.SessionServiceServer) endpoint.Endpoint {
 		req := request.(*pb.LogoutRequest)
 		rep, err := svc.Logout(ctx, req)
 		if err != nil {
-			return &pb.LogoutReply{ErrMsg: err.Error()}, err
+			return &pb.LogoutResponse{ErrMsg: err.Error()}, err
 		}
 		return rep, nil
 	}

@@ -1,11 +1,11 @@
-package sprint_transportgrpc
+package sprint_grpctransport
 
 import (
 	"fmt"
 
 	grpctransport "github.com/go-kit/kit/transport/grpc"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint"
-	endpoint "github.com/moul/protoc-gen-gotemplate/examples/go-kit/sprint/gen/endpoints"
+	endpoint "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/endpoints"
 	context "golang.org/x/net/context"
 )
 
@@ -21,7 +21,7 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoint.Endpoints) pb.Sprint
 			endpoints.AddSprintEndpoint,
 			decodeAddSprintRequest,
 			encodeAddSprintResponse,
-			options,
+			options...,
 		),
 
 		closesprint: grpctransport.NewServer(
@@ -29,7 +29,7 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoint.Endpoints) pb.Sprint
 			endpoints.CloseSprintEndpoint,
 			decodeCloseSprintRequest,
 			encodeCloseSprintResponse,
-			options,
+			options...,
 		),
 
 		getsprint: grpctransport.NewServer(
@@ -37,7 +37,7 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoint.Endpoints) pb.Sprint
 			endpoints.GetSprintEndpoint,
 			decodeGetSprintRequest,
 			encodeGetSprintResponse,
-			options,
+			options...,
 		),
 	}
 }
@@ -50,12 +50,12 @@ type grpcServer struct {
 	getsprint grpctransport.Handler
 }
 
-func (s *grpcServer) AddSprint(ctx context.Context, req *pb.AddSprintRequest) (*pb.AddSprintReply, error) {
+func (s *grpcServer) AddSprint(ctx context.Context, req *pb.AddSprintRequest) (*pb.AddSprintResponse, error) {
 	_, rep, err := s.addsprint.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.AddSprintReply), nil
+	return rep.(*pb.AddSprintResponse), nil
 }
 
 func decodeAddSprintRequest(ctx context.Context, grpcReq interface{}) (interface{}, error) {
@@ -63,16 +63,16 @@ func decodeAddSprintRequest(ctx context.Context, grpcReq interface{}) (interface
 }
 
 func encodeAddSprintResponse(ctx context.Context, response interface{}) (interface{}, error) {
-	resp := response.(*pb.AddSprintReply)
+	resp := response.(*pb.AddSprintResponse)
 	return resp, nil
 }
 
-func (s *grpcServer) CloseSprint(ctx context.Context, req *pb.CloseSprintRequest) (*pb.CloseSprintReply, error) {
+func (s *grpcServer) CloseSprint(ctx context.Context, req *pb.CloseSprintRequest) (*pb.CloseSprintResponse, error) {
 	_, rep, err := s.closesprint.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.CloseSprintReply), nil
+	return rep.(*pb.CloseSprintResponse), nil
 }
 
 func decodeCloseSprintRequest(ctx context.Context, grpcReq interface{}) (interface{}, error) {
@@ -80,16 +80,16 @@ func decodeCloseSprintRequest(ctx context.Context, grpcReq interface{}) (interfa
 }
 
 func encodeCloseSprintResponse(ctx context.Context, response interface{}) (interface{}, error) {
-	resp := response.(*pb.CloseSprintReply)
+	resp := response.(*pb.CloseSprintResponse)
 	return resp, nil
 }
 
-func (s *grpcServer) GetSprint(ctx context.Context, req *pb.GetSprintRequest) (*pb.GetSprintReply, error) {
+func (s *grpcServer) GetSprint(ctx context.Context, req *pb.GetSprintRequest) (*pb.GetSprintResponse, error) {
 	_, rep, err := s.getsprint.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.GetSprintReply), nil
+	return rep.(*pb.GetSprintResponse), nil
 }
 
 func decodeGetSprintRequest(ctx context.Context, grpcReq interface{}) (interface{}, error) {
@@ -97,6 +97,6 @@ func decodeGetSprintRequest(ctx context.Context, grpcReq interface{}) (interface
 }
 
 func encodeGetSprintResponse(ctx context.Context, response interface{}) (interface{}, error) {
-	resp := response.(*pb.GetSprintReply)
+	resp := response.(*pb.GetSprintResponse)
 	return resp, nil
 }

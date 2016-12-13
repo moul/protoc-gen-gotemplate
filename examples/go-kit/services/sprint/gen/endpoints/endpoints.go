@@ -22,7 +22,7 @@ func (e *Endpoints) AddSprint(ctx context.Context, in *pb.AddSprintRequest) (*pb
 	if err != nil {
 		return &pb.AddSprintResponse{ErrMsg: err.Error()}, err
 	}
-	return out.(*pb.AddSprintReply), err
+	return out.(*pb.AddSprintResponse), err
 }
 
 func (e *Endpoints) CloseSprint(ctx context.Context, in *pb.CloseSprintRequest) (*pb.CloseSprintResponse, error) {
@@ -30,7 +30,7 @@ func (e *Endpoints) CloseSprint(ctx context.Context, in *pb.CloseSprintRequest) 
 	if err != nil {
 		return &pb.CloseSprintResponse{ErrMsg: err.Error()}, err
 	}
-	return out.(*pb.CloseSprintReply), err
+	return out.(*pb.CloseSprintResponse), err
 }
 
 func (e *Endpoints) GetSprint(ctx context.Context, in *pb.GetSprintRequest) (*pb.GetSprintResponse, error) {
@@ -38,7 +38,7 @@ func (e *Endpoints) GetSprint(ctx context.Context, in *pb.GetSprintRequest) (*pb
 	if err != nil {
 		return &pb.GetSprintResponse{ErrMsg: err.Error()}, err
 	}
-	return out.(*pb.GetSprintReply), err
+	return out.(*pb.GetSprintResponse), err
 }
 
 func MakeAddSprintEndpoint(svc pb.SprintServiceServer) endpoint.Endpoint {
@@ -46,7 +46,7 @@ func MakeAddSprintEndpoint(svc pb.SprintServiceServer) endpoint.Endpoint {
 		req := request.(*pb.AddSprintRequest)
 		rep, err := svc.AddSprint(ctx, req)
 		if err != nil {
-			return &pb.AddSprintReply{ErrMsg: err.Error()}, err
+			return &pb.AddSprintResponse{ErrMsg: err.Error()}, err
 		}
 		return rep, nil
 	}
@@ -57,7 +57,7 @@ func MakeCloseSprintEndpoint(svc pb.SprintServiceServer) endpoint.Endpoint {
 		req := request.(*pb.CloseSprintRequest)
 		rep, err := svc.CloseSprint(ctx, req)
 		if err != nil {
-			return &pb.CloseSprintReply{ErrMsg: err.Error()}, err
+			return &pb.CloseSprintResponse{ErrMsg: err.Error()}, err
 		}
 		return rep, nil
 	}
@@ -68,7 +68,7 @@ func MakeGetSprintEndpoint(svc pb.SprintServiceServer) endpoint.Endpoint {
 		req := request.(*pb.GetSprintRequest)
 		rep, err := svc.GetSprint(ctx, req)
 		if err != nil {
-			return &pb.GetSprintReply{ErrMsg: err.Error()}, err
+			return &pb.GetSprintResponse{ErrMsg: err.Error()}, err
 		}
 		return rep, nil
 	}

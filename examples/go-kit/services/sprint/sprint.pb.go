@@ -23,6 +23,11 @@ import proto "github.com/gogo/protobuf/proto"
 import fmt "fmt"
 import math "math"
 
+import (
+	context "golang.org/x/net/context"
+	grpc "google.golang.org/grpc"
+)
+
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
@@ -43,6 +48,13 @@ func (m *AddSprintRequest) String() string            { return proto.CompactText
 func (*AddSprintRequest) ProtoMessage()               {}
 func (*AddSprintRequest) Descriptor() ([]byte, []int) { return fileDescriptorSprint, []int{0} }
 
+func (m *AddSprintRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
 type AddSprintResponse struct {
 	Sprint *Sprint `protobuf:"bytes,1,opt,name=sprint" json:"sprint,omitempty"`
 	ErrMsg string  `protobuf:"bytes,2,opt,name=err_msg,json=errMsg,proto3" json:"err_msg,omitempty"`
@@ -60,6 +72,13 @@ func (m *AddSprintResponse) GetSprint() *Sprint {
 	return nil
 }
 
+func (m *AddSprintResponse) GetErrMsg() string {
+	if m != nil {
+		return m.ErrMsg
+	}
+	return ""
+}
+
 type CloseSprintRequest struct {
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
@@ -68,6 +87,13 @@ func (m *CloseSprintRequest) Reset()                    { *m = CloseSprintReques
 func (m *CloseSprintRequest) String() string            { return proto.CompactTextString(m) }
 func (*CloseSprintRequest) ProtoMessage()               {}
 func (*CloseSprintRequest) Descriptor() ([]byte, []int) { return fileDescriptorSprint, []int{2} }
+
+func (m *CloseSprintRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
 
 type CloseSprintResponse struct {
 	ErrMsg string `protobuf:"bytes,1,opt,name=err_msg,json=errMsg,proto3" json:"err_msg,omitempty"`
@@ -78,6 +104,13 @@ func (m *CloseSprintResponse) String() string            { return proto.CompactT
 func (*CloseSprintResponse) ProtoMessage()               {}
 func (*CloseSprintResponse) Descriptor() ([]byte, []int) { return fileDescriptorSprint, []int{3} }
 
+func (m *CloseSprintResponse) GetErrMsg() string {
+	if m != nil {
+		return m.ErrMsg
+	}
+	return ""
+}
+
 type GetSprintRequest struct {
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
@@ -86,6 +119,13 @@ func (m *GetSprintRequest) Reset()                    { *m = GetSprintRequest{} 
 func (m *GetSprintRequest) String() string            { return proto.CompactTextString(m) }
 func (*GetSprintRequest) ProtoMessage()               {}
 func (*GetSprintRequest) Descriptor() ([]byte, []int) { return fileDescriptorSprint, []int{4} }
+
+func (m *GetSprintRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
 
 type GetSprintResponse struct {
 	Sprint *Sprint `protobuf:"bytes,1,opt,name=sprint" json:"sprint,omitempty"`
@@ -104,6 +144,13 @@ func (m *GetSprintResponse) GetSprint() *Sprint {
 	return nil
 }
 
+func (m *GetSprintResponse) GetErrMsg() string {
+	if m != nil {
+		return m.ErrMsg
+	}
+	return ""
+}
+
 type Sprint struct {
 	Id        string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	CreatedAt uint32 `protobuf:"varint,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
@@ -115,6 +162,27 @@ func (m *Sprint) String() string            { return proto.CompactTextString(m) 
 func (*Sprint) ProtoMessage()               {}
 func (*Sprint) Descriptor() ([]byte, []int) { return fileDescriptorSprint, []int{6} }
 
+func (m *Sprint) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *Sprint) GetCreatedAt() uint32 {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return 0
+}
+
+func (m *Sprint) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*AddSprintRequest)(nil), "sprint.AddSprintRequest")
 	proto.RegisterType((*AddSprintResponse)(nil), "sprint.AddSprintResponse")
@@ -123,6 +191,144 @@ func init() {
 	proto.RegisterType((*GetSprintRequest)(nil), "sprint.GetSprintRequest")
 	proto.RegisterType((*GetSprintResponse)(nil), "sprint.GetSprintResponse")
 	proto.RegisterType((*Sprint)(nil), "sprint.Sprint")
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion4
+
+// Client API for SprintService service
+
+type SprintServiceClient interface {
+	AddSprint(ctx context.Context, in *AddSprintRequest, opts ...grpc.CallOption) (*AddSprintResponse, error)
+	CloseSprint(ctx context.Context, in *CloseSprintRequest, opts ...grpc.CallOption) (*CloseSprintResponse, error)
+	GetSprint(ctx context.Context, in *GetSprintRequest, opts ...grpc.CallOption) (*GetSprintResponse, error)
+}
+
+type sprintServiceClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewSprintServiceClient(cc *grpc.ClientConn) SprintServiceClient {
+	return &sprintServiceClient{cc}
+}
+
+func (c *sprintServiceClient) AddSprint(ctx context.Context, in *AddSprintRequest, opts ...grpc.CallOption) (*AddSprintResponse, error) {
+	out := new(AddSprintResponse)
+	err := grpc.Invoke(ctx, "/sprint.SprintService/AddSprint", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sprintServiceClient) CloseSprint(ctx context.Context, in *CloseSprintRequest, opts ...grpc.CallOption) (*CloseSprintResponse, error) {
+	out := new(CloseSprintResponse)
+	err := grpc.Invoke(ctx, "/sprint.SprintService/CloseSprint", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sprintServiceClient) GetSprint(ctx context.Context, in *GetSprintRequest, opts ...grpc.CallOption) (*GetSprintResponse, error) {
+	out := new(GetSprintResponse)
+	err := grpc.Invoke(ctx, "/sprint.SprintService/GetSprint", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for SprintService service
+
+type SprintServiceServer interface {
+	AddSprint(context.Context, *AddSprintRequest) (*AddSprintResponse, error)
+	CloseSprint(context.Context, *CloseSprintRequest) (*CloseSprintResponse, error)
+	GetSprint(context.Context, *GetSprintRequest) (*GetSprintResponse, error)
+}
+
+func RegisterSprintServiceServer(s *grpc.Server, srv SprintServiceServer) {
+	s.RegisterService(&_SprintService_serviceDesc, srv)
+}
+
+func _SprintService_AddSprint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddSprintRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SprintServiceServer).AddSprint(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sprint.SprintService/AddSprint",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SprintServiceServer).AddSprint(ctx, req.(*AddSprintRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SprintService_CloseSprint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CloseSprintRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SprintServiceServer).CloseSprint(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sprint.SprintService/CloseSprint",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SprintServiceServer).CloseSprint(ctx, req.(*CloseSprintRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SprintService_GetSprint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSprintRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SprintServiceServer).GetSprint(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sprint.SprintService/GetSprint",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SprintServiceServer).GetSprint(ctx, req.(*GetSprintRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _SprintService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "sprint.SprintService",
+	HandlerType: (*SprintServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "AddSprint",
+			Handler:    _SprintService_AddSprint_Handler,
+		},
+		{
+			MethodName: "CloseSprint",
+			Handler:    _SprintService_CloseSprint_Handler,
+		},
+		{
+			MethodName: "GetSprint",
+			Handler:    _SprintService_GetSprint_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "services/sprint/sprint.proto",
 }
 
 func init() { proto.RegisterFile("services/sprint/sprint.proto", fileDescriptorSprint) }

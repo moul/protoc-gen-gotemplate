@@ -1,11 +1,11 @@
-package session_transportgrpc
+package session_grpctransport
 
 import (
 	"fmt"
 
 	grpctransport "github.com/go-kit/kit/transport/grpc"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session"
-	endpoint "github.com/moul/protoc-gen-gotemplate/examples/go-kit/session/gen/endpoints"
+	endpoint "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/endpoints"
 	context "golang.org/x/net/context"
 )
 
@@ -21,7 +21,7 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoint.Endpoints) pb.Sessio
 			endpoints.LoginEndpoint,
 			decodeLoginRequest,
 			encodeLoginResponse,
-			options,
+			options...,
 		),
 
 		logout: grpctransport.NewServer(
@@ -29,7 +29,7 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoint.Endpoints) pb.Sessio
 			endpoints.LogoutEndpoint,
 			decodeLogoutRequest,
 			encodeLogoutResponse,
-			options,
+			options...,
 		),
 	}
 }
@@ -40,12 +40,12 @@ type grpcServer struct {
 	logout grpctransport.Handler
 }
 
-func (s *grpcServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginReply, error) {
+func (s *grpcServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
 	_, rep, err := s.login.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.LoginReply), nil
+	return rep.(*pb.LoginResponse), nil
 }
 
 func decodeLoginRequest(ctx context.Context, grpcReq interface{}) (interface{}, error) {
@@ -53,16 +53,16 @@ func decodeLoginRequest(ctx context.Context, grpcReq interface{}) (interface{}, 
 }
 
 func encodeLoginResponse(ctx context.Context, response interface{}) (interface{}, error) {
-	resp := response.(*pb.LoginReply)
+	resp := response.(*pb.LoginResponse)
 	return resp, nil
 }
 
-func (s *grpcServer) Logout(ctx context.Context, req *pb.LogoutRequest) (*pb.LogoutReply, error) {
+func (s *grpcServer) Logout(ctx context.Context, req *pb.LogoutRequest) (*pb.LogoutResponse, error) {
 	_, rep, err := s.logout.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.LogoutReply), nil
+	return rep.(*pb.LogoutResponse), nil
 }
 
 func decodeLogoutRequest(ctx context.Context, grpcReq interface{}) (interface{}, error) {
@@ -70,6 +70,6 @@ func decodeLogoutRequest(ctx context.Context, grpcReq interface{}) (interface{},
 }
 
 func encodeLogoutResponse(ctx context.Context, response interface{}) (interface{}, error) {
-	resp := response.(*pb.LogoutReply)
+	resp := response.(*pb.LogoutResponse)
 	return resp, nil
 }

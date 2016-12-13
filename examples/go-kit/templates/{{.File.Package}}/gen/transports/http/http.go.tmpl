@@ -1,4 +1,4 @@
-package {{.File.Package}}_transporthttp
+package {{.File.Package}}_httptransport
 
 {{$file := .File}}
 
@@ -11,7 +11,7 @@ import (
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}"
         gokit_endpoint "github.com/go-kit/kit/endpoint"
 	httptransport "github.com/go-kit/kit/transport/http"
-	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/{{.File.Package}}/gen/endpoints"
+	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/endpoints"
 )
 
 {{range .Service.Method}}
@@ -21,7 +21,7 @@ func Make{{.Name}}Handler(ctx context.Context, svc pb.{{$file.Package | title}}S
 		endpoint,
 		decode{{.Name}}Request,
 		encode{{.Name}}Response,
-		append([]httptransport.ServerOption{}, httptransport.ServerBefore(jwt.ToHTTPContext()))...,
+                []httptransport.ServerOption{}...,
 	)
 }
 

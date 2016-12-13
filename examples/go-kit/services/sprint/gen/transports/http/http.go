@@ -1,4 +1,4 @@
-package sprint_transporthttp
+package sprint_httptransport
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	gokit_endpoint "github.com/go-kit/kit/endpoint"
 	httptransport "github.com/go-kit/kit/transport/http"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint"
-	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/sprint/gen/endpoints"
+	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/endpoints"
 )
 
 func MakeAddSprintHandler(ctx context.Context, svc pb.SprintServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
@@ -18,7 +18,7 @@ func MakeAddSprintHandler(ctx context.Context, svc pb.SprintServiceServer, endpo
 		endpoint,
 		decodeAddSprintRequest,
 		encodeAddSprintResponse,
-		append([]httptransport.ServerOption{}, httptransport.ServerBefore(jwt.ToHTTPContext()))...,
+		[]httptransport.ServerOption{}...,
 	)
 }
 
@@ -40,7 +40,7 @@ func MakeCloseSprintHandler(ctx context.Context, svc pb.SprintServiceServer, end
 		endpoint,
 		decodeCloseSprintRequest,
 		encodeCloseSprintResponse,
-		append([]httptransport.ServerOption{}, httptransport.ServerBefore(jwt.ToHTTPContext()))...,
+		[]httptransport.ServerOption{}...,
 	)
 }
 
@@ -62,7 +62,7 @@ func MakeGetSprintHandler(ctx context.Context, svc pb.SprintServiceServer, endpo
 		endpoint,
 		decodeGetSprintRequest,
 		encodeGetSprintResponse,
-		append([]httptransport.ServerOption{}, httptransport.ServerBefore(jwt.ToHTTPContext()))...,
+		[]httptransport.ServerOption{}...,
 	)
 }
 

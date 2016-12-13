@@ -4,10 +4,13 @@ TARGETS_GO :=	$(foreach source, $(SOURCES), $(source)_go)
 TARGETS_TMPL :=	$(foreach source, $(SOURCES), $(source)_tmpl)
 
 .PHONY: build
-build: $(TARGETS_GO) $(TARGETS_TMPL)
+build: server
+
+server: $(TARGETS_GO) $(TARGETS_TMPL)
+	go build -o server .
 
 $(TARGETS_GO): %_go:
-	protoc --gogo_out=. "$*"
+	protoc --gogo_out=plugins=grpc:. "$*"
 
 $(TARGETS_TMPL): %_tmpl:
 	@mkdir -p $(dir $*)gen
