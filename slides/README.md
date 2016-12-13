@@ -38,6 +38,16 @@ func main() {
 
 ---
 
+# usages
+
+* generate go-kit boilerplate
+* generate k8s configuration
+* generate documentation
+* generate tests
+* generate fun
+
+---
+
 # pros
 
 * blah blah
