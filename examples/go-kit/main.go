@@ -24,6 +24,12 @@ import (
 	sprint_pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/pb"
 	sprint_grpctransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/transports/grpc"
 	sprint_httptransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/transports/http"
+
+	user_svc "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user"
+	user_endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/endpoints"
+	user_pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/pb"
+	user_grpctransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/transports/grpc"
+	user_httptransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/transports/http"
 )
 
 func main() {
@@ -52,6 +58,13 @@ func main() {
 		srv := sprint_grpctransport.MakeGRPCServer(ctx, endpoints)
 		sprint_pb.RegisterSprintServiceServer(s, srv)
 		sprint_httptransport.RegisterHandlers(ctx, svc, mux, endpoints)
+	}
+	{
+		svc := user_svc.New()
+		endpoints := user_endpoints.MakeEndpoints(svc)
+		srv := user_grpctransport.MakeGRPCServer(ctx, endpoints)
+		user_pb.RegisterUserServiceServer(s, srv)
+		user_httptransport.RegisterHandlers(ctx, svc, mux, endpoints)
 	}
 
 	// start servers
