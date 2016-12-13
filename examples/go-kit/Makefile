@@ -7,8 +7,9 @@ TARGETS_TMPL :=	$(foreach source, $(SOURCES), $(source)_tmpl)
 build: $(TARGETS_GO) $(TARGETS_TMPL)
 
 $(TARGETS_GO): %_go:
-	protoc --gogo_out="$(dir $*)" "$*"
+	protoc --gogo_out=. "$*"
 
 $(TARGETS_TMPL): %_tmpl:
 	@mkdir -p $(dir $*)gen
-	protoc -I. --gotemplate_out=template_dir=templates:output "$*"
+	protoc -I. --gotemplate_out=template_dir=templates:services "$*"
+	gofmt -w $(dir $*)gen
