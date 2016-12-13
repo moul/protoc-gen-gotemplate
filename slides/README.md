@@ -6,7 +6,9 @@
 
 # overview
 
-* blah blah
+* go-kit is an amazing framework to develop strong micro services
+* but it requires a lot of boilerplate code
+* return on experience on go-kit boilerplate code generation
 
 ---
 
@@ -25,6 +27,14 @@
 * go:generate
 * make
 * protobuf + [protoc-gen-gotemplate](https://github.com/moul/protoc-gen-gotemplate)
+
+---
+
+# go-kit
+
+* protobuf-first, rpc-first service framework in Golang
+* abstract services, endpoints, transports
+* requires a lot of boilerplate code in multiple packages
 
 ---
 
@@ -82,10 +92,10 @@ func (svc *Service) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginRe
 // source: templates/{{.File.Package}}/gen/transports/http/http.go.tmpl
 package {{.File.Package}}_httptransport
 import (
-	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/pb"
     gokit_endpoint "github.com/go-kit/kit/endpoint"
 	httptransport "github.com/go-kit/kit/transport/http"
 	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/endpoints"
+	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/pb"
 )
 ```
 
@@ -210,7 +220,8 @@ func RegisterHandlers(ctx context.Context, svc pb.UserServiceServer, mux *http.S
 # cons
 
 * the author needs to write its own templates
-*
+* sometimes difficult to generate valid code
+* not enough helpers around the code generation yet
 
 ---
 
@@ -224,9 +235,9 @@ func RegisterHandlers(ctx context.Context, svc pb.UserServiceServer, mux *http.S
 
 # conclusion
 
-* blah blah
-
----
+* Useful to keep everything standard
+* The awesomeness of go-kit without the hassle of writing boilerplate code
+* Always up-to-date with the contracts
 
 # questions?
 
