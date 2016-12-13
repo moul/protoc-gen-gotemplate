@@ -12,19 +12,19 @@
 
 # protobuf?
 
-* contract
+* limited to exchanges (methods and models)
+* extendable with plugins
+* contract-based
 * universal
-* simple
-* extendable
 
 ---
 
 # code generation?
 
-* ./generate.sh
-* go generate
+* the good old ./generate.sh bash script
+* go:generate
 * make
-* examples
+* protobuf + [protoc-gen-gotemplate](https://github.com/moul/protoc-gen-gotemplate)
 
 ---
 
@@ -32,26 +32,40 @@
 
 ```go
 func main() {
-        fmt.Println("blah blah")
+        fmt.Println("blah blah!")
 }
 ```
 
 ---
 
-# usages
+![right fit](assets/wc.png)
 
-* generate go-kit boilerplate
-* generate k8s configuration
-* generate documentation
-* generate tests
-* generate fun
+## 2 services
+## 112 custom lines
+## 1 094 generated lines
+## business focus
+
+---
+
+# generation usages
+
+* go-kit boilerplate (see [examples/go-kit](https://github.com/moul/protoc-gen-gotemplate/tree/master/examples/go-kit))
+* k8s configuration
+* Dockerfile
+* documentation
+* unit-tests
+* fun
 
 ---
 
 # pros
 
-* commit the templates with the code
-*
+* small custom codebase
+* templates shipped with code
+* hardly typed, no reflects
+* genericity
+* contrat terms (protobuf) respected
+* not limited to a language
 
 ---
 
@@ -62,21 +76,11 @@ func main() {
 
 ---
 
-# useful resources
-
-* `znly/protoc`
-
----
-
-# advanced usages
-
-* dedicated protodefs repo
-
----
-
 # improvement ideas
 
-* blah blah
+* Support protobufs extensions (i.e, annotations.probo)
+* Generate one file from multiple services
+* Add more helpers around the code generation
 
 ---
 
