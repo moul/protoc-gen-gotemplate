@@ -25,7 +25,7 @@ type Ast struct {
 	BuildDate     time.Time                          `json:"build-date"`
 	BuildHostname string                             `json:"build-hostname"`
 	BuildUser     string                             `json:"build-user"`
-	GoPWD         string                             `json:"go-pwd",omitempty`
+	GoPWD         string                             `json:"go-pwd,omitempty"`
 	PWD           string                             `json:"pwd"`
 	Debug         bool                               `json:"debug"`
 	File          *descriptor.FileDescriptorProto    `json:"file"`
