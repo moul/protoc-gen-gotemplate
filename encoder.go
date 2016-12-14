@@ -11,7 +11,6 @@ import (
 
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/kr/fs"
 	"github.com/moul/funcmap"
 )
 
@@ -53,32 +52,27 @@ func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.Serv
 func (e *GenericTemplateBasedEncoder) templates() ([]string, error) {
 	filenames := []string{}
 
-	walker := fs.Walk(e.templateDir)
-	for walker.Step() {
-		if err := walker.Err(); err != nil {
-			return nil, err
-		}
-
-		if walker.Stat().IsDir() {
-			continue
-		}
-
-		if filepath.Ext(walker.Path()) != ".tmpl" {
-			continue
-		}
-
-		rel, err := filepath.Rel(e.templateDir, walker.Path())
+	err := filepath.Walk(e.templateDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return nil, err
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+		if filepath.Ext(path) != ".tmpl" {
+			return nil
+		}
+		rel, err := filepath.Rel(e.templateDir, path)
+		if err != nil {
+			return err
 		}
 		if e.debug {
 			log.Printf("new template: %q", rel)
 		}
-
 		filenames = append(filenames, rel)
-	}
-
-	return filenames, nil
+		return nil
+	})
+	return filenames, err
 }
 
 func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, error) {
