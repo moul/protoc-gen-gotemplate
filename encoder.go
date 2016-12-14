@@ -133,30 +133,39 @@ func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (str
 }
 
 func (e *GenericTemplateBasedEncoder) Files() []*plugin_go.CodeGeneratorResponse_File {
-	files := []*plugin_go.CodeGeneratorResponse_File{}
-
 	templates, err := e.templates()
 	if err != nil {
 		log.Fatalf("cannot get templates from %q: %v", e.templateDir, err)
 	}
 
+	length := len(templates)
+	files := make([]*plugin_go.CodeGeneratorResponse_File, 0, length)
+	errChan := make(chan error, length)
+	resultChan := make(chan *plugin_go.CodeGeneratorResponse_File, length)
 	for _, templateFilename := range templates {
-		content, err := e.buildContent(templateFilename)
-		if err != nil {
-			panic(err)
-		}
+		go func(tmpl string) {
+			content, translatedFilename, err := e.buildContent(tmpl)
+			if err != nil {
+				errChan <- err
+				return
+			}
+			filename := translatedFilename[:len(translatedFilename)-len(".tmpl")]
 
-		translatedFilename, err := e.translateString(templateFilename, templateFilename)
-		if err != nil {
-			panic(err)
-		}
-		filename := translatedFilename[0 : len(translatedFilename)-len(".tmpl")]
-
-		files = append(files, &plugin_go.CodeGeneratorResponse_File{
-			Content: &content,
-			Name:    &filename,
-		})
+			resultChan <- &plugin_go.CodeGeneratorResponse_File{
+				Content: &content,
+				Name:    &filename,
+			}
+		}(templateFilename)
 	}
-
+	for i := 0; i < length; i++ {
+		select {
+		case f := <-resultChan:
+			files = append(files, f)
+		case err = <-errChan:
+		}
+	}
+	if err != nil {
+		panic(err)
+	}
 	return files
 }
