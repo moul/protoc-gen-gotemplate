@@ -94,57 +94,42 @@ func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, err
 		GoPWD:         goPwd,
 		File:          e.file,
 		RawFilename:   templateFilename,
-		// Filename:      "",
-		Service: e.service,
+		Filename:      "",
+		Service:       e.service,
 	}
+	buffer := new(bytes.Buffer)
+	tmpl, err := template.New("").Funcs(funcmap.FuncMap).Parse(templateFilename)
+	if err != nil {
+		return nil, err
+	}
+	if err := tmpl.Execute(buffer, ast); err != nil {
+		return nil, err
+	}
+	ast.Filename = buffer.String()
 	return &ast, nil
 }
 
-func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (string, error) {
+func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (string, string, error) {
 	// initialize template engine
 	fullPath := filepath.Join(e.templateDir, templateFilename)
 	templateName := filepath.Base(fullPath)
 	tmpl, err := template.New(templateName).Funcs(funcmap.FuncMap).ParseFiles(fullPath)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	ast, err := e.genAst(templateFilename)
 	if err != nil {
-		return "", err
-	}
-
-	// translate the filename
-	ast.Filename, err = e.translateString(templateFilename, templateFilename)
-	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	// generate the content
 	buffer := new(bytes.Buffer)
 	if err := tmpl.Execute(buffer, ast); err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return buffer.String(), nil
-}
-
-func (e *GenericTemplateBasedEncoder) translateString(input string, templateFilename string) (string, error) {
-	buffer := new(bytes.Buffer)
-	tmpl, err := template.New("").Funcs(funcmap.FuncMap).Parse(input)
-	if err != nil {
-		return "", err
-	}
-
-	ast, err := e.genAst(templateFilename)
-	if err != nil {
-		return "", err
-	}
-
-	if err := tmpl.Execute(buffer, ast); err != nil {
-		return "", err
-	}
-	return buffer.String(), nil
+	return buffer.String(), ast.Filename, nil
 }
 
 func (e *GenericTemplateBasedEncoder) Files() []*plugin_go.CodeGeneratorResponse_File {
