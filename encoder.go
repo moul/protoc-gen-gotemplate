@@ -11,7 +11,6 @@ import (
 
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/moul/funcmap"
 )
 
 type GenericTemplateBasedEncoder struct {
@@ -102,7 +101,7 @@ func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, err
 		Service:       e.service,
 	}
 	buffer := new(bytes.Buffer)
-	tmpl, err := template.New("").Funcs(funcmap.FuncMap).Parse(templateFilename)
+	tmpl, err := template.New("").Funcs(ProtoHelpersFuncMap).Parse(templateFilename)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +116,7 @@ func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (str
 	// initialize template engine
 	fullPath := filepath.Join(e.templateDir, templateFilename)
 	templateName := filepath.Base(fullPath)
-	tmpl, err := template.New(templateName).Funcs(funcmap.FuncMap).ParseFiles(fullPath)
+	tmpl, err := template.New(templateName).Funcs(ProtoHelpersFuncMap).ParseFiles(fullPath)
 	if err != nil {
 		return "", "", err
 	}

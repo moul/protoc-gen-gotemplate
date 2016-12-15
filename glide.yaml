@@ -7,5 +7,5 @@ import:
   - protoc-gen-go/generator
   - protoc-gen-go/plugin
 - package: github.com/kr/fs
-- package: github.com/moul/funcmap
-  version: ~1.1.1
+- package: github.com/Masterminds/sprig
+  version: ~2.7.0
