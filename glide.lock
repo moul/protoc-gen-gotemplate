@@ -1,6 +1,8 @@
-hash: 2a443d1134599077e30c079238e394224e207bdc81ba96b662bba20e906d7a13
-updated: 2016-12-01T10:18:17.659451258+01:00
+hash: aa9203a1c387f442e879515ab3d1667b35c8b6cbf18c9108f7b66395a3d6c042
+updated: 2016-12-15T12:02:04.702078371+01:00
 imports:
+- name: github.com/aokoli/goutils
+  version: 9c37978a95bd5c709a15883b6242714ea6709e64
 - name: github.com/golang/protobuf
   version: 98fa357170587e470c5f27d3c3ea0947b71eb455
   subpackages:
@@ -10,6 +12,8 @@ imports:
   - protoc-gen-go/plugin
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
-- name: github.com/moul/funcmap
-  version: ae20ef49f610b7cb474d94afd71606af8fb09b77
+- name: github.com/Masterminds/sprig
+  version: 1e60e4ce482a1e2c7b9c9be667535ef152e04300
+- name: github.com/satori/go.uuid
+  version: 879c5887cd475cd7864858769793b2ceb0d44feb
 testImports: []
