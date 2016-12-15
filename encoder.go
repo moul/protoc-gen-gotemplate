@@ -37,6 +37,12 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	},
 }
 
+func init() {
+	for k, v := range sprig.TxtFuncMap() {
+		ProtoHelpersFuncMap[k] = v
+	}
+}
+
 type GenericTemplateBasedEncoder struct {
 	templateDir string
 	service     *descriptor.ServiceDescriptorProto
@@ -125,9 +131,6 @@ func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, err
 		Service:       e.service,
 	}
 	buffer := new(bytes.Buffer)
-	for k, v := range sprig.TxtFuncMap() {
-		ProtoHelpersFuncMap[k] = v
-	}
 	tmpl, err := template.New("").Funcs(ProtoHelpersFuncMap).Parse(templateFilename)
 	if err != nil {
 		return nil, err
@@ -143,9 +146,7 @@ func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (str
 	// initialize template engine
 	fullPath := filepath.Join(e.templateDir, templateFilename)
 	templateName := filepath.Base(fullPath)
-	for k, v := range sprig.TxtFuncMap() {
-		ProtoHelpersFuncMap[k] = v
-	}
+
 	tmpl, err := template.New(templateName).Funcs(ProtoHelpersFuncMap).ParseFiles(fullPath)
 	if err != nil {
 		return "", "", err
