@@ -29,6 +29,12 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		a, _ := json.MarshalIndent(v, "", "  ")
 		return string(a)
 	},
+	"first": func(a []string) string {
+		return a[0]
+	},
+	"last": func(a []string) string {
+		return a[len(a)-1]
+	},
 }
 
 type GenericTemplateBasedEncoder struct {
