@@ -14,6 +14,14 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
 )
 
+var ProtoHelpersFuncMap = template.FuncMap{
+	"string": func(i interface {
+		String() string
+	}) string {
+		return i.String()
+	},
+}
+
 type GenericTemplateBasedEncoder struct {
 	templateDir string
 	service     *descriptor.ServiceDescriptorProto
@@ -102,7 +110,10 @@ func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, err
 		Service:       e.service,
 	}
 	buffer := new(bytes.Buffer)
-	tmpl, err := template.New("").Funcs(sprig.TxtFuncMap()).Parse(templateFilename)
+	for k, v := range sprig.TxtFuncMap() {
+		ProtoHelpersFuncMap[k] = v
+	}
+	tmpl, err := template.New("").Funcs(ProtoHelpersFuncMap).Parse(templateFilename)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +128,10 @@ func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (str
 	// initialize template engine
 	fullPath := filepath.Join(e.templateDir, templateFilename)
 	templateName := filepath.Base(fullPath)
-	tmpl, err := template.New(templateName).Funcs(sprig.TxtFuncMap()).ParseFiles(fullPath)
+	for k, v := range sprig.TxtFuncMap() {
+		ProtoHelpersFuncMap[k] = v
+	}
+	tmpl, err := template.New(templateName).Funcs(ProtoHelpersFuncMap).ParseFiles(fullPath)
 	if err != nil {
 		return "", "", err
 	}
