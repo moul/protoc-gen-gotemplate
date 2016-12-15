@@ -44,7 +44,7 @@ This project uses [Masterminds/sprig](https://github.com/Masterminds/sprig) libr
 
 Non-exhaustive list of new helpers:
 
-* **all the functions of [sprig](https://github.com/Masterminds/sprig)**
+* **all the functions from [sprig](https://github.com/Masterminds/sprig)**
 * `json`
 * `prettyjson`
 * `first`
