@@ -21,10 +21,10 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		a, _ := json.MarshalIndent(v, "", "  ")
 		return string(a)
 	},
-	"first": func(a []string) string {
+	"first": func(a []interface{}) interface{} {
 		return a[0]
 	},
-	"last": func(a []string) string {
+	"last": func(a []interface{}) interface{} {
 		return a[len(a)-1]
 	},
 }
