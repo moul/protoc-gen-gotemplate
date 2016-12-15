@@ -40,25 +40,17 @@ See [examples](./examples).
 
 ## Funcmap
 
-This project uses [moul/funcmap](https://github.com/moul/funcmap) library to extend the builtin [text/template](https://golang.org/pkg/text/template) helpers.
+This project uses [Masterminds/sprig](https://github.com/Masterminds/sprig) library and additional functions to extend the builtin [text/template](https://golang.org/pkg/text/template) helpers.
 
 Non-exhaustive list of new helpers:
 
+* **all the functions from [sprig](https://github.com/Masterminds/sprig)**
 * `json`
 * `prettyjson`
-* `indent`
-* `split`
-* `join`
-* `title`
-* `unexport`
-* `add`
-* `trimspace`
-* `lower`
-* `upper`
-* `rev`
-* `int`
+* `first`
+* `last`
 
-See the project for the complete list.
+See the project helpers for the complete list.
 
 ## Install
 
