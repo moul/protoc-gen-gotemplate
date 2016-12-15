@@ -8,4 +8,3 @@ import:
   - protoc-gen-go/plugin
 - package: github.com/kr/fs
 - package: github.com/Masterminds/sprig
-  version: ~2.7.0
