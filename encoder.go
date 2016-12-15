@@ -33,6 +33,7 @@ type Ast struct {
 	Filename      string                             `json:"filename"`
 	TemplateDir   string                             `json:"template-dir"`
 	Service       *descriptor.ServiceDescriptorProto `json:"service"`
+	Environment   []string                           `json:"environment"`
 }
 
 func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.ServiceDescriptorProto, file *descriptor.FileDescriptorProto, debug bool) (e *GenericTemplateBasedEncoder) {
@@ -97,6 +98,7 @@ func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, err
 		TemplateDir:   e.templateDir,
 		RawFilename:   templateFilename,
 		Filename:      "",
+		Environment:   os.Environ(),
 		Service:       e.service,
 	}
 	buffer := new(bytes.Buffer)
