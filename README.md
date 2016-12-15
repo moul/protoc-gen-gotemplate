@@ -1,4 +1,4 @@
-# protoc-gen-gotemplate
+# `protoc-gen-gotemplate`
 :open_file_folder: protocol generator + golang text/template (protobuf)
 
 Generic protocol buffer generator backed by Golang's [text/template](https://golang.org/pkg/text/template).
@@ -52,15 +52,15 @@ Non-exhaustive list of new helpers:
 
 See the project helpers for the complete list.
 
-## Projects using protoc-gen-gotemplate
-
-* [moul/translator](https://github.com/moul/translator): Translator Micro-service using Gettext and Go-Kit
-
 ## Install
 
 * Install the **Go** compiler and tools from https://golang.org/doc/install
 * Install **protobuf**: `go get -u github.com/golang/protobuf/{proto,protoc-gen-go}`
 * Install **protoc-gen-gotemplate**: `go get -u github.com/moul/protoc-gen-gotemplate`
+
+## Projects using `protoc-gen-gotemplate`
+
+* [moul/translator](https://github.com/moul/translator): Translator Micro-service using Gettext and Go-Kit
 
 ## License
 
