@@ -14,33 +14,36 @@ import (
 )
 
 type GenericTemplateBasedEncoder struct {
-	templateDir string
-	service     *descriptor.ServiceDescriptorProto
-	file        *descriptor.FileDescriptorProto
-	debug       bool
+	templateDir    string
+	service        *descriptor.ServiceDescriptorProto
+	file           *descriptor.FileDescriptorProto
+	debug          bool
+	destinationDir string
 }
 
 type Ast struct {
-	BuildDate     time.Time                          `json:"build-date"`
-	BuildHostname string                             `json:"build-hostname"`
-	BuildUser     string                             `json:"build-user"`
-	GoPWD         string                             `json:"go-pwd,omitempty"`
-	PWD           string                             `json:"pwd"`
-	Debug         bool                               `json:"debug"`
-	File          *descriptor.FileDescriptorProto    `json:"file"`
-	RawFilename   string                             `json:"raw-filename"`
-	Filename      string                             `json:"filename"`
-	TemplateDir   string                             `json:"template-dir"`
-	Service       *descriptor.ServiceDescriptorProto `json:"service"`
-	Environment   []string                           `json:"environment"`
+	BuildDate      time.Time                          `json:"build-date"`
+	BuildHostname  string                             `json:"build-hostname"`
+	BuildUser      string                             `json:"build-user"`
+	GoPWD          string                             `json:"go-pwd,omitempty"`
+	PWD            string                             `json:"pwd"`
+	Debug          bool                               `json:"debug"`
+	DestinationDir string                             `json:"destination-dir"`
+	File           *descriptor.FileDescriptorProto    `json:"file"`
+	RawFilename    string                             `json:"raw-filename"`
+	Filename       string                             `json:"filename"`
+	TemplateDir    string                             `json:"template-dir"`
+	Service        *descriptor.ServiceDescriptorProto `json:"service"`
+	Environment    []string                           `json:"environment"`
 }
 
-func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.ServiceDescriptorProto, file *descriptor.FileDescriptorProto, debug bool) (e *GenericTemplateBasedEncoder) {
+func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.ServiceDescriptorProto, file *descriptor.FileDescriptorProto, debug bool, destinationDir string) (e *GenericTemplateBasedEncoder) {
 	e = &GenericTemplateBasedEncoder{
-		service:     service,
-		file:        file,
-		templateDir: templateDir,
-		debug:       debug,
+		service:        service,
+		file:           file,
+		templateDir:    templateDir,
+		debug:          debug,
+		destinationDir: destinationDir,
 	}
 
 	if debug {
@@ -88,17 +91,18 @@ func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, err
 		}
 	}
 	ast := Ast{
-		BuildDate:     time.Now(),
-		BuildHostname: hostname,
-		BuildUser:     os.Getenv("USER"),
-		PWD:           pwd,
-		GoPWD:         goPwd,
-		File:          e.file,
-		TemplateDir:   e.templateDir,
-		RawFilename:   templateFilename,
-		Filename:      "",
-		Environment:   os.Environ(),
-		Service:       e.service,
+		BuildDate:      time.Now(),
+		BuildHostname:  hostname,
+		BuildUser:      os.Getenv("USER"),
+		PWD:            pwd,
+		GoPWD:          goPwd,
+		File:           e.file,
+		TemplateDir:    e.templateDir,
+		DestinationDir: e.destinationDir,
+		RawFilename:    templateFilename,
+		Filename:       "",
+		Environment:    os.Environ(),
+		Service:        e.service,
 	}
 	buffer := new(bytes.Buffer)
 	tmpl, err := template.New("").Funcs(ProtoHelpersFuncMap).Parse(templateFilename)

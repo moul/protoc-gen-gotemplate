@@ -30,6 +30,7 @@ func main() {
 
 	// Parse parameters
 	templateDir := "./templates"
+	destinationDir := "."
 	debug := false
 	if parameter := g.Request.GetParameter(); parameter != "" {
 		for _, param := range strings.Split(parameter, ",") {
@@ -41,6 +42,9 @@ func main() {
 			switch parts[0] {
 			case "template_dir":
 				templateDir = parts[1]
+				break
+			case "destination_dir":
+				destinationDir = parts[1]
 				break
 			case "debug":
 				switch strings.ToLower(parts[1]) {
@@ -60,7 +64,7 @@ func main() {
 	// Generate the encoders
 	for _, file := range g.Request.GetProtoFile() {
 		for _, service := range file.GetService() {
-			encoder := NewGenericTemplateBasedEncoder(templateDir, service, file, debug)
+			encoder := NewGenericTemplateBasedEncoder(templateDir, service, file, debug, destinationDir)
 			g.Response.File = append(g.Response.File, encoder.Files()...)
 		}
 	}
