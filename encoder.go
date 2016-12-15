@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"log"
 	"os"
 	"path/filepath"
@@ -10,38 +9,9 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/Masterminds/sprig"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
 )
-
-var ProtoHelpersFuncMap = template.FuncMap{
-	"string": func(i interface {
-		String() string
-	}) string {
-		return i.String()
-	},
-	"json": func(v interface{}) string {
-		a, _ := json.Marshal(v)
-		return string(a)
-	},
-	"prettyjson": func(v interface{}) string {
-		a, _ := json.MarshalIndent(v, "", "  ")
-		return string(a)
-	},
-	"first": func(a []string) string {
-		return a[0]
-	},
-	"last": func(a []string) string {
-		return a[len(a)-1]
-	},
-}
-
-func init() {
-	for k, v := range sprig.TxtFuncMap() {
-		ProtoHelpersFuncMap[k] = v
-	}
-}
 
 type GenericTemplateBasedEncoder struct {
 	templateDir string
@@ -146,7 +116,6 @@ func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (str
 	// initialize template engine
 	fullPath := filepath.Join(e.templateDir, templateFilename)
 	templateName := filepath.Base(fullPath)
-
 	tmpl, err := template.New(templateName).Funcs(ProtoHelpersFuncMap).ParseFiles(fullPath)
 	if err != nil {
 		return "", "", err
