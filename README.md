@@ -52,6 +52,10 @@ Non-exhaustive list of new helpers:
 
 See the project helpers for the complete list.
 
+## Projects using protoc-gen-gotemplate
+
+* [moul/translator](https://github.com/moul/translator): Translator Micro-service using Gettext and Go-Kit
+
 ## Install
 
 * Install the **Go** compiler and tools from https://golang.org/doc/install
