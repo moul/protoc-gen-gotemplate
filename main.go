@@ -43,9 +43,11 @@ func main() {
 				templateDir = parts[1]
 				break
 			case "debug":
-				if parts[1] == "true" {
+				switch strings.ToLower(parts[1]) {
+				case "true", "t":
 					debug = true
-				} else {
+				case "false", "f":
+				default:
 					log.Printf("Err: invalid value for debug: %q", parts[1])
 				}
 				break

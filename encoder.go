@@ -11,7 +11,6 @@ import (
 
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/kr/fs"
 	"github.com/moul/funcmap"
 )
 
@@ -26,7 +25,7 @@ type Ast struct {
 	BuildDate     time.Time                          `json:"build-date"`
 	BuildHostname string                             `json:"build-hostname"`
 	BuildUser     string                             `json:"build-user"`
-	GoPWD         string                             `json:"go-pwd",omitempty`
+	GoPWD         string                             `json:"go-pwd,omitempty"`
 	PWD           string                             `json:"pwd"`
 	Debug         bool                               `json:"debug"`
 	File          *descriptor.FileDescriptorProto    `json:"file"`
@@ -53,32 +52,27 @@ func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.Serv
 func (e *GenericTemplateBasedEncoder) templates() ([]string, error) {
 	filenames := []string{}
 
-	walker := fs.Walk(e.templateDir)
-	for walker.Step() {
-		if err := walker.Err(); err != nil {
-			return nil, err
-		}
-
-		if walker.Stat().IsDir() {
-			continue
-		}
-
-		if filepath.Ext(walker.Path()) != ".tmpl" {
-			continue
-		}
-
-		rel, err := filepath.Rel(e.templateDir, walker.Path())
+	err := filepath.Walk(e.templateDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return nil, err
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+		if filepath.Ext(path) != ".tmpl" {
+			return nil
+		}
+		rel, err := filepath.Rel(e.templateDir, path)
+		if err != nil {
+			return err
 		}
 		if e.debug {
 			log.Printf("new template: %q", rel)
 		}
-
 		filenames = append(filenames, rel)
-	}
-
-	return filenames, nil
+		return nil
+	})
+	return filenames, err
 }
 
 func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, error) {
@@ -100,84 +94,78 @@ func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, err
 		GoPWD:         goPwd,
 		File:          e.file,
 		RawFilename:   templateFilename,
-		// Filename:      "",
-		Service: e.service,
+		Filename:      "",
+		Service:       e.service,
 	}
+	buffer := new(bytes.Buffer)
+	tmpl, err := template.New("").Funcs(funcmap.FuncMap).Parse(templateFilename)
+	if err != nil {
+		return nil, err
+	}
+	if err := tmpl.Execute(buffer, ast); err != nil {
+		return nil, err
+	}
+	ast.Filename = buffer.String()
 	return &ast, nil
 }
 
-func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (string, error) {
+func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (string, string, error) {
 	// initialize template engine
 	fullPath := filepath.Join(e.templateDir, templateFilename)
 	templateName := filepath.Base(fullPath)
 	tmpl, err := template.New(templateName).Funcs(funcmap.FuncMap).ParseFiles(fullPath)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	ast, err := e.genAst(templateFilename)
 	if err != nil {
-		return "", err
-	}
-
-	// translate the filename
-	ast.Filename, err = e.translateString(templateFilename, templateFilename)
-	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	// generate the content
 	buffer := new(bytes.Buffer)
 	if err := tmpl.Execute(buffer, ast); err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return buffer.String(), nil
-}
-
-func (e *GenericTemplateBasedEncoder) translateString(input string, templateFilename string) (string, error) {
-	buffer := new(bytes.Buffer)
-	tmpl, err := template.New("").Funcs(funcmap.FuncMap).Parse(input)
-	if err != nil {
-		return "", err
-	}
-
-	ast, err := e.genAst(templateFilename)
-	if err != nil {
-		return "", err
-	}
-
-	if err := tmpl.Execute(buffer, ast); err != nil {
-		return "", err
-	}
-	return buffer.String(), nil
+	return buffer.String(), ast.Filename, nil
 }
 
 func (e *GenericTemplateBasedEncoder) Files() []*plugin_go.CodeGeneratorResponse_File {
-	files := []*plugin_go.CodeGeneratorResponse_File{}
-
 	templates, err := e.templates()
 	if err != nil {
 		log.Fatalf("cannot get templates from %q: %v", e.templateDir, err)
 	}
 
+	length := len(templates)
+	files := make([]*plugin_go.CodeGeneratorResponse_File, 0, length)
+	errChan := make(chan error, length)
+	resultChan := make(chan *plugin_go.CodeGeneratorResponse_File, length)
 	for _, templateFilename := range templates {
-		content, err := e.buildContent(templateFilename)
-		if err != nil {
-			panic(err)
-		}
+		go func(tmpl string) {
+			content, translatedFilename, err := e.buildContent(tmpl)
+			if err != nil {
+				errChan <- err
+				return
+			}
+			filename := translatedFilename[:len(translatedFilename)-len(".tmpl")]
 
-		translatedFilename, err := e.translateString(templateFilename, templateFilename)
-		if err != nil {
-			panic(err)
-		}
-		filename := translatedFilename[0 : len(translatedFilename)-len(".tmpl")]
-
-		files = append(files, &plugin_go.CodeGeneratorResponse_File{
-			Content: &content,
-			Name:    &filename,
-		})
+			resultChan <- &plugin_go.CodeGeneratorResponse_File{
+				Content: &content,
+				Name:    &filename,
+			}
+		}(templateFilename)
 	}
-
+	for i := 0; i < length; i++ {
+		select {
+		case f := <-resultChan:
+			files = append(files, f)
+		case err = <-errChan:
+		}
+	}
+	if err != nil {
+		panic(err)
+	}
 	return files
 }
