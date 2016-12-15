@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"log"
 	"os"
 	"path/filepath"
@@ -19,6 +20,14 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		String() string
 	}) string {
 		return i.String()
+	},
+	"json": func(v interface{}) string {
+		a, _ := json.Marshal(v)
+		return string(a)
+	},
+	"prettyjson": func(v interface{}) string {
+		a, _ := json.MarshalIndent(v, "", "  ")
+		return string(a)
 	},
 }
 
