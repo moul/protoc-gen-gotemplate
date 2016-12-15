@@ -6,15 +6,15 @@ import (
         "fmt"
 
 	context "golang.org/x/net/context"
-	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/pb"
+        pb "{{cat .GoPWD "/" .DestinationDir | nospace | clean}}/pb"
+        endpoints "{{cat .GoPWD "/" .DestinationDir | nospace | clean}}/endpoints"
 	grpctransport "github.com/go-kit/kit/transport/grpc"
-	endpoint "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/endpoints"
 )
 
 // avoid import errors
 var _ = fmt.Errorf
 
-func MakeGRPCServer(ctx context.Context, endpoints endpoint.Endpoints) pb.{{.File.Package | title}}ServiceServer {
+func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.{{.File.Package | title}}ServiceServer {
 	options := []grpctransport.ServerOption{}
 	return &grpcServer{
 		{{range .Service.Method}}

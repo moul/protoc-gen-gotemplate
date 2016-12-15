@@ -4,8 +4,9 @@ package {{.File.Package}}_endpoints
 
 import (
 	"fmt"
+
 	context "golang.org/x/net/context"
-	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/pb"
+        pb "{{cat .GoPWD "/" .DestinationDir | nospace | clean}}/pb"
 	"github.com/go-kit/kit/endpoint"
 )
 
@@ -29,7 +30,7 @@ func (e *Endpoints){{.Name}}(ctx context.Context, in *pb.{{.Name}}Request) (*pb.
 
 {{range .Service.Method}}
 func Make{{.Name}}Endpoint(svc pb.{{$file.Package | title}}ServiceServer) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+     	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(*pb.{{.Name}}Request)
 		rep, err := svc.{{.Name}}(ctx, req)
 		if err != nil {
