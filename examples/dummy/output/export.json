@@ -1,8 +1,7 @@
 {
-  "build-date": "2016-12-13T17:20:48.431170897+01:00",
+  "build-date": "2016-12-15T11:05:13.620228009+01:00",
   "build-hostname": "moul-rose.local",
   "build-user": "moul",
-  "go-pwd": "",
   "pwd": "/Users/moul/Git/moul/protoc-gen-gotemplate/examples/dummy",
   "debug": false,
   "file": {
@@ -822,6 +821,7 @@
   },
   "raw-filename": "export.json.tmpl",
   "filename": "export.json.tmpl",
+  "template-dir": "templates",
   "service": {
     "name": "DummyService",
     "method": [
@@ -838,5 +838,13 @@
         "options": {}
       }
     ]
-  }
+  },
+  "environment": [
+    "TERM=xterm-256color",
+    "SHELL=/bin/zsh",
+    "TMPDIR=/var/folders/wr/dddkjx017kv8qk4q_jd2ly080000gn/T/",
+    "PWD=/Users/moul/Git/moul/protoc-gen-gotemplate/examples/dummy",
+    "LANG=en_US.UTF-8",
+    "GOPATH=/Users/moul/go",
+  ]
 }
