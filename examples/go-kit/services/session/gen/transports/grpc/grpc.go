@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	grpctransport "github.com/go-kit/kit/transport/grpc"
-	endpoint "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/endpoints"
+	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/endpoints"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
 	context "golang.org/x/net/context"
 )
@@ -12,7 +12,7 @@ import (
 // avoid import errors
 var _ = fmt.Errorf
 
-func MakeGRPCServer(ctx context.Context, endpoints endpoint.Endpoints) pb.SessionServiceServer {
+func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.SessionServiceServer {
 	options := []grpctransport.ServerOption{}
 	return &grpcServer{
 

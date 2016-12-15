@@ -2,6 +2,7 @@ package session_endpoints
 
 import (
 	"fmt"
+
 	"github.com/go-kit/kit/endpoint"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
 	context "golang.org/x/net/context"

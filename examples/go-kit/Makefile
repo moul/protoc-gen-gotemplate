@@ -18,6 +18,6 @@ $(TARGETS_GO): %_go:
 
 $(TARGETS_TMPL): %_tmpl:
 	@mkdir -p $(dir $*)gen
-	protoc -I. --gotemplate_out=template_dir=templates:services "$*"
+	protoc -I. --gotemplate_out=destination_dir=services/$(call service_name,$*)/gen,template_dir=templates:services "$*"
 	@rm -rf services/services  # need to investigate why this directory is created
 	gofmt -w $(dir $*)gen
