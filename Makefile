@@ -9,4 +9,4 @@ install:
 .PHONY: test
 test:	build
 	cd examples/dummy && make
-	cd examples/go-kit && make
+	cd examples/js-grpc && make

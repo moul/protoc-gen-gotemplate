@@ -1,56 +1,58 @@
+{{$Package:=.File.Package}}
+{{$Service:=.Service}}
+
 // GENERATED CODE -- DO NOT EDIT!
 
 'use strict';
-{{$file:=.File}}{{$service:=.Service}}
-
-var {{$file.Package}}_pb = require('../{{$file.Package}}/{{$file.Package}}_pb.js');
 var grpc = require('grpc');
-var base64 = require('base64-js');
+var {{$Package}}_{{$Package}}_pb = require('../{{$Package}}/{{$Package}}_pb.js');
+var google_api_annotations_pb = require('../google/api/annotations_pb.js');
 
-function serializeToBase64(req) {
-    return base64.fromByteArray(req)
+{{range .File.Service}}
+{{range .Method}}
+function serialize_{{$Package}}_{{.InputType | splitArray "." | last}}(arg) {
+  if (!(arg instanceof {{$Package}}_{{$Package}}_pb.{{.InputType | splitArray "." | last}})) {
+    throw new Error('Expected argument of type {{$Package}}.{{.InputType | splitArray "." | last}}');
+  }
+  return new Buffer(arg.serializeBinary());
 }
 
-function deserializeFromBase64(b64) {
-    return new Uint8Array(base64.toByteArray(b64))
-}
-{{range .Service.Method}}
-function serialize_{{$file.Package}}_{{.Name}}Request(arg) {
-    if (!(arg instanceof {{$file.Package}}_pb.{{.Name}}Request)) {
-        throw new Error('Expected argument of type {{$file.Package}}.{{.Name}}Request');
-    }
-    return serializeToBase64(arg.serializeBinary());
+function deserialize_{{$Package}}_{{.InputType | splitArray "." | last}}(buffer_arg) {
+  return {{$Package}}_{{$Package}}_pb.{{.InputType | splitArray "." | last}}.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function deserialize_{{$file.Package}}_{{.Name}}Request(base64) {
-    return {{$file.Package}}_pb.{{.Name}}Request.deserializeBinary(deserializeFromBase64(base64));
+function serialize_{{$Package}}_{{.OutputType | splitArray "." | last}}(arg) {
+  if (!(arg instanceof {{$Package}}_{{$Package}}_pb.{{.OutputType | splitArray "." | last}})) {
+    throw new Error('Expected argument of type {{$Package}}.{{.OutputType | splitArray "." | last}}');
+  }
+  return new Buffer(arg.serializeBinary());
 }
 
-function serialize_{{$file.Package}}_{{.Name}}Reply(arg) {
-    if (!(arg instanceof {{$file.Package}}_pb.{{.Name}}Reply)) {
-        throw new Error('Expected argument of type {{$file.Package}}.{{.Name}}Reply');
-    }
-    return serializeToBase64(arg.serializeBinary());
-}
-
-function deserialize_{{$file.Package}}_{{.Name}}Reply(base64) {
-    return {{$file.Package}}_pb.{{.Name}}Reply.deserializeBinary(deserializeFromBase64(base64));
+function deserialize_{{$Package}}_{{.OutputType | splitArray "." | last}}(buffer_arg) {
+  return {{$Package}}_{{$Package}}_pb.{{.OutputType | splitArray "." | last}}.deserializeBinary(new Uint8Array(buffer_arg));
 }
 {{end}}
-var TestServiceService = {
-    {{range .Service.Method}}
-    {{.Name}}: {
-        path: '/{{$file.Package}}.{{$service.Name}}/{{.Name}}',
-        requestStream: {{if .ClientStreaming}}true{{else}}false{{end}},
-        responseStream: {{if .ServerStreaming}}true{{else}}false{{end}},
-        requestType: {{$file.Package}}_pb.{{.Name}}Request,
-        responseType: {{$file.Package}}_pb.{{.Name}}Reply,
-        requestSerialize: serialize_{{$file.Package}}_{{.Name}}Request,
-        requestDeserialize: deserialize_{{$file.Package}}_{{.Name}}Request,
-        responseSerialize: serialize_{{$file.Package}}_{{.Name}}Reply,
-        responseDeserialize: deserialize_{{$file.Package}}_{{.Name}}Reply,
-    },
-    {{end}}
-};
+{{end}}
 
 exports.TestServiceClient = grpc.makeGenericClientConstructor({{.Service.Name}}Service);
+
+{{range .File.Service}}
+var {{.Name}}Service = exports.{{.Name}}Service = {
+{{$serviceName:=.Name}}
+{{range .Method}}
+  {{.Name | lowerFirst}}: {
+    path: '/{{$Package}}.{{$serviceName}}/{{.Name}}',
+    requestStream: {{.ClientStreaming | default "false"}},
+    responseStream: {{.ServerStreaming | default "false"}},
+    requestType: {{$Package}}_{{$Package}}_pb.{{.InputType | splitArray "." | last}},
+    responseType: {{$Package}}_{{$Package}}_pb.{{.OutputType | splitArray "." | last}},
+    requestSerialize: serialize_{{$Package}}_{{.InputType | splitArray "." | last}},
+    requestDeserialize: deserialize_{{$Package}}_{{.InputType | splitArray "." | last}},
+    responseSerialize: serialize_{{$Package}}_{{.OutputType | splitArray "." | last}},
+    responseDeserialize: deserialize_{{$Package}}_{{.OutputType | splitArray "." | last}},
+  },
+{{end}}
+}
+
+exports.{{.Name}}Client = grpc.makeGenericClientConstructor({{.Name}}Service);
+{{end}}

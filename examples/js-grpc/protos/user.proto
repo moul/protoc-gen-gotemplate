@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "github.com/united-drivers/models/go/user;userpb";
+
+// import "google/api/annotations.proto";
+
+// service UserService {
+//   rpc Register(RegisterRequest) returns (RegisterReply) {option (google.api.http).post = "/user/register";}
+//   rpc GetUserProfile(GetUserProfileRequest) returns (GetUserProfileReply) {option (google.api.http).post = "/user/get-user-profile";}
+//   rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileReply) {option (google.api.http).post = "/user/update-profile";}
+//   rpc UploadDocument(UploadDocumentRequest) returns (UploadDocumentReply) {option (google.api.http).post = "/user/upload-document";}
+// }
+
+service UserService {
+  rpc Register(RegisterRequest) returns (RegisterReply);
+  rpc GetUserProfile(GetUserProfileRequest) returns (GetUserProfileReply);
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileReply);
+  rpc UploadDocument(UploadDocumentRequest) returns (UploadDocumentReply);
+}
+
+message UpdateProfileRequest {
+  Profile profile = 1;
+}
+
+message UpdateProfileReply {
+  string err_msg = 1;
+}
+
+message UploadDocumentRequest {
+  string path = 1;
+  string document = 2;
+}
+
+message UploadDocumentReply {
+  string err_msg = 1;
+}
+
+message Profile {
+  string id = 1;
+  string email = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string picture = 5;
+  string promo_code = 6;
+  string phone_number = 7;
+}
+
+message RegisterRequest {
+  string first_name = 1;
+  string last_name = 2;
+  string email = 3;
+  string phone_number = 4;
+}
+
+message RegisterReply {
+  string err_msg  = 1;
+}
+
+message GetUserProfileRequest {}
+
+message GetUserProfileReply {
+  Profile profile = 1;
+  string err_msg = 2;
+}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"strings"
 	"text/template"
 
 	"github.com/Masterminds/sprig"
@@ -21,11 +22,17 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		a, _ := json.MarshalIndent(v, "", "  ")
 		return string(a)
 	},
-	"first": func(a []interface{}) interface{} {
+	"splitArray": func(sep string, s string) []string {
+		return strings.Split(s, sep)
+	},
+	"first": func(a []string) string {
 		return a[0]
 	},
-	"last": func(a []interface{}) interface{} {
+	"last": func(a []string) string {
 		return a[len(a)-1]
+	},
+	"lowerFirst": func(s string) string {
+		return strings.ToLower(s[:1]) + s[1:]
 	},
 }
 
