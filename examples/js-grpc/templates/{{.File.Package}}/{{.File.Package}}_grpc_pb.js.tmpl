@@ -1,12 +1,9 @@
-{{$Package:=.File.Package}}
-{{$Service:=.Service}}
-
 // GENERATED CODE -- DO NOT EDIT!
+{{$Package:=.File.Package}}
 
 'use strict';
 var grpc = require('grpc');
 var {{$Package}}_{{$Package}}_pb = require('../{{$Package}}/{{$Package}}_pb.js');
-var google_api_annotations_pb = require('../google/api/annotations_pb.js');
 
 {{range .File.Service}}
 {{range .Method}}
