@@ -97,8 +97,6 @@ function deserialize_user_UploadDocumentReply(buffer_arg) {
 
 
 
-exports.TestServiceClient = grpc.makeGenericClientConstructor(UserServiceService);
-
 
 var UserServiceService = exports.UserServiceService = {
 

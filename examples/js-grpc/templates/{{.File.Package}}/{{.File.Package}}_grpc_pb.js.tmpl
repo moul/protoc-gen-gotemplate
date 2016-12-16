@@ -31,8 +31,6 @@ function deserialize_{{$Package}}_{{.OutputType | splitArray "." | last}}(buffer
 {{end}}
 {{end}}
 
-exports.TestServiceClient = grpc.makeGenericClientConstructor({{.Service.Name}}Service);
-
 {{range .File.Service}}
 var {{.Name}}Service = exports.{{.Name}}Service = {
 {{$serviceName:=.Name}}
