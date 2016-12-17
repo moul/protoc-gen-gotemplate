@@ -60,7 +60,8 @@ See the project helpers for the complete list.
 
 ## Projects using `protoc-gen-gotemplate`
 
-* [moul/translator](https://github.com/moul/translator): Translator Micro-service using Gettext and Go-Kit
+* [kafka-gateway](https://github.com/moul/kafka-gateway/): Kafka gateway/proxy (gRPC + http) using Go-Kit
+* [translator](https://github.com/moul/translator): Translator Micro-service using Gettext and Go-Kit
 
 ## License
 
