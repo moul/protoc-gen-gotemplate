@@ -1,14 +1,10 @@
 // GENERATED CODE -- DO NOT EDIT!
 {{$Package:=.File.Package}}
-
 var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
-
 {{range .File.MessageType}}
-goog.exportSymbol('proto.user.{{.Name}}', null, global);
-{{end}}
-
+goog.exportSymbol('proto.{{$Package}}.{{.Name}}', null, global);{{end}}
 {{range .File.MessageType}}
 /**
  * @param {Array=} opt_data Optional initial data array, typically from a
@@ -19,12 +15,12 @@ goog.exportSymbol('proto.user.{{.Name}}', null, global);
  * @extends {jspb.Message}
  * @constructor
  */
-proto.user.{{.Name}} = function(opt_data) {
+proto.{{$Package}}.{{.Name}} = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.user.{{.Name}}, jspb.Message);
+goog.inherits(proto.{{$Package}}.{{.Name}}, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.user.{{.Name}}.displayName = 'proto.user.{{.Name}}';
+  proto.{{$Package}}.{{.Name}}.displayName = 'proto.{{$Package}}.{{.Name}}';
 }
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -38,8 +34,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.user.{{.Name}}.prototype.toObject = function(opt_includeInstance) {
-  return proto.user.{{.Name}}.toObject(opt_includeInstance, this);
+proto.{{$Package}}.{{.Name}}.prototype.toObject = function(opt_includeInstance) {
+  return proto.{{$Package}}.{{.Name}}.toObject(opt_includeInstance, this);
 };
 
 /**
@@ -47,12 +43,12 @@ proto.user.{{.Name}}.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.user.{{.Name}}} msg The msg instance to transform.
+ * @param {!proto.{{$Package}}.{{.Name}}} msg The msg instance to transform.
  * @return {!Object}
  */
-proto.user.{{.Name}}.toObject = function(includeInstance, msg) {
+proto.{{$Package}}.{{.Name}}.toObject = function(includeInstance, msg) {
   var f, obj = {
-    profile: (f = msg.getProfile()) && proto.user.Profile.toObject(includeInstance, f)
+    name: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -65,22 +61,22 @@ proto.user.{{.Name}}.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.user.{{.Name}}}
+ * @return {!proto.{{$Package}}.{{.Name}}}
  */
-proto.user.{{.Name}}.deserializeBinary = function(bytes) {
+proto.{{$Package}}.{{.Name}}.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.user.{{.Name}};
-  return proto.user.{{.Name}}.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.{{$Package}}.{{.Name}};
+  return proto.{{$Package}}.{{.Name}}.deserializeBinaryFromReader(msg, reader);
 };
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.user.{{.Name}}} msg The message object to deserialize into.
+ * @param {!proto.{{$Package}}.{{.Name}}} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.user.{{.Name}}}
+ * @return {!proto.{{$Package}}.{{.Name}}}
  */
-proto.user.{{.Name}}.deserializeBinaryFromReader = function(msg, reader) {
+proto.{{$Package}}.{{.Name}}.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -88,9 +84,8 @@ proto.user.{{.Name}}.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.user.Profile;
-      reader.readMessage(value,proto.user.Profile.deserializeBinaryFromReader);
-      msg.setProfile(value);
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
       break;
     default:
       reader.skipField();
@@ -103,10 +98,10 @@ proto.user.{{.Name}}.deserializeBinaryFromReader = function(msg, reader) {
 /**
  * Class method variant: serializes the given message to binary data
  * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.user.{{.Name}}} message
+ * @param {!proto.{{$Package}}.{{.Name}}} message
  * @param {!jspb.BinaryWriter} writer
  */
-proto.user.{{.Name}}.serializeBinaryToWriter = function(message, writer) {
+proto.{{$Package}}.{{.Name}}.serializeBinaryToWriter = function(message, writer) {
   message.serializeBinaryToWriter(writer);
 };
 
@@ -114,63 +109,40 @@ proto.user.{{.Name}}.serializeBinaryToWriter = function(message, writer) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.user.{{.Name}}.prototype.serializeBinary = function() {
+proto.{{$Package}}.{{.Name}}.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
 
+{{range .Field}}
 /**
  * Serializes the message to binary data (in protobuf wire format),
  * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
  */
-proto.user.{{.Name}}.prototype.serializeBinaryToWriter = function (writer) {
+proto.{{$Package}}.{{.Name}}.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = this.getProfile();
-  if (f != null) {
-    writer.writeMessage(
+  f = this.get{{.Name | upperFirst}}();
+  if (f.length > 0) {
+    writer.writeString(
       1,
-      f,
-      proto.user.Profile.serializeBinaryToWriter
+      f
     );
   }
 };
 
 /**
- * optional Profile profile = 1;
- * @return {?proto.user.Profile}
+ * optional string name = 1;
+ * @return {string}
  */
-proto.user.{{.Name}}.prototype.getProfile = function() {
-  return /** @type{?proto.user.Profile} */ (
-    jspb.Message.getWrapperField(this, proto.user.Profile, 1));
+proto.{{$Package}}.{{.Name}}.prototype.get{{.Name | upperFirst}} = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
-/** @param {?proto.user.Profile|undefined} value */
-proto.user.{{.Name}}.prototype.setProfile = function(value) {
-  jspb.Message.setWrapperField(this, 1, value);
+/** @param {string} value */
+proto.{{$Package}}.{{.Name}}.prototype.set{{.Name | upperFirst}} = function(value) {
+  jspb.Message.setField(this, 1, value);
 };
-
-proto.user.{{.Name}}.prototype.clearProfile = function() {
-  this.setProfile(undefined);
-};
-
-/**
- * Returns whether this field is set.
- * @return {!boolean}
- */
-proto.user.{{.Name}}.prototype.hasProfile = function() {
-  return jspb.Message.getField(this, 1) != null;
-};
-// --------------------------------
-
-
-
-
-
-
-
-
-{{end}}
-
-goog.object.extend(exports, proto.user);
+{{end}}{{end}}
+goog.object.extend(exports, proto.{{$Package}});

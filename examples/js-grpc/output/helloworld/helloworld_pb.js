@@ -1,16 +1,11 @@
 // GENERATED CODE -- DO NOT EDIT!
 
-
 var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
-
-goog.exportSymbol('proto.user.HelloRequest', null, global);
-
-goog.exportSymbol('proto.user.HelloReply', null, global);
-
-
+goog.exportSymbol('proto.helloworld.HelloRequest', null, global);
+goog.exportSymbol('proto.helloworld.HelloReply', null, global);
 
 /**
  * @param {Array=} opt_data Optional initial data array, typically from a
@@ -21,12 +16,12 @@ goog.exportSymbol('proto.user.HelloReply', null, global);
  * @extends {jspb.Message}
  * @constructor
  */
-proto.user.HelloRequest = function(opt_data) {
+proto.helloworld.HelloRequest = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.user.HelloRequest, jspb.Message);
+goog.inherits(proto.helloworld.HelloRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.user.HelloRequest.displayName = 'proto.user.HelloRequest';
+  proto.helloworld.HelloRequest.displayName = 'proto.helloworld.HelloRequest';
 }
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -40,8 +35,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.user.HelloRequest.prototype.toObject = function(opt_includeInstance) {
-  return proto.user.HelloRequest.toObject(opt_includeInstance, this);
+proto.helloworld.HelloRequest.prototype.toObject = function(opt_includeInstance) {
+  return proto.helloworld.HelloRequest.toObject(opt_includeInstance, this);
 };
 
 /**
@@ -49,12 +44,12 @@ proto.user.HelloRequest.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.user.HelloRequest} msg The msg instance to transform.
+ * @param {!proto.helloworld.HelloRequest} msg The msg instance to transform.
  * @return {!Object}
  */
-proto.user.HelloRequest.toObject = function(includeInstance, msg) {
+proto.helloworld.HelloRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    profile: (f = msg.getProfile()) && proto.user.Profile.toObject(includeInstance, f)
+    name: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -67,22 +62,22 @@ proto.user.HelloRequest.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.user.HelloRequest}
+ * @return {!proto.helloworld.HelloRequest}
  */
-proto.user.HelloRequest.deserializeBinary = function(bytes) {
+proto.helloworld.HelloRequest.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.user.HelloRequest;
-  return proto.user.HelloRequest.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.helloworld.HelloRequest;
+  return proto.helloworld.HelloRequest.deserializeBinaryFromReader(msg, reader);
 };
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.user.HelloRequest} msg The message object to deserialize into.
+ * @param {!proto.helloworld.HelloRequest} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.user.HelloRequest}
+ * @return {!proto.helloworld.HelloRequest}
  */
-proto.user.HelloRequest.deserializeBinaryFromReader = function(msg, reader) {
+proto.helloworld.HelloRequest.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -90,9 +85,8 @@ proto.user.HelloRequest.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.user.Profile;
-      reader.readMessage(value,proto.user.Profile.deserializeBinaryFromReader);
-      msg.setProfile(value);
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
       break;
     default:
       reader.skipField();
@@ -105,10 +99,10 @@ proto.user.HelloRequest.deserializeBinaryFromReader = function(msg, reader) {
 /**
  * Class method variant: serializes the given message to binary data
  * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.user.HelloRequest} message
+ * @param {!proto.helloworld.HelloRequest} message
  * @param {!jspb.BinaryWriter} writer
  */
-proto.user.HelloRequest.serializeBinaryToWriter = function(message, writer) {
+proto.helloworld.HelloRequest.serializeBinaryToWriter = function(message, writer) {
   message.serializeBinaryToWriter(writer);
 };
 
@@ -116,63 +110,41 @@ proto.user.HelloRequest.serializeBinaryToWriter = function(message, writer) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.user.HelloRequest.prototype.serializeBinary = function() {
+proto.helloworld.HelloRequest.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
+
 
 /**
  * Serializes the message to binary data (in protobuf wire format),
  * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
  */
-proto.user.HelloRequest.prototype.serializeBinaryToWriter = function (writer) {
+proto.helloworld.name.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = this.getProfile();
-  if (f != null) {
-    writer.writeMessage(
+  f = this.getName();
+  if (f.length > 0) {
+    writer.writeString(
       1,
-      f,
-      proto.user.Profile.serializeBinaryToWriter
+      f
     );
   }
 };
 
 /**
- * optional Profile profile = 1;
- * @return {?proto.user.Profile}
+ * optional string name = 1;
+ * @return {string}
  */
-proto.user.HelloRequest.prototype.getProfile = function() {
-  return /** @type{?proto.user.Profile} */ (
-    jspb.Message.getWrapperField(this, proto.user.Profile, 1));
+proto.helloworld.name.prototype.getName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
-/** @param {?proto.user.Profile|undefined} value */
-proto.user.HelloRequest.prototype.setProfile = function(value) {
-  jspb.Message.setWrapperField(this, 1, value);
+/** @param {string} value */
+proto.helloworld.name.prototype.setName = function(value) {
+  jspb.Message.setField(this, 1, value);
 };
-
-proto.user.HelloRequest.prototype.clearProfile = function() {
-  this.setProfile(undefined);
-};
-
-/**
- * Returns whether this field is set.
- * @return {!boolean}
- */
-proto.user.HelloRequest.prototype.hasProfile = function() {
-  return jspb.Message.getField(this, 1) != null;
-};
-// --------------------------------
-
-
-
-
-
-
-
-
 
 /**
  * @param {Array=} opt_data Optional initial data array, typically from a
@@ -183,12 +155,12 @@ proto.user.HelloRequest.prototype.hasProfile = function() {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.user.HelloReply = function(opt_data) {
+proto.helloworld.HelloReply = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.user.HelloReply, jspb.Message);
+goog.inherits(proto.helloworld.HelloReply, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.user.HelloReply.displayName = 'proto.user.HelloReply';
+  proto.helloworld.HelloReply.displayName = 'proto.helloworld.HelloReply';
 }
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -202,8 +174,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.user.HelloReply.prototype.toObject = function(opt_includeInstance) {
-  return proto.user.HelloReply.toObject(opt_includeInstance, this);
+proto.helloworld.HelloReply.prototype.toObject = function(opt_includeInstance) {
+  return proto.helloworld.HelloReply.toObject(opt_includeInstance, this);
 };
 
 /**
@@ -211,12 +183,12 @@ proto.user.HelloReply.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.user.HelloReply} msg The msg instance to transform.
+ * @param {!proto.helloworld.HelloReply} msg The msg instance to transform.
  * @return {!Object}
  */
-proto.user.HelloReply.toObject = function(includeInstance, msg) {
+proto.helloworld.HelloReply.toObject = function(includeInstance, msg) {
   var f, obj = {
-    profile: (f = msg.getProfile()) && proto.user.Profile.toObject(includeInstance, f)
+    name: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -229,22 +201,22 @@ proto.user.HelloReply.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.user.HelloReply}
+ * @return {!proto.helloworld.HelloReply}
  */
-proto.user.HelloReply.deserializeBinary = function(bytes) {
+proto.helloworld.HelloReply.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.user.HelloReply;
-  return proto.user.HelloReply.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.helloworld.HelloReply;
+  return proto.helloworld.HelloReply.deserializeBinaryFromReader(msg, reader);
 };
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.user.HelloReply} msg The message object to deserialize into.
+ * @param {!proto.helloworld.HelloReply} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.user.HelloReply}
+ * @return {!proto.helloworld.HelloReply}
  */
-proto.user.HelloReply.deserializeBinaryFromReader = function(msg, reader) {
+proto.helloworld.HelloReply.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -252,9 +224,8 @@ proto.user.HelloReply.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.user.Profile;
-      reader.readMessage(value,proto.user.Profile.deserializeBinaryFromReader);
-      msg.setProfile(value);
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
       break;
     default:
       reader.skipField();
@@ -267,10 +238,10 @@ proto.user.HelloReply.deserializeBinaryFromReader = function(msg, reader) {
 /**
  * Class method variant: serializes the given message to binary data
  * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.user.HelloReply} message
+ * @param {!proto.helloworld.HelloReply} message
  * @param {!jspb.BinaryWriter} writer
  */
-proto.user.HelloReply.serializeBinaryToWriter = function(message, writer) {
+proto.helloworld.HelloReply.serializeBinaryToWriter = function(message, writer) {
   message.serializeBinaryToWriter(writer);
 };
 
@@ -278,63 +249,40 @@ proto.user.HelloReply.serializeBinaryToWriter = function(message, writer) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.user.HelloReply.prototype.serializeBinary = function() {
+proto.helloworld.HelloReply.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   this.serializeBinaryToWriter(writer);
   return writer.getResultBuffer();
 };
+
 
 /**
  * Serializes the message to binary data (in protobuf wire format),
  * writing to the given BinaryWriter.
  * @param {!jspb.BinaryWriter} writer
  */
-proto.user.HelloReply.prototype.serializeBinaryToWriter = function (writer) {
+proto.helloworld.message.prototype.serializeBinaryToWriter = function (writer) {
   var f = undefined;
-  f = this.getProfile();
-  if (f != null) {
-    writer.writeMessage(
+  f = this.getMessage();
+  if (f.length > 0) {
+    writer.writeString(
       1,
-      f,
-      proto.user.Profile.serializeBinaryToWriter
+      f
     );
   }
 };
 
 /**
- * optional Profile profile = 1;
- * @return {?proto.user.Profile}
+ * optional string name = 1;
+ * @return {string}
  */
-proto.user.HelloReply.prototype.getProfile = function() {
-  return /** @type{?proto.user.Profile} */ (
-    jspb.Message.getWrapperField(this, proto.user.Profile, 1));
+proto.helloworld.message.prototype.getMessage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
-/** @param {?proto.user.Profile|undefined} value */
-proto.user.HelloReply.prototype.setProfile = function(value) {
-  jspb.Message.setWrapperField(this, 1, value);
+/** @param {string} value */
+proto.helloworld.message.prototype.setMessage = function(value) {
+  jspb.Message.setField(this, 1, value);
 };
 
-proto.user.HelloReply.prototype.clearProfile = function() {
-  this.setProfile(undefined);
-};
-
-/**
- * Returns whether this field is set.
- * @return {!boolean}
- */
-proto.user.HelloReply.prototype.hasProfile = function() {
-  return jspb.Message.getField(this, 1) != null;
-};
-// --------------------------------
-
-
-
-
-
-
-
-
-
-
-goog.object.extend(exports, proto.user);
+goog.object.extend(exports, proto.helloworld);
