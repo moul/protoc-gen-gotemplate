@@ -3,6 +3,7 @@
 'use strict';
 var grpc = require('grpc');
 var {{$Package}}_pb = require('./{{$Package}}_pb.js');
+
 {{range .File.Service}}{{range .Method}}
 function serialize_{{$Package}}_{{.InputType | splitArray "." | last}}(arg) {
   if (!(arg instanceof {{$Package}}_pb.{{.InputType | splitArray "." | last}})) {
@@ -24,10 +25,12 @@ function serialize_{{$Package}}_{{.OutputType | splitArray "." | last}}(arg) {
 
 function deserialize_{{$Package}}_{{.OutputType | splitArray "." | last}}(buffer_arg) {
   return {{$Package}}_pb.{{.OutputType | splitArray "." | last}}.deserializeBinary(new Uint8Array(buffer_arg));
-}{{end}}{{end}}
+}
+{{end}}{{end}}
 {{range .File.Service}}
 var {{.Name}}Service = exports.{{.Name}}Service = {
-  {{$serviceName:=.Name}}{{range .Method}}{{.Name | lowerFirst}}: {
+  {{$serviceName:=.Name}}
+  {{range .Method}}{{.Name | lowerCamelCase}}: {
     path: '/{{$Package}}.{{$serviceName}}/{{.Name}}',
     requestStream: {{.ClientStreaming | default "false"}},
     responseStream: {{.ServerStreaming | default "false"}},
@@ -37,7 +40,8 @@ var {{.Name}}Service = exports.{{.Name}}Service = {
     requestDeserialize: deserialize_{{$Package}}_{{.InputType | splitArray "." | last}},
     responseSerialize: serialize_{{$Package}}_{{.OutputType | splitArray "." | last}},
     responseDeserialize: deserialize_{{$Package}}_{{.OutputType | splitArray "." | last}},
-  },{{end}}
+  },
+  {{end}}
 }
 
 exports.{{.Name}}Client = grpc.makeGenericClientConstructor({{.Name}}Service);{{end}}

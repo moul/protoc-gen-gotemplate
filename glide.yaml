@@ -8,3 +8,4 @@ import:
   - protoc-gen-go/plugin
 - package: github.com/kr/fs
 - package: github.com/Masterminds/sprig
+- package: github.com/huandu/xstrings

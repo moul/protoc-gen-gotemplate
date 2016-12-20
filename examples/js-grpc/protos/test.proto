@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package test;
+
+option go_package = "github.com/united-drivers/models/go/test;testpb";
+
+service TestService {
+  rpc TestNoStream(TestNoStreamRequest) returns (TestNoStreamReply);
+  rpc TestStreamRequest(stream TestStreamRequestRequest) returns (TestStreamRequestReply);
+  rpc TestStreamReply(TestStreamReplyRequest) returns (stream TestStreamReplyReply);
+  rpc TestStreamBoth(stream TestStreamBothRequest) returns (stream TestStreamBothReply);
+}
+
+message TestMessage {
+  string a = 1;
+  int32 b = 2;
+  int64 c = 3;
+  float d = 4;
+  double e = 5;
+  repeated string n = 14;
+  repeated int32 o = 15;
+  repeated int64 p = 16;
+  repeated float q = 17;
+  repeated double r = 18;
+}
+
+message TestNoStreamRequest { TestMessage message = 1; }
+message TestNoStreamReply   { TestMessage message = 1; string err_msg = 2; }
+message TestStreamRequestRequest { TestMessage message = 1; }
+message TestStreamRequestReply   { TestMessage message = 1; string err_msg = 2; }
+message TestStreamReplyRequest { TestMessage message = 1; }
+message TestStreamReplyReply   { TestMessage message = 1; string err_msg = 2; }
+message TestStreamBothRequest { TestMessage message = 1; }
+message TestStreamBothReply   { TestMessage message = 1; string err_msg = 2; }

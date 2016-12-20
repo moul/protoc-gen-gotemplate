@@ -1,0 +1,44 @@
+// GENERATED CODE -- DO NOT EDIT!
+{{$Package:=.File.Package}}
+'use strict';
+var grpc = require('grpc');
+var {{$Package}}_pb = require('./{{$Package}}_pb.js');
+{{range .File.Service}}{{range .Method}}
+function serialize_{{$Package}}_{{.InputType | splitArray "." | last}}(arg) {
+  if (!(arg instanceof {{$Package}}_pb.{{.InputType | splitArray "." | last}})) {
+    throw new Error('Expected argument of type {{$Package}}.{{.InputType | splitArray "." | last}}');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_{{$Package}}_{{.InputType | splitArray "." | last}}(buffer_arg) {
+  return {{$Package}}_pb.{{.InputType | splitArray "." | last}}.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_{{$Package}}_{{.OutputType | splitArray "." | last}}(arg) {
+  if (!(arg instanceof {{$Package}}_pb.{{.OutputType | splitArray "." | last}})) {
+    throw new Error('Expected argument of type {{$Package}}.{{.OutputType | splitArray "." | last}}');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_{{$Package}}_{{.OutputType | splitArray "." | last}}(buffer_arg) {
+  return {{$Package}}_pb.{{.OutputType | splitArray "." | last}}.deserializeBinary(new Uint8Array(buffer_arg));
+}
+{{end}}{{end}}
+{{range .File.Service}}
+var {{.Name}}Service = exports.{{.Name}}Service = {
+  {{$serviceName:=.Name}}{{range .Method}}{{.Name | lowerCamelCase}}: {
+    path: '/{{$Package}}.{{$serviceName}}/{{.Name}}',
+    requestStream: {{.ClientStreaming | default "false"}},
+    responseStream: {{.ServerStreaming | default "false"}},
+    requestType: {{$Package}}_pb.{{.InputType | splitArray "." | last}},
+    responseType: {{$Package}}_pb.{{.OutputType | splitArray "." | last}},
+    requestSerialize: serialize_{{$Package}}_{{.InputType | splitArray "." | last}},
+    requestDeserialize: deserialize_{{$Package}}_{{.InputType | splitArray "." | last}},
+    responseSerialize: serialize_{{$Package}}_{{.OutputType | splitArray "." | last}},
+    responseDeserialize: deserialize_{{$Package}}_{{.OutputType | splitArray "." | last}},
+  },{{end}}
+}
+
+exports.{{.Name}}Client = grpc.makeGenericClientConstructor({{.Name}}Service);{{end}}

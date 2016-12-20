@@ -6,6 +6,7 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
+	"github.com/huandu/xstrings"
 )
 
 var ProtoHelpersFuncMap = template.FuncMap{
@@ -36,6 +37,19 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	},
 	"lowerFirst": func(s string) string {
 		return strings.ToLower(s[:1]) + s[1:]
+	},
+	"camelCase": func(s string) string {
+		return xstrings.ToCamelCase(s)
+	},
+	"lowerCamelCase": func(s string) string {
+		cc := xstrings.ToCamelCase(s)
+		return strings.ToLower(cc[:1]) + cc[1:]
+	},
+	"snakeCase": func(s string) string {
+		return xstrings.ToSnakeCase(s)
+	},
+	"kebabCase": func(s string) string {
+		return strings.Replace(xstrings.ToSnakeCase(s), "_", "-", -1)
 	},
 }
 
