@@ -75,10 +75,8 @@ func getMessageType(f *descriptor.FileDescriptorProto, name string) *descriptor.
 }
 
 func isFieldMessage(f *descriptor.FieldDescriptorProto) bool {
-	if f.Type != nil && *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE {
-		return true
-	}
-	if f.TypeName != nil && (*f.TypeName)[0] == '.' {
+	if f.Type != nil && *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE &&
+		f.Label != nil && *f.Label != descriptor.FieldDescriptorProto_LABEL_REPEATED {
 		return true
 	}
 
