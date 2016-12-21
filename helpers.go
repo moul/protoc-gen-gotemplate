@@ -7,6 +7,8 @@ import (
 
 	"github.com/Masterminds/sprig"
 	"github.com/huandu/xstrings"
+
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 
 var ProtoHelpersFuncMap = template.FuncMap{
@@ -51,10 +53,34 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"kebabCase": func(s string) string {
 		return strings.Replace(xstrings.ToSnakeCase(s), "_", "-", -1)
 	},
+	"getMessageType": getMessageType,
+	"isFieldMessage": isFieldMessage,
 }
 
 func init() {
 	for k, v := range sprig.TxtFuncMap() {
 		ProtoHelpersFuncMap[k] = v
 	}
+}
+
+func getMessageType(f *descriptor.FileDescriptorProto, name string) *descriptor.DescriptorProto {
+	for _, m := range f.MessageType {
+		// name usually contains the package name
+		if strings.HasSuffix(name, *m.Name) {
+			return m
+		}
+	}
+
+	return nil
+}
+
+func isFieldMessage(f *descriptor.FieldDescriptorProto) bool {
+	if f.Type != nil && *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE {
+		return true
+	}
+	if f.TypeName != nil && (*f.TypeName)[0] == '.' {
+		return true
+	}
+
+	return false
 }
