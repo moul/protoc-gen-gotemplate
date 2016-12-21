@@ -1,10 +1,10 @@
 hash: 488701437e53b39667ed5a84ed1500e727ea8d4902d804c3ea7eb50b1fc022a1
-updated: 2016-12-20T11:08:43.124170177+01:00
+updated: 2016-12-21T10:24:42.512734471+01:00
 imports:
 - name: github.com/aokoli/goutils
   version: 9c37978a95bd5c709a15883b6242714ea6709e64
 - name: github.com/golang/protobuf
-  version: 98fa357170587e470c5f27d3c3ea0947b71eb455
+  version: 8ee79997227bf9b34611aee7946ae64735e6fd93
   subpackages:
   - proto
   - protoc-gen-go/descriptor
@@ -15,7 +15,7 @@ imports:
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
 - name: github.com/Masterminds/sprig
-  version: 1e60e4ce482a1e2c7b9c9be667535ef152e04300
+  version: 69011c0cd9b4d2e0733c4d9e2c8e2a5a0d0a2f2f
 - name: github.com/satori/go.uuid
   version: 879c5887cd475cd7864858769793b2ceb0d44feb
 testImports: []
