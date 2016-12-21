@@ -3,7 +3,6 @@ go: 1.7.x
 install:
 - wget https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/.travis/install-protoc.sh && chmod +x install-protoc.sh && ./install-protoc.sh 3.1.0
 - go get github.com/gogo/protobuf/protoc-gen-gogo
-- go get ./...
 script:
 - make install
 - make test
