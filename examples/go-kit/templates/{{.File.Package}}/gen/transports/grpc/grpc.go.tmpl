@@ -40,12 +40,12 @@ type grpcServer struct {
 }
 
 {{range .Service.Method}}
-func (s *grpcServer) {{.Name}}(ctx context.Context, req *pb.{{.Name}}Request) (*pb.{{.Name}}Response, error) {
+func (s *grpcServer) {{.Name}}(ctx context.Context, req *pb.{{.InputType | splitArray "." | last}}) (*pb.{{.OutputType | splitArray "." | last}}, error) {
 	_, rep, err := s.{{.Name | lower}}.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	return rep.(*pb.{{.Name}}Response), nil
+	return rep.(*pb.{{.OutputType | splitArray "." | last}}), nil
 }
 
 func decode{{.Name}}Request(ctx context.Context, grpcReq interface{}) (interface{}, error) {
@@ -53,7 +53,7 @@ func decode{{.Name}}Request(ctx context.Context, grpcReq interface{}) (interface
 }
 
 func encode{{.Name}}Response(ctx context.Context, response interface{}) (interface{}, error) {
-	resp := response.(*pb.{{.Name}}Response)
+	resp := response.(*pb.{{.OutputType | splitArray "." | last}})
 	return resp, nil
 }
 {{end}}

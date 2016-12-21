@@ -19,22 +19,24 @@ type Endpoints struct {
 }
 
 {{range .Service.Method}}
-func (e *Endpoints){{.Name}}(ctx context.Context, in *pb.{{.Name}}Request) (*pb.{{.Name}}Response, error) {
+/*{{. | prettyjson}}*/
+
+func (e *Endpoints){{.Name}}(ctx context.Context, in *pb.{{.InputType | splitArray "." | last}}) (*pb.{{.OutputType | splitArray "." | last}}, error) {
 	out, err := e.{{.Name}}Endpoint(ctx, in)
 	if err != nil {
-		return &pb.{{.Name}}Response{ErrMsg: err.Error()}, err
+		return &pb.{{.OutputType | splitArray "." | last}}{ErrMsg: err.Error()}, err
 	}
-	return out.(*pb.{{.Name}}Response), err
+	return out.(*pb.{{.OutputType | splitArray "." | last}}), err
 }
 {{end}}
 
 {{range .Service.Method}}
 func Make{{.Name}}Endpoint(svc pb.{{$file.Package | title}}ServiceServer) endpoint.Endpoint {
      	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(*pb.{{.Name}}Request)
+		req := request.(*pb.{{.InputType | splitArray "." | last}})
 		rep, err := svc.{{.Name}}(ctx, req)
 		if err != nil {
-			return &pb.{{.Name}}Response{ErrMsg: err.Error()}, err
+			return &pb.{{.OutputType | splitArray "." | last}}{ErrMsg: err.Error()}, err
 		}
 		return rep, nil
 	}

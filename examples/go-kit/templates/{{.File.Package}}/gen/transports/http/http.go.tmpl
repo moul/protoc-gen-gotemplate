@@ -26,7 +26,7 @@ func Make{{.Name}}Handler(ctx context.Context, svc pb.{{$file.Package | title}}S
 }
 
 func decode{{.Name}}Request(ctx context.Context, r *http.Request) (interface{}, error) {
-	var req pb.{{.Name}}Request
+	var req pb.{{.InputType | splitArray "." | last}}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		return nil, err
 	}
