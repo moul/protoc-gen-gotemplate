@@ -2,13 +2,16 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 	"text/template"
 
 	"github.com/Masterminds/sprig"
 	"github.com/huandu/xstrings"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+	options "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"
 )
 
 var ProtoHelpersFuncMap = template.FuncMap{
@@ -55,6 +58,9 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	},
 	"getMessageType": getMessageType,
 	"isFieldMessage": isFieldMessage,
+	"goType":         goType,
+	"httpVerb":       httpVerb,
+	"httpPath":       httpPath,
 }
 
 func init() {
@@ -81,4 +87,99 @@ func isFieldMessage(f *descriptor.FieldDescriptorProto) bool {
 	}
 
 	return false
+}
+
+func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
+	switch *f.Type {
+	case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
+		return "float64"
+	case descriptor.FieldDescriptorProto_TYPE_FLOAT:
+		return "float32"
+	case descriptor.FieldDescriptorProto_TYPE_INT64:
+		return "int64"
+	case descriptor.FieldDescriptorProto_TYPE_UINT64:
+		return "uint64"
+	case descriptor.FieldDescriptorProto_TYPE_INT32:
+		return "uint32"
+	case descriptor.FieldDescriptorProto_TYPE_BOOL:
+		return "bool"
+	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		return "string"
+	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return fmt.Sprintf("[]*%s.%s", pkg, shortType(*f.TypeName))
+		}
+		return fmt.Sprintf("*%s.%s", pkg, shortType(*f.TypeName))
+	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		return "byte"
+	case descriptor.FieldDescriptorProto_TYPE_UINT32:
+		return "uint32"
+	case descriptor.FieldDescriptorProto_TYPE_ENUM:
+		return fmt.Sprintf("*%s.%s", pkg, shortType(*f.TypeName))
+	default:
+		return "interface{}"
+	}
+}
+
+func shortType(s string) string {
+	t := strings.Split(s, ".")
+	return t[len(t)-1]
+}
+
+func httpPath(m *descriptor.MethodDescriptorProto) string {
+
+	ext, err := proto.GetExtension(m.Options, options.E_Http)
+	if err != nil {
+		return err.Error()
+	}
+	opts, ok := ext.(*options.HttpRule)
+	if !ok {
+		return fmt.Sprintf("extension is %T; want an HttpRule", ext)
+	}
+
+	switch t := opts.Pattern.(type) {
+	default:
+		return ""
+	case *options.HttpRule_Get:
+		return t.Get
+	case *options.HttpRule_Post:
+		return t.Post
+	case *options.HttpRule_Put:
+		return t.Put
+	case *options.HttpRule_Delete:
+		return t.Delete
+	case *options.HttpRule_Patch:
+		return t.Patch
+	case *options.HttpRule_Custom:
+		return t.Custom.Path
+	}
+}
+
+func httpVerb(m *descriptor.MethodDescriptorProto) string {
+
+	ext, err := proto.GetExtension(m.Options, options.E_Http)
+	if err != nil {
+		return err.Error()
+	}
+	opts, ok := ext.(*options.HttpRule)
+	if !ok {
+		return fmt.Sprintf("extension is %T; want an HttpRule", ext)
+	}
+
+	switch t := opts.Pattern.(type) {
+	default:
+		return ""
+	case *options.HttpRule_Get:
+		return "GET"
+	case *options.HttpRule_Post:
+		return "POST"
+	case *options.HttpRule_Put:
+		return "PUT"
+	case *options.HttpRule_Delete:
+		return "DELETE"
+	case *options.HttpRule_Patch:
+		return "PATCH"
+	case *options.HttpRule_Custom:
+		return t.Custom.Kind
+	}
 }
