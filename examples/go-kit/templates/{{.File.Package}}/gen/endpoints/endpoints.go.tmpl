@@ -12,41 +12,75 @@ import (
 
 var _ = fmt.Errorf
 
+type StreamEndpoint func(server interface{}, req interface{}) (err error)
+
 type Endpoints struct {
 	{{range .Service.Method}}
-	{{.Name}}Endpoint endpoint.Endpoint
+		{{if or (.ClientStreaming) (.ServerStreaming)}}
+			{{.Name}}Endpoint StreamEndpoint
+		{{else}}
+			{{.Name}}Endpoint endpoint.Endpoint
+		{{end}}
 	{{end}}
 }
 
 {{range .Service.Method}}
-/*{{. | prettyjson}}*/
-
-func (e *Endpoints){{.Name}}(ctx context.Context, in *pb.{{.InputType | splitArray "." | last}}) (*pb.{{.OutputType | splitArray "." | last}}, error) {
-	out, err := e.{{.Name}}Endpoint(ctx, in)
-	if err != nil {
-		return &pb.{{.OutputType | splitArray "." | last}}{ErrMsg: err.Error()}, err
-	}
-	return out.(*pb.{{.OutputType | splitArray "." | last}}), err
-}
+	{{if .ServerStreaming}}
+		{{if .ClientStreaming}}
+			func (e *Endpoints){{.Name}}(server pb.{{$file.Package | title}}Service_{{.Name}}Server) error {
+				return fmt.Errorf("not implemented")
+			}
+		{{else}}
+			func (e *Endpoints){{.Name}}(in *pb.{{.Name}}Request, server pb.{{$file.Package | title}}Service_{{.Name}}Server) error {
+				return fmt.Errorf("not implemented")
+			}
+		{{end}}
+	{{else}}
+		{{if .ClientStreaming}}
+			func (e *Endpoints){{.Name}}(server pb.{{$file.Package | title}}Service_{{.Name}}Server) error {
+				return fmt.Errorf("not implemented")
+			}
+		{{else}}
+			func (e *Endpoints){{.Name}}(ctx context.Context, in *pb.{{.InputType | splitArray "." | last}}) (*pb.{{.OutputType | splitArray "." | last}}, error) {
+				out, err := e.{{.Name}}Endpoint(ctx, in)
+				if err != nil {
+					return &pb.{{.OutputType | splitArray "." | last}}{ErrMsg: err.Error()}, err
+				}
+				return out.(*pb.{{.OutputType | splitArray "." | last}}), err
+			}
+		{{end}}
+	{{end}}
 {{end}}
 
 {{range .Service.Method}}
-func Make{{.Name}}Endpoint(svc pb.{{$file.Package | title}}ServiceServer) endpoint.Endpoint {
-     	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(*pb.{{.InputType | splitArray "." | last}})
-		rep, err := svc.{{.Name}}(ctx, req)
-		if err != nil {
-			return &pb.{{.OutputType | splitArray "." | last}}{ErrMsg: err.Error()}, err
+	{{if or (.ServerStreaming) (.ClientStreaming)}}
+		func Make{{.Name}}Endpoint(svc pb.{{$file.Package | title}}ServiceServer) StreamEndpoint {
+			return func(server interface{}, request interface{}) error {
+				{{if .ClientStreaming}}
+				return svc.{{.Name}}(server.(pb.{{$file.Package | title}}Service_{{.Name}}Server))
+				{{else}}
+				return svc.{{.Name}}(request.(*pb.{{.Name}}Request), server.(pb.{{$file.Package | title}}Service_{{.Name}}Server))
+				{{end}}
+			}
 		}
-		return rep, nil
-	}
-}
+	{{else}}
+		func Make{{.Name}}Endpoint(svc pb.{{$file.Package | title}}ServiceServer) endpoint.Endpoint {
+			return func(ctx context.Context, request interface{}) (interface{}, error) {
+				req := request.(*pb.{{.InputType | splitArray "." | last}})
+				rep, err := svc.{{.Name}}(ctx, req)
+				if err != nil {
+					return &pb.{{.OutputType | splitArray "." | last}}{ErrMsg: err.Error()}, err
+				}
+				return rep, nil
+			}
+		}
+	{{end}}
 {{end}}
 
 func MakeEndpoints(svc pb.{{.File.Package | title}}ServiceServer) Endpoints {
 	return Endpoints{
 		{{range .Service.Method}}
-		{{.Name}}Endpoint: Make{{.Name}}Endpoint(svc),
+			{{.Name}}Endpoint: Make{{.Name}}Endpoint(svc),
 		{{end}}
 	}
 }

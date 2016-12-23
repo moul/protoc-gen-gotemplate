@@ -18,42 +18,73 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.{{.Fi
 	options := []grpctransport.ServerOption{}
 	return &grpcServer{
 		{{range .Service.Method}}
-                {{if not .ServerStreaming}}
-                {{if not .ClientStreaming}}
-		{{.Name | lower}}: grpctransport.NewServer(
-			ctx,
-			endpoints.{{.Name}}Endpoint,
-			decode{{.Name}}Request,
-			encode{{.Name}}Response,
-			options...,
-		),
-                {{end}}
-		{{end}}
+			{{if or (.ClientStreaming) (.ServerStreaming)}}
+				{{.Name | lower}}: &server{
+					e: endpoints.{{.Name}}Endpoint,
+				},
+			{{else}}
+				{{.Name | lower}}: grpctransport.NewServer(
+					ctx,
+					endpoints.{{.Name}}Endpoint,
+					decodeRequest,
+					encode{{.Name}}Response,
+					options...,
+				),
+			{{end}}
                 {{end}}
 	}
 }
 
 type grpcServer struct {
 	{{range .Service.Method}}
-	{{.Name | lower}} grpctransport.Handler
+		{{if or (.ClientStreaming) (.ServerStreaming)}}
+			{{.Name | lower}} streamHandler
+		{{else}}
+			{{.Name | lower}} grpctransport.Handler
+		{{end}}
 	{{end}}
 }
 
 {{range .Service.Method}}
-func (s *grpcServer) {{.Name}}(ctx context.Context, req *pb.{{.InputType | splitArray "." | last}}) (*pb.{{.OutputType | splitArray "." | last}}, error) {
-	_, rep, err := s.{{.Name | lower}}.ServeGRPC(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	return rep.(*pb.{{.OutputType | splitArray "." | last}}), nil
-}
+	{{if .ClientStreaming}}
+		func (s *grpcServer) {{.Name}}(server pb.{{$file.Package | title}}Service_{{.Name}}Server) error {
+		        return s.{{.Name | lower}}.Do(server, nil)
+		}
+	{{else if .ServerStreaming}}
+		func (s *grpcServer) {{.Name}}(req *pb.{{.Name}}Request, server pb.{{$file.Package | title}}Service_{{.Name}}Server) error {
+		        return s.{{.Name | lower}}.Do(server, req)
+		}
+	{{else}}
+		func (s *grpcServer) {{.Name}}(ctx context.Context, req *pb.{{.InputType | splitArray "." | last}}) (*pb.{{.OutputType | splitArray "." | last}}, error) {
+		_, rep, err := s.{{.Name | lower}}.ServeGRPC(ctx, req)
+			if err != nil {
+				return nil, err
+			}
+			return rep.(*pb.{{.OutputType | splitArray "." | last}}), nil
+		}
 
-func decode{{.Name}}Request(ctx context.Context, grpcReq interface{}) (interface{}, error) {
+		func encode{{.Name}}Response(ctx context.Context, response interface{}) (interface{}, error) {
+			resp := response.(*pb.{{.OutputType | splitArray "." | last}})
+			return resp, nil
+		}
+	{{end}}
+{{end}}
+
+func decodeRequest(ctx context.Context, grpcReq interface{}) (interface{}, error) {
 	return grpcReq, nil
 }
 
-func encode{{.Name}}Response(ctx context.Context, response interface{}) (interface{}, error) {
-	resp := response.(*pb.{{.OutputType | splitArray "." | last}})
-	return resp, nil
+type streamHandler interface{
+	Do(server interface{}, req interface{}) (err error)
 }
-{{end}}
+
+type server struct {
+	e endpoints.StreamEndpoint
+}
+
+func (s server) Do(server interface{}, req interface{}) (err error) {
+	if err := s.e(server, req); err != nil {
+		return err
+	}
+	return nil
+}
