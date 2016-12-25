@@ -4,9 +4,10 @@ import (
 	"fmt"
 
 	grpctransport "github.com/go-kit/kit/transport/grpc"
+	context "golang.org/x/net/context"
+
 	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/endpoints"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
-	context "golang.org/x/net/context"
 )
 
 // avoid import errors
@@ -19,7 +20,7 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.Sessi
 		login: grpctransport.NewServer(
 			ctx,
 			endpoints.LoginEndpoint,
-			decodeLoginRequest,
+			decodeRequest,
 			encodeLoginResponse,
 			options...,
 		),
@@ -38,11 +39,26 @@ func (s *grpcServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Login
 	return rep.(*pb.LoginResponse), nil
 }
 
-func decodeLoginRequest(ctx context.Context, grpcReq interface{}) (interface{}, error) {
-	return grpcReq, nil
-}
-
 func encodeLoginResponse(ctx context.Context, response interface{}) (interface{}, error) {
 	resp := response.(*pb.LoginResponse)
 	return resp, nil
+}
+
+func decodeRequest(ctx context.Context, grpcReq interface{}) (interface{}, error) {
+	return grpcReq, nil
+}
+
+type streamHandler interface {
+	Do(server interface{}, req interface{}) (err error)
+}
+
+type server struct {
+	e endpoints.StreamEndpoint
+}
+
+func (s server) Do(server interface{}, req interface{}) (err error) {
+	if err := s.e(server, req); err != nil {
+		return err
+	}
+	return nil
 }

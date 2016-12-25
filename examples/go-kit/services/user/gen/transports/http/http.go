@@ -17,7 +17,7 @@ func MakeCreateUserHandler(ctx context.Context, svc pb.UserServiceServer, endpoi
 		ctx,
 		endpoint,
 		decodeCreateUserRequest,
-		encodeCreateUserResponse,
+		encodeResponse,
 		[]httptransport.ServerOption{}...,
 	)
 }
@@ -30,16 +30,12 @@ func decodeCreateUserRequest(ctx context.Context, r *http.Request) (interface{},
 	return &req, nil
 }
 
-func encodeCreateUserResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
-	return json.NewEncoder(w).Encode(response)
-}
-
 func MakeGetUserHandler(ctx context.Context, svc pb.UserServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
 	return httptransport.NewServer(
 		ctx,
 		endpoint,
 		decodeGetUserRequest,
-		encodeGetUserResponse,
+		encodeResponse,
 		[]httptransport.ServerOption{}...,
 	)
 }
@@ -52,7 +48,7 @@ func decodeGetUserRequest(ctx context.Context, r *http.Request) (interface{}, er
 	return &req, nil
 }
 
-func encodeGetUserResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+func encodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
 	return json.NewEncoder(w).Encode(response)
 }
 
