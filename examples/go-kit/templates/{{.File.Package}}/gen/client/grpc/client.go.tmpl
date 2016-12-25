@@ -1,0 +1,56 @@
+package {{.File.Package}}_clientgrpc
+
+import (
+	"github.com/go-kit/kit/log"
+	context "golang.org/x/net/context"
+        "google.golang.org/grpc"
+        grpctransport "github.com/go-kit/kit/transport/grpc"
+        "github.com/go-kit/kit/endpoint"
+        jwt "github.com/go-kit/kit/auth/jwt"
+
+        pb "{{cat .GoPWD "/" .DestinationDir | nospace | clean}}/pb"
+        endpoints "{{cat .GoPWD "/" .DestinationDir | nospace | clean}}/endpoints"
+)
+
+{{$file:=.File}}
+
+func New(conn *grpc.ClientConn, logger log.Logger) pb.{{.File.Package | title}}ServiceServer {
+        {{range .Service.Method}}
+		{{if and (not .ServerStreaming) (not .ClientStreaming)}}
+			var {{.Name | lower}}Endpoint endpoint.Endpoint
+			{
+				{{.Name | lower}}Endpoint = grpctransport.NewClient(
+					conn,
+					"{{$file.Package}}.{{$file.Package | title}}Service",
+					"{{.Name}}",
+					Encode{{.Name}}Request,
+					Decode{{.Name}}Response,
+					pb.{{.Name}}Response{},
+					append([]grpctransport.ClientOption{}, grpctransport.ClientBefore(jwt.FromGRPCContext()))...,
+				).Endpoint()
+			}
+		{{end}}
+        {{end}}
+
+        return &endpoints.Endpoints {
+                {{range .Service.Method}}
+			{{if and (not .ServerStreaming) (not .ClientStreaming)}}
+				{{.Name | title}}Endpoint: {{.Name  | lower}}Endpoint,
+			{{end}}
+                {{end}}
+        }
+}
+
+{{range .Service.Method}}
+	{{if and (not .ServerStreaming) (not .ClientStreaming)}}
+		func Encode{{.Name}}Request(_ context.Context, request interface{}) (interface{}, error) {
+			req := request.(*pb.{{.Name}}Request)
+			return req, nil
+		}
+
+		func Decode{{.Name}}Response(_ context.Context, grpcResponse interface{}) (interface{}, error) {
+			response := grpcResponse.(*pb.{{.Name}}Response)
+			return response, nil
+		}
+	{{end}}
+{{end}}
