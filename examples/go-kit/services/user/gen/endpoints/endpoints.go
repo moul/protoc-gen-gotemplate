@@ -10,6 +10,8 @@ import (
 
 var _ = fmt.Errorf
 
+type StreamEndpoint func(server interface{}, req interface{}) (err error)
+
 type Endpoints struct {
 	CreateUserEndpoint endpoint.Endpoint
 

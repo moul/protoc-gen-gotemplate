@@ -17,7 +17,7 @@ func MakeAddSprintHandler(ctx context.Context, svc pb.SprintServiceServer, endpo
 		ctx,
 		endpoint,
 		decodeAddSprintRequest,
-		encodeAddSprintResponse,
+		encodeResponse,
 		[]httptransport.ServerOption{}...,
 	)
 }
@@ -30,16 +30,12 @@ func decodeAddSprintRequest(ctx context.Context, r *http.Request) (interface{}, 
 	return &req, nil
 }
 
-func encodeAddSprintResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
-	return json.NewEncoder(w).Encode(response)
-}
-
 func MakeCloseSprintHandler(ctx context.Context, svc pb.SprintServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
 	return httptransport.NewServer(
 		ctx,
 		endpoint,
 		decodeCloseSprintRequest,
-		encodeCloseSprintResponse,
+		encodeResponse,
 		[]httptransport.ServerOption{}...,
 	)
 }
@@ -52,16 +48,12 @@ func decodeCloseSprintRequest(ctx context.Context, r *http.Request) (interface{}
 	return &req, nil
 }
 
-func encodeCloseSprintResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
-	return json.NewEncoder(w).Encode(response)
-}
-
 func MakeGetSprintHandler(ctx context.Context, svc pb.SprintServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
 	return httptransport.NewServer(
 		ctx,
 		endpoint,
 		decodeGetSprintRequest,
-		encodeGetSprintResponse,
+		encodeResponse,
 		[]httptransport.ServerOption{}...,
 	)
 }
@@ -74,7 +66,7 @@ func decodeGetSprintRequest(ctx context.Context, r *http.Request) (interface{}, 
 	return &req, nil
 }
 
-func encodeGetSprintResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+func encodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
 	return json.NewEncoder(w).Encode(response)
 }
 

@@ -17,7 +17,7 @@ func MakeLoginHandler(ctx context.Context, svc pb.SessionServiceServer, endpoint
 		ctx,
 		endpoint,
 		decodeLoginRequest,
-		encodeLoginResponse,
+		encodeResponse,
 		[]httptransport.ServerOption{}...,
 	)
 }
@@ -30,7 +30,7 @@ func decodeLoginRequest(ctx context.Context, r *http.Request) (interface{}, erro
 	return &req, nil
 }
 
-func encodeLoginResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+func encodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
 	return json.NewEncoder(w).Encode(response)
 }
 

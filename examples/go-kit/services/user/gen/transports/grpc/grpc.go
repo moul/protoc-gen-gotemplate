@@ -4,9 +4,10 @@ import (
 	"fmt"
 
 	grpctransport "github.com/go-kit/kit/transport/grpc"
+	context "golang.org/x/net/context"
+
 	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/endpoints"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/pb"
-	context "golang.org/x/net/context"
 )
 
 // avoid import errors
@@ -19,7 +20,7 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.UserS
 		createuser: grpctransport.NewServer(
 			ctx,
 			endpoints.CreateUserEndpoint,
-			decodeCreateUserRequest,
+			decodeRequest,
 			encodeCreateUserResponse,
 			options...,
 		),
@@ -27,7 +28,7 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.UserS
 		getuser: grpctransport.NewServer(
 			ctx,
 			endpoints.GetUserEndpoint,
-			decodeGetUserRequest,
+			decodeRequest,
 			encodeGetUserResponse,
 			options...,
 		),
@@ -48,10 +49,6 @@ func (s *grpcServer) CreateUser(ctx context.Context, req *pb.CreateUserRequest) 
 	return rep.(*pb.CreateUserResponse), nil
 }
 
-func decodeCreateUserRequest(ctx context.Context, grpcReq interface{}) (interface{}, error) {
-	return grpcReq, nil
-}
-
 func encodeCreateUserResponse(ctx context.Context, response interface{}) (interface{}, error) {
 	resp := response.(*pb.CreateUserResponse)
 	return resp, nil
@@ -65,11 +62,26 @@ func (s *grpcServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.G
 	return rep.(*pb.GetUserResponse), nil
 }
 
-func decodeGetUserRequest(ctx context.Context, grpcReq interface{}) (interface{}, error) {
-	return grpcReq, nil
-}
-
 func encodeGetUserResponse(ctx context.Context, response interface{}) (interface{}, error) {
 	resp := response.(*pb.GetUserResponse)
 	return resp, nil
+}
+
+func decodeRequest(ctx context.Context, grpcReq interface{}) (interface{}, error) {
+	return grpcReq, nil
+}
+
+type streamHandler interface {
+	Do(server interface{}, req interface{}) (err error)
+}
+
+type server struct {
+	e endpoints.StreamEndpoint
+}
+
+func (s server) Do(server interface{}, req interface{}) (err error) {
+	if err := s.e(server, req); err != nil {
+		return err
+	}
+	return nil
 }
