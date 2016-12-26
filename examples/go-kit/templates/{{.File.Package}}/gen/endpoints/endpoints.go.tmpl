@@ -10,7 +10,9 @@ import (
 	"github.com/go-kit/kit/endpoint"
 )
 
+var _ = endpoint.Chain
 var _ = fmt.Errorf
+var _ = context.Background
 
 type StreamEndpoint func(server interface{}, req interface{}) (err error)
 

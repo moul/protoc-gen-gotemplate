@@ -14,6 +14,11 @@ import (
         endpoints "{{cat .GoPWD "/" .DestinationDir | nospace | clean}}/endpoints"
 )
 
+var _ = log.Printf
+var _ = gokit_endpoint.Chain
+var _ = httptransport.NewClient
+
+
 {{range .Service.Method}}
 	{{if and (not .ServerStreaming) (not .ClientStreaming)}}
 		func Make{{.Name}}Handler(ctx context.Context, svc pb.{{$file.Package | title}}ServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
