@@ -16,7 +16,8 @@ import (
 var _ = fmt.Errorf
 
 func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.{{.File.Package | title}}ServiceServer {
-	options := []grpctransport.ServerOption{}
+     	var options []grpctransport.ServerOption
+        _ = options
 	return &grpcServer{
 		{{range .Service.Method}}
 			{{if or (.ClientStreaming) (.ServerStreaming)}}
