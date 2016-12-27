@@ -71,9 +71,12 @@ func init() {
 }
 
 func getMessageType(f *descriptor.FileDescriptorProto, name string) *descriptor.DescriptorProto {
+	// name is in the form .packageName.MessageTypeName.InnerMessageTypeName...
+	// e.g. .article.ProductTag
+	splits := strings.Split(name, ".")
+	target := splits[len(splits)-1]
 	for _, m := range f.MessageType {
-		// name usually contains the package name
-		if strings.HasSuffix(name, *m.Name) {
+		if target == *m.Name {
 			return m
 		}
 	}
