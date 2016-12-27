@@ -62,6 +62,7 @@ See the project helpers for the complete list.
 
 * [kafka-gateway](https://github.com/moul/kafka-gateway/): Kafka gateway/proxy (gRPC + http) using Go-Kit
 * [translator](https://github.com/moul/translator): Translator Micro-service using Gettext and Go-Kit
+* [acl](https://github.com/moul/acl): ACL micro-service (gRPC/protobuf + http/json)
 
 ## License
 
