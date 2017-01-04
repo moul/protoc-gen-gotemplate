@@ -44,11 +44,18 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		return strings.ToLower(s[:1]) + s[1:]
 	},
 	"camelCase": func(s string) string {
-		return xstrings.ToCamelCase(s)
+		if len(s) > 1 {
+			return xstrings.ToCamelCase(s)
+		}
+
+		return strings.ToUpper(s[:1])
 	},
 	"lowerCamelCase": func(s string) string {
-		cc := xstrings.ToCamelCase(s)
-		return strings.ToLower(cc[:1]) + cc[1:]
+		if len(s) > 1 {
+			s = xstrings.ToCamelCase(s)
+		}
+
+		return strings.ToLower(s[:1]) + s[1:]
 	},
 	"snakeCase": func(s string) string {
 		return xstrings.ToSnakeCase(s)
