@@ -67,6 +67,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"isFieldMessage":  isFieldMessage,
 	"isFieldRepeated": isFieldRepeated,
 	"goType":          goType,
+	"jsType":          jsType,
 	"httpVerb":        httpVerb,
 	"httpPath":        httpPath,
 }
@@ -136,6 +137,35 @@ func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 		return fmt.Sprintf("*%s.%s", pkg, shortType(*f.TypeName))
 	default:
 		return "interface{}"
+	}
+}
+
+func jsType(f *descriptor.FieldDescriptorProto) string {
+	switch *f.Type {
+	case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
+		return "number"
+	case descriptor.FieldDescriptorProto_TYPE_FLOAT:
+		return "number"
+	case descriptor.FieldDescriptorProto_TYPE_INT64:
+		return "number"
+	case descriptor.FieldDescriptorProto_TYPE_UINT64:
+		return "number"
+	case descriptor.FieldDescriptorProto_TYPE_INT32:
+		return "number"
+	case descriptor.FieldDescriptorProto_TYPE_BOOL:
+		return "boolean"
+	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		return "string"
+	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+		return "message"
+	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		return "number"
+	case descriptor.FieldDescriptorProto_TYPE_UINT32:
+		return "number"
+	case descriptor.FieldDescriptorProto_TYPE_ENUM:
+		return "message"
+	default:
+		return "object"
 	}
 }
 
