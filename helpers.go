@@ -70,6 +70,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"jsType":          jsType,
 	"httpVerb":        httpVerb,
 	"httpPath":        httpPath,
+	"shortType":       shortType,
 }
 
 func init() {
@@ -141,31 +142,35 @@ func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 }
 
 func jsType(f *descriptor.FieldDescriptorProto) string {
+	template := "%s"
+	if isFieldRepeated(f) == true {
+		template = "Array<%s>"
+	}
+
 	switch *f.Type {
-	case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
-		return "number"
-	case descriptor.FieldDescriptorProto_TYPE_FLOAT:
-		return "number"
-	case descriptor.FieldDescriptorProto_TYPE_INT64:
-		return "number"
-	case descriptor.FieldDescriptorProto_TYPE_UINT64:
-		return "number"
-	case descriptor.FieldDescriptorProto_TYPE_INT32:
-		return "number"
-	case descriptor.FieldDescriptorProto_TYPE_BOOL:
-		return "boolean"
-	case descriptor.FieldDescriptorProto_TYPE_STRING:
-		return "string"
 	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
-		return "message"
-	case descriptor.FieldDescriptorProto_TYPE_BYTES:
-		return "number"
-	case descriptor.FieldDescriptorProto_TYPE_UINT32:
-		return "number"
+		return fmt.Sprintf(template, shortType(*f.TypeName))
+	case descriptor.FieldDescriptorProto_TYPE_DOUBLE,
+		descriptor.FieldDescriptorProto_TYPE_FLOAT,
+		descriptor.FieldDescriptorProto_TYPE_INT64,
+		descriptor.FieldDescriptorProto_TYPE_UINT64,
+		descriptor.FieldDescriptorProto_TYPE_INT32,
+		descriptor.FieldDescriptorProto_TYPE_FIXED64,
+		descriptor.FieldDescriptorProto_TYPE_FIXED32,
+		descriptor.FieldDescriptorProto_TYPE_UINT32,
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32,
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64,
+		descriptor.FieldDescriptorProto_TYPE_SINT32,
+		descriptor.FieldDescriptorProto_TYPE_SINT64:
+		return fmt.Sprintf(template, "number")
+	case descriptor.FieldDescriptorProto_TYPE_BOOL:
+		return fmt.Sprintf(template, "boolean")
+	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		return fmt.Sprintf(template, "string")
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
-		return "message"
+		return fmt.Sprintf(template, "Object")
 	default:
-		return "object"
+		return fmt.Sprintf(template, "any")
 	}
 }
 
