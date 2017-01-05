@@ -1,107 +1,157 @@
+// @flow
 // GENERATED CODE -- DO NOT EDIT!
 
-'use strict';
-var grpc = require('grpc');
-var test_pb = require('./test_pb.js');
+import grpc from 'grpc'
+import pbFile from './pbFile.js'
 
 
-function serialize_test_TestNoStreamRequest(arg) {
-  if (!(arg instanceof test_pb.TestNoStreamRequest)) {
-    throw new Error('Expected argument of type test.TestNoStreamRequest');
+export type TestMessage = {|
+  a?: string;
+  b?: number;
+  c?: number;
+  d?: number;
+  e?: number;
+  n?: Array<string>;
+  o?: Array<number>;
+  p?: Array<number>;
+  q?: Array<number>;
+  r?: Array<number>;
+|};
+
+export type TestNoStreamRequest = {|
+  message?: TestMessage;
+|};
+
+export type TestNoStreamReply = {|
+  message?: TestMessage;
+  err_msg?: string;
+|};
+
+export type TestStreamRequestRequest = {|
+  message?: TestMessage;
+|};
+
+export type TestStreamRequestReply = {|
+  message?: TestMessage;
+  err_msg?: string;
+|};
+
+export type TestStreamReplyRequest = {|
+  message?: TestMessage;
+|};
+
+export type TestStreamReplyReply = {|
+  message?: TestMessage;
+  err_msg?: string;
+|};
+
+export type TestStreamBothRequest = {|
+  message?: TestMessage;
+|};
+
+export type TestStreamBothReply = {|
+  message?: TestMessage;
+  err_msg?: string;
+|};
+
+
+function serialize_test_TestNoStreamRequest(arg: TestNoStreamRequest) {
+  if (!(arg instanceof pbFile.TestNoStreamRequest)) {
+    throw new Error('Expected argument of type TestNoStreamRequest')
   }
-  return new Buffer(arg.serializeBinary());
+  return new Buffer(arg.serializeBinary())
 }
 
-function deserialize_test_TestNoStreamRequest(buffer_arg) {
-  return test_pb.TestNoStreamRequest.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_test_TestNoStreamRequest(buffer_arg: Array<number>) {
+  return pbFile.TestNoStreamRequest.deserializeBinary(new Uint8Array(buffer_arg))
 }
 
-function serialize_test_TestNoStreamReply(arg) {
-  if (!(arg instanceof test_pb.TestNoStreamReply)) {
-    throw new Error('Expected argument of type test.TestNoStreamReply');
+function serialize_test_TestNoStreamReply(arg: TestNoStreamReply) {
+  if (!(arg instanceof pbFile.TestNoStreamReply)) {
+    throw new Error('Expected argument of type TestNoStreamReply')
   }
-  return new Buffer(arg.serializeBinary());
+  return new Buffer(arg.serializeBinary())
 }
 
-function deserialize_test_TestNoStreamReply(buffer_arg) {
-  return test_pb.TestNoStreamReply.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_test_TestNoStreamReply(buffer_arg: Array<number>) {
+  return pbFile.TestNoStreamReply.deserializeBinary(new Uint8Array(buffer_arg))
 }
 
-function serialize_test_TestStreamRequestRequest(arg) {
-  if (!(arg instanceof test_pb.TestStreamRequestRequest)) {
-    throw new Error('Expected argument of type test.TestStreamRequestRequest');
+function serialize_test_TestStreamRequestRequest(arg: TestStreamRequestRequest) {
+  if (!(arg instanceof pbFile.TestStreamRequestRequest)) {
+    throw new Error('Expected argument of type TestStreamRequestRequest')
   }
-  return new Buffer(arg.serializeBinary());
+  return new Buffer(arg.serializeBinary())
 }
 
-function deserialize_test_TestStreamRequestRequest(buffer_arg) {
-  return test_pb.TestStreamRequestRequest.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_test_TestStreamRequestRequest(buffer_arg: Array<number>) {
+  return pbFile.TestStreamRequestRequest.deserializeBinary(new Uint8Array(buffer_arg))
 }
 
-function serialize_test_TestStreamRequestReply(arg) {
-  if (!(arg instanceof test_pb.TestStreamRequestReply)) {
-    throw new Error('Expected argument of type test.TestStreamRequestReply');
+function serialize_test_TestStreamRequestReply(arg: TestStreamRequestReply) {
+  if (!(arg instanceof pbFile.TestStreamRequestReply)) {
+    throw new Error('Expected argument of type TestStreamRequestReply')
   }
-  return new Buffer(arg.serializeBinary());
+  return new Buffer(arg.serializeBinary())
 }
 
-function deserialize_test_TestStreamRequestReply(buffer_arg) {
-  return test_pb.TestStreamRequestReply.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_test_TestStreamRequestReply(buffer_arg: Array<number>) {
+  return pbFile.TestStreamRequestReply.deserializeBinary(new Uint8Array(buffer_arg))
 }
 
-function serialize_test_TestStreamReplyRequest(arg) {
-  if (!(arg instanceof test_pb.TestStreamReplyRequest)) {
-    throw new Error('Expected argument of type test.TestStreamReplyRequest');
+function serialize_test_TestStreamReplyRequest(arg: TestStreamReplyRequest) {
+  if (!(arg instanceof pbFile.TestStreamReplyRequest)) {
+    throw new Error('Expected argument of type TestStreamReplyRequest')
   }
-  return new Buffer(arg.serializeBinary());
+  return new Buffer(arg.serializeBinary())
 }
 
-function deserialize_test_TestStreamReplyRequest(buffer_arg) {
-  return test_pb.TestStreamReplyRequest.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_test_TestStreamReplyRequest(buffer_arg: Array<number>) {
+  return pbFile.TestStreamReplyRequest.deserializeBinary(new Uint8Array(buffer_arg))
 }
 
-function serialize_test_TestStreamReplyReply(arg) {
-  if (!(arg instanceof test_pb.TestStreamReplyReply)) {
-    throw new Error('Expected argument of type test.TestStreamReplyReply');
+function serialize_test_TestStreamReplyReply(arg: TestStreamReplyReply) {
+  if (!(arg instanceof pbFile.TestStreamReplyReply)) {
+    throw new Error('Expected argument of type TestStreamReplyReply')
   }
-  return new Buffer(arg.serializeBinary());
+  return new Buffer(arg.serializeBinary())
 }
 
-function deserialize_test_TestStreamReplyReply(buffer_arg) {
-  return test_pb.TestStreamReplyReply.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_test_TestStreamReplyReply(buffer_arg: Array<number>) {
+  return pbFile.TestStreamReplyReply.deserializeBinary(new Uint8Array(buffer_arg))
 }
 
-function serialize_test_TestStreamBothRequest(arg) {
-  if (!(arg instanceof test_pb.TestStreamBothRequest)) {
-    throw new Error('Expected argument of type test.TestStreamBothRequest');
+function serialize_test_TestStreamBothRequest(arg: TestStreamBothRequest) {
+  if (!(arg instanceof pbFile.TestStreamBothRequest)) {
+    throw new Error('Expected argument of type TestStreamBothRequest')
   }
-  return new Buffer(arg.serializeBinary());
+  return new Buffer(arg.serializeBinary())
 }
 
-function deserialize_test_TestStreamBothRequest(buffer_arg) {
-  return test_pb.TestStreamBothRequest.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_test_TestStreamBothRequest(buffer_arg: Array<number>) {
+  return pbFile.TestStreamBothRequest.deserializeBinary(new Uint8Array(buffer_arg))
 }
 
-function serialize_test_TestStreamBothReply(arg) {
-  if (!(arg instanceof test_pb.TestStreamBothReply)) {
-    throw new Error('Expected argument of type test.TestStreamBothReply');
+function serialize_test_TestStreamBothReply(arg: TestStreamBothReply) {
+  if (!(arg instanceof pbFile.TestStreamBothReply)) {
+    throw new Error('Expected argument of type TestStreamBothReply')
   }
-  return new Buffer(arg.serializeBinary());
+  return new Buffer(arg.serializeBinary())
 }
 
-function deserialize_test_TestStreamBothReply(buffer_arg) {
-  return test_pb.TestStreamBothReply.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_test_TestStreamBothReply(buffer_arg: Array<number>) {
+  return pbFile.TestStreamBothReply.deserializeBinary(new Uint8Array(buffer_arg))
 }
 
 
-var TestServiceService = exports.TestServiceService = {
+export const TestServiceService = {
   
   testNoStream: {
     path: '/test.TestService/TestNoStream',
     requestStream: false,
     responseStream: false,
-    requestType: test_pb.TestNoStreamRequest,
-    responseType: test_pb.TestNoStreamReply,
+    requestType: pbFile.TestNoStreamRequest,
+    responseType: pbFile.TestNoStreamReply,
     requestSerialize: serialize_test_TestNoStreamRequest,
     requestDeserialize: deserialize_test_TestNoStreamRequest,
     responseSerialize: serialize_test_TestNoStreamReply,
@@ -111,8 +161,8 @@ var TestServiceService = exports.TestServiceService = {
     path: '/test.TestService/TestStreamRequest',
     requestStream: true,
     responseStream: false,
-    requestType: test_pb.TestStreamRequestRequest,
-    responseType: test_pb.TestStreamRequestReply,
+    requestType: pbFile.TestStreamRequestRequest,
+    responseType: pbFile.TestStreamRequestReply,
     requestSerialize: serialize_test_TestStreamRequestRequest,
     requestDeserialize: deserialize_test_TestStreamRequestRequest,
     responseSerialize: serialize_test_TestStreamRequestReply,
@@ -122,8 +172,8 @@ var TestServiceService = exports.TestServiceService = {
     path: '/test.TestService/TestStreamReply',
     requestStream: false,
     responseStream: true,
-    requestType: test_pb.TestStreamReplyRequest,
-    responseType: test_pb.TestStreamReplyReply,
+    requestType: pbFile.TestStreamReplyRequest,
+    responseType: pbFile.TestStreamReplyReply,
     requestSerialize: serialize_test_TestStreamReplyRequest,
     requestDeserialize: deserialize_test_TestStreamReplyRequest,
     responseSerialize: serialize_test_TestStreamReplyReply,
@@ -133,8 +183,8 @@ var TestServiceService = exports.TestServiceService = {
     path: '/test.TestService/TestStreamBoth',
     requestStream: true,
     responseStream: true,
-    requestType: test_pb.TestStreamBothRequest,
-    responseType: test_pb.TestStreamBothReply,
+    requestType: pbFile.TestStreamBothRequest,
+    responseType: pbFile.TestStreamBothReply,
     requestSerialize: serialize_test_TestStreamBothRequest,
     requestDeserialize: deserialize_test_TestStreamBothRequest,
     responseSerialize: serialize_test_TestStreamBothReply,
@@ -143,4 +193,4 @@ var TestServiceService = exports.TestServiceService = {
   
 }
 
-exports.TestServiceClient = grpc.makeGenericClientConstructor(TestServiceService);
+export const TestServiceClient = grpc.makeGenericClientConstructor(TestServiceService)
