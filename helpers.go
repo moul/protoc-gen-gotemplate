@@ -165,6 +165,8 @@ func jsType(f *descriptor.FieldDescriptorProto) string {
 		return fmt.Sprintf(template, "number")
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
 		return fmt.Sprintf(template, "boolean")
+	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		return fmt.Sprintf(template, "Array<number>")
 	case descriptor.FieldDescriptorProto_TYPE_STRING:
 		return fmt.Sprintf(template, "string")
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
