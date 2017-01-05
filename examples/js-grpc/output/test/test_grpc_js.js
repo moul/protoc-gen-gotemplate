@@ -5,7 +5,7 @@ import grpc from 'grpc'
 import pbFile from './pbFile.js'
 
 
-export type TestMessage = {|
+type TestMessage = {|
   a?: string;
   b?: number;
   c?: number;
@@ -18,38 +18,38 @@ export type TestMessage = {|
   r?: Array<number>;
 |};
 
-export type TestNoStreamRequest = {|
+type TestNoStreamRequest = {|
   message?: TestMessage;
 |};
 
-export type TestNoStreamReply = {|
-  message?: TestMessage;
-  err_msg?: string;
-|};
-
-export type TestStreamRequestRequest = {|
-  message?: TestMessage;
-|};
-
-export type TestStreamRequestReply = {|
+type TestNoStreamReply = {|
   message?: TestMessage;
   err_msg?: string;
 |};
 
-export type TestStreamReplyRequest = {|
+type TestStreamRequestRequest = {|
   message?: TestMessage;
 |};
 
-export type TestStreamReplyReply = {|
+type TestStreamRequestReply = {|
   message?: TestMessage;
   err_msg?: string;
 |};
 
-export type TestStreamBothRequest = {|
+type TestStreamReplyRequest = {|
   message?: TestMessage;
 |};
 
-export type TestStreamBothReply = {|
+type TestStreamReplyReply = {|
+  message?: TestMessage;
+  err_msg?: string;
+|};
+
+type TestStreamBothRequest = {|
+  message?: TestMessage;
+|};
+
+type TestStreamBothReply = {|
   message?: TestMessage;
   err_msg?: string;
 |};
