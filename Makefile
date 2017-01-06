@@ -9,7 +9,7 @@ install:
 .PHONY: test
 test:	build
 	cd examples/dummy && make
-	cd examples/js-grpc && make
+	cd examples/flow && make
 
 .PHONY: docker.build
 docker.build:

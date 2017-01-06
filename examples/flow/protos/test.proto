@@ -11,6 +11,11 @@ service TestService {
   rpc TestStreamBoth(stream TestStreamBothRequest) returns (stream TestStreamBothReply);
 }
 
+enum TestEnum {
+  ELEMENT_A = 0;
+  ELEMENT_B = 1;
+}
+
 message TestMessage {
   string a = 1;
   int32 b = 2;
@@ -22,6 +27,10 @@ message TestMessage {
   repeated int64 p = 16;
   repeated float q = 17;
   repeated double r = 18;
+  enum s {
+    ELEMENT_C = 0;
+    ELEMENT_D = 1;
+  }
 }
 
 message TestNoStreamRequest { TestMessage message = 1; }

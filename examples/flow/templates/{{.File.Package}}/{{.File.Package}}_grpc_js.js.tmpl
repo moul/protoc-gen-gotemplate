@@ -1,0 +1,58 @@
+// @flow
+// GENERATED CODE -- DO NOT EDIT!
+{{$Package:=.File.Package}}
+import grpc from 'grpc'
+import pbFile from './pbFile.js'
+{{range .File.EnumType}}
+export type {{.Name}} = {{range .Value}}
+  | '{{.Name}}'{{end}}
+;{{end}}
+{{range .File.MessageType}}
+export type {{.Name}} = {|{{range .Field}}
+  {{.Name}}?: {{. | jsType}};{{end}}{{range .EnumType}}
+  {{.Name}}?:{{range .Value}}
+    | '{{.Name}}'{{end}}
+  ;{{end}}
+|};
+{{end}}
+{{range .File.Service}}{{range .Method}}
+function serialize_{{$Package}}_{{.InputType | shortType}}(arg: {{.InputType | shortType}}) {
+  if (!(arg instanceof pbFile.{{.InputType | shortType}})) {
+    throw new Error('Expected argument of type {{.InputType | shortType}}')
+  }
+  return new Buffer(arg.serializeBinary())
+}
+
+function deserialize_{{$Package}}_{{.InputType | shortType}}(buffer_arg: Array<number>) {
+  return pbFile.{{.InputType | shortType}}.deserializeBinary(new Uint8Array(buffer_arg))
+}
+
+function serialize_{{$Package}}_{{.OutputType | shortType}}(arg: {{.OutputType | shortType}}) {
+  if (!(arg instanceof pbFile.{{.OutputType | shortType}})) {
+    throw new Error('Expected argument of type {{.OutputType | shortType}}')
+  }
+  return new Buffer(arg.serializeBinary())
+}
+
+function deserialize_{{$Package}}_{{.OutputType | shortType}}(buffer_arg: Array<number>) {
+  return pbFile.{{.OutputType | shortType}}.deserializeBinary(new Uint8Array(buffer_arg))
+}
+{{end}}{{end}}
+{{range .File.Service}}
+export const {{.Name}}Service = {
+  {{$serviceName:=.Name}}
+  {{range .Method}}{{.Name | lowerCamelCase}}: {
+    path: '/{{$Package}}.{{$serviceName}}/{{.Name}}',
+    requestStream: {{.ClientStreaming | default "false"}},
+    responseStream: {{.ServerStreaming | default "false"}},
+    requestType: pbFile.{{.InputType | shortType}},
+    responseType: pbFile.{{.OutputType | shortType}},
+    requestSerialize: serialize_{{$Package}}_{{.InputType | shortType}},
+    requestDeserialize: deserialize_{{$Package}}_{{.InputType | shortType}},
+    responseSerialize: serialize_{{$Package}}_{{.OutputType | shortType}},
+    responseDeserialize: deserialize_{{$Package}}_{{.OutputType | shortType}},
+  },
+  {{end}}
+}
+
+export const {{.Name}}Client = grpc.makeGenericClientConstructor({{.Name}}Service){{end}}
