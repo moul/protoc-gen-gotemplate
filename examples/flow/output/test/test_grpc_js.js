@@ -3,12 +3,13 @@
 
 import grpc from 'grpc'
 import pbFile from './pbFile.js'
-type TestEnum = 
+
+export type TestEnum = 
   | 'ELEMENT_A'
   | 'ELEMENT_B'
 ;
 
-type TestMessage = {|
+export type TestMessage = {|
   a?: string;
   b?: number;
   c?: number;
@@ -25,38 +26,38 @@ type TestMessage = {|
   ;
 |};
 
-type TestNoStreamRequest = {|
+export type TestNoStreamRequest = {|
   message?: TestMessage;
 |};
 
-type TestNoStreamReply = {|
-  message?: TestMessage;
-  err_msg?: string;
-|};
-
-type TestStreamRequestRequest = {|
-  message?: TestMessage;
-|};
-
-type TestStreamRequestReply = {|
+export type TestNoStreamReply = {|
   message?: TestMessage;
   err_msg?: string;
 |};
 
-type TestStreamReplyRequest = {|
+export type TestStreamRequestRequest = {|
   message?: TestMessage;
 |};
 
-type TestStreamReplyReply = {|
+export type TestStreamRequestReply = {|
   message?: TestMessage;
   err_msg?: string;
 |};
 
-type TestStreamBothRequest = {|
+export type TestStreamReplyRequest = {|
   message?: TestMessage;
 |};
 
-type TestStreamBothReply = {|
+export type TestStreamReplyReply = {|
+  message?: TestMessage;
+  err_msg?: string;
+|};
+
+export type TestStreamBothRequest = {|
+  message?: TestMessage;
+|};
+
+export type TestStreamBothReply = {|
   message?: TestMessage;
   err_msg?: string;
 |};

@@ -3,11 +3,12 @@
 {{$Package:=.File.Package}}
 import grpc from 'grpc'
 import pbFile from './pbFile.js'
-{{range .File.EnumType}}type {{.Name}} = {{range .Value}}
+{{range .File.EnumType}}
+export type {{.Name}} = {{range .Value}}
   | '{{.Name}}'{{end}}
 ;{{end}}
 {{range .File.MessageType}}
-type {{.Name}} = {|{{range .Field}}
+export type {{.Name}} = {|{{range .Field}}
   {{.Name}}?: {{. | jsType}};{{end}}{{range .EnumType}}
   {{.Name}}?:{{range .Value}}
     | '{{.Name}}'{{end}}
