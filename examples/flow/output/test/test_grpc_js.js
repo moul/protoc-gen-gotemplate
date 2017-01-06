@@ -3,7 +3,10 @@
 
 import grpc from 'grpc'
 import pbFile from './pbFile.js'
-
+type TestEnum = 
+  | 'ELEMENT_A'
+  | 'ELEMENT_B'
+;
 
 type TestMessage = {|
   a?: string;
@@ -16,6 +19,10 @@ type TestMessage = {|
   p?: Array<number>;
   q?: Array<number>;
   r?: Array<number>;
+  s?:
+    | 'ELEMENT_C'
+    | 'ELEMENT_D'
+  ;
 |};
 
 type TestNoStreamRequest = {|
