@@ -16,7 +16,8 @@ export type TestEnum = {|
 
 
 
-export type TestNestedEnum = {|
+
+export type TestMessage$TestNestedEnum = {|
   
     ELEMENT_C?: 0;
   
@@ -26,7 +27,7 @@ export type TestNestedEnum = {|
 
 
 
-export type TestNestedMessage = {|
+export type TestMessage$TestNestedMessage = {|
   
     s?: string;
   
@@ -59,11 +60,12 @@ export type TestMessage = {|
   
     u?: TestEnum;
   
-    v?: TestNestedEnum;
+    v?: TestMessage$TestNestedEnum;
   
-    w?: Array<TestNestedMessage>;
+    w?: Array<TestMessage$TestNestedMessage>;
   
 |};
+
 
 
 
@@ -74,6 +76,7 @@ export type TestNoStreamRequest = {|
     message?: TestMessage;
   
 |};
+
 
 
 
@@ -91,11 +94,13 @@ export type TestNoStreamReply = {|
 
 
 
+
 export type TestStreamRequestRequest = {|
   
     message?: TestMessage;
   
 |};
+
 
 
 
@@ -113,11 +118,13 @@ export type TestStreamRequestReply = {|
 
 
 
+
 export type TestStreamReplyRequest = {|
   
     message?: TestMessage;
   
 |};
+
 
 
 
@@ -135,11 +142,13 @@ export type TestStreamReplyReply = {|
 
 
 
+
 export type TestStreamBothRequest = {|
   
     message?: TestMessage;
   
 |};
+
 
 
 

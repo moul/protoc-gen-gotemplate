@@ -13,8 +13,9 @@ export type {{.Name}} = {|
 {{end}}
 
 {{range .File.MessageType}}
+{{$MessageType := .Name}}
 {{range .EnumType}}
-export type {{.Name}} = {|
+export type {{$MessageType}}${{.Name}} = {|
   {{range .Value}}
     {{.Name}}?: {{.Number}};
   {{end}}
@@ -22,7 +23,7 @@ export type {{.Name}} = {|
 {{end}}
 
 {{range .NestedType}}
-export type {{.Name}} = {|
+export type {{$MessageType}}${{.Name}} = {|
   {{range .Field}}
     {{.Name}}?: {{. | jsType}};
   {{end}}
