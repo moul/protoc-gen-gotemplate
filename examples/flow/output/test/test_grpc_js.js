@@ -57,6 +57,10 @@ export type TestMessage = {|
   
     r?: Array<number>;
   
+    u?: TestEnum;
+  
+    v?: TestNestedEnum;
+  
   
     TestNestedMessage?: TestNestedMessage;
   

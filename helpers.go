@@ -148,7 +148,8 @@ func jsType(f *descriptor.FieldDescriptorProto) string {
 	}
 
 	switch *f.Type {
-	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+	case descriptor.FieldDescriptorProto_TYPE_MESSAGE,
+		descriptor.FieldDescriptorProto_TYPE_ENUM:
 		return fmt.Sprintf(template, shortType(*f.TypeName))
 	case descriptor.FieldDescriptorProto_TYPE_DOUBLE,
 		descriptor.FieldDescriptorProto_TYPE_FLOAT,
@@ -169,8 +170,6 @@ func jsType(f *descriptor.FieldDescriptorProto) string {
 		return fmt.Sprintf(template, "Array<number>")
 	case descriptor.FieldDescriptorProto_TYPE_STRING:
 		return fmt.Sprintf(template, "string")
-	case descriptor.FieldDescriptorProto_TYPE_ENUM:
-		return fmt.Sprintf(template, "Object")
 	default:
 		return fmt.Sprintf(template, "any")
 	}
