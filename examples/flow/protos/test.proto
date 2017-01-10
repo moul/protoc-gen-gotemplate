@@ -27,7 +27,11 @@ message TestMessage {
   repeated int64 p = 16;
   repeated float q = 17;
   repeated double r = 18;
-  enum s {
+  message TestNestedMessage {
+    string s = 1;
+    int32 t = 2;
+  }
+  enum TestNestedEnum {
     ELEMENT_C = 0;
     ELEMENT_D = 1;
   }

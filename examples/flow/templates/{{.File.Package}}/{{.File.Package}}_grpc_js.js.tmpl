@@ -3,18 +3,45 @@
 {{$Package:=.File.Package}}
 import grpc from 'grpc'
 import pbFile from './pbFile.js'
+
 {{range .File.EnumType}}
-export type {{.Name}} = {{range .Value}}
-  | '{{.Name}}'{{end}}
-;{{end}}
-{{range .File.MessageType}}
-export type {{.Name}} = {|{{range .Field}}
-  {{.Name}}?: {{. | jsType}};{{end}}{{range .EnumType}}
-  {{.Name}}?:{{range .Value}}
-    | '{{.Name}}'{{end}}
-  ;{{end}}
+export type {{.Name}} = {|
+  {{range .Value}}
+    {{.Name}}?: {{.Number}};
+  {{end}}
 |};
 {{end}}
+
+{{range .File.MessageType}}
+{{range .EnumType}}
+export type {{.Name}} = {|
+  {{range .Value}}
+    {{.Name}}?: {{.Number}};
+  {{end}}
+|};
+{{end}}
+
+{{range .NestedType}}
+export type {{.Name}} = {|
+  {{range .Field}}
+    {{.Name}}?: {{. | jsType}};
+  {{end}}
+|};
+{{end}}
+
+export type {{.Name}} = {|
+  {{range .Field}}
+    {{.Name}}?: {{. | jsType}};
+  {{end}}
+  {{range .NestedType}}
+    {{.Name}}?: {{.Name}};
+  {{end}}
+  {{range .EnumType}}
+    {{.Name}}?: {{.Name}};
+  {{end}}
+|};
+{{end}}
+
 {{range .File.Service}}{{range .Method}}
 function serialize_{{$Package}}_{{.InputType | shortType}}(arg: {{.InputType | shortType}}) {
   if (!(arg instanceof pbFile.{{.InputType | shortType}})) {
