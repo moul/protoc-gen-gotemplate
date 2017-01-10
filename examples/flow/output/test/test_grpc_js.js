@@ -4,63 +4,164 @@
 import grpc from 'grpc'
 import pbFile from './pbFile.js'
 
-export type TestEnum = 
-  | 'ELEMENT_A'
-  | 'ELEMENT_B'
-;
+
+export type TestEnum = {|
+  
+    ELEMENT_A?: 0;
+  
+    ELEMENT_B?: 1;
+  
+|};
+
+
+
+
+
+export type TestMessage$TestNestedEnum = {|
+  
+    ELEMENT_C?: 0;
+  
+    ELEMENT_D?: 1;
+  
+|};
+
+
+
+export type TestMessage$TestNestedMessage = {|
+  
+    s?: string;
+  
+    t?: number;
+  
+|};
+
 
 export type TestMessage = {|
-  a?: string;
-  b?: number;
-  c?: number;
-  d?: number;
-  e?: number;
-  n?: Array<string>;
-  o?: Array<number>;
-  p?: Array<number>;
-  q?: Array<number>;
-  r?: Array<number>;
-  s?:
-    | 'ELEMENT_C'
-    | 'ELEMENT_D'
-  ;
+  
+    a?: string;
+  
+    b?: number;
+  
+    c?: number;
+  
+    d?: number;
+  
+    e?: number;
+  
+    n?: Array<string>;
+  
+    o?: Array<number>;
+  
+    p?: Array<number>;
+  
+    q?: Array<number>;
+  
+    r?: Array<number>;
+  
+    u?: TestEnum;
+  
+    v?: TestMessage$TestNestedEnum;
+  
+    w?: Array<TestMessage$TestNestedMessage>;
+  
 |};
+
+
+
+
+
 
 export type TestNoStreamRequest = {|
-  message?: TestMessage;
+  
+    message?: TestMessage;
+  
 |};
+
+
+
+
+
 
 export type TestNoStreamReply = {|
-  message?: TestMessage;
-  err_msg?: string;
+  
+    message?: TestMessage;
+  
+    err_msg?: string;
+  
 |};
+
+
+
+
+
 
 export type TestStreamRequestRequest = {|
-  message?: TestMessage;
+  
+    message?: TestMessage;
+  
 |};
+
+
+
+
+
 
 export type TestStreamRequestReply = {|
-  message?: TestMessage;
-  err_msg?: string;
+  
+    message?: TestMessage;
+  
+    err_msg?: string;
+  
 |};
+
+
+
+
+
 
 export type TestStreamReplyRequest = {|
-  message?: TestMessage;
+  
+    message?: TestMessage;
+  
 |};
+
+
+
+
+
 
 export type TestStreamReplyReply = {|
-  message?: TestMessage;
-  err_msg?: string;
+  
+    message?: TestMessage;
+  
+    err_msg?: string;
+  
 |};
+
+
+
+
+
 
 export type TestStreamBothRequest = {|
-  message?: TestMessage;
+  
+    message?: TestMessage;
+  
 |};
 
+
+
+
+
+
 export type TestStreamBothReply = {|
-  message?: TestMessage;
-  err_msg?: string;
+  
+    message?: TestMessage;
+  
+    err_msg?: string;
+  
 |};
+
 
 
 function serialize_test_TestNoStreamRequest(arg: TestNoStreamRequest) {

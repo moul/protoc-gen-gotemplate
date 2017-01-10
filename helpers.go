@@ -148,8 +148,9 @@ func jsType(f *descriptor.FieldDescriptorProto) string {
 	}
 
 	switch *f.Type {
-	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
-		return fmt.Sprintf(template, shortType(*f.TypeName))
+	case descriptor.FieldDescriptorProto_TYPE_MESSAGE,
+		descriptor.FieldDescriptorProto_TYPE_ENUM:
+		return fmt.Sprintf(template, namespacedFlowType(*f.TypeName))
 	case descriptor.FieldDescriptorProto_TYPE_DOUBLE,
 		descriptor.FieldDescriptorProto_TYPE_FLOAT,
 		descriptor.FieldDescriptorProto_TYPE_INT64,
@@ -169,8 +170,6 @@ func jsType(f *descriptor.FieldDescriptorProto) string {
 		return fmt.Sprintf(template, "Array<number>")
 	case descriptor.FieldDescriptorProto_TYPE_STRING:
 		return fmt.Sprintf(template, "string")
-	case descriptor.FieldDescriptorProto_TYPE_ENUM:
-		return fmt.Sprintf(template, "Object")
 	default:
 		return fmt.Sprintf(template, "any")
 	}
@@ -179,6 +178,12 @@ func jsType(f *descriptor.FieldDescriptorProto) string {
 func shortType(s string) string {
 	t := strings.Split(s, ".")
 	return t[len(t)-1]
+}
+
+func namespacedFlowType(s string) string {
+	trimmed := strings.TrimLeft(s, ".")
+	splitted := strings.Split(trimmed, ".")
+	return strings.Join(splitted[1:], "$")
 }
 
 func httpPath(m *descriptor.MethodDescriptorProto) string {
