@@ -33,12 +33,6 @@ export type {{.Name}} = {|
   {{range .Field}}
     {{.Name}}?: {{. | jsType}};
   {{end}}
-  {{range .NestedType}}
-    {{.Name}}?: {{.Name}};
-  {{end}}
-  {{range .EnumType}}
-    {{.Name}}?: {{.Name}};
-  {{end}}
 |};
 {{end}}
 

@@ -39,6 +39,7 @@ message TestMessage {
 
   TestEnum u = 19;
   TestNestedEnum v = 20;
+  repeated TestNestedMessage w = 21;
 }
 
 message TestNoStreamRequest { TestMessage message = 1; }

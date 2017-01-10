@@ -61,11 +61,7 @@ export type TestMessage = {|
   
     v?: TestNestedEnum;
   
-  
-    TestNestedMessage?: TestNestedMessage;
-  
-  
-    TestNestedEnum?: TestNestedEnum;
+    w?: Array<TestNestedMessage>;
   
 |};
 
@@ -76,8 +72,6 @@ export type TestMessage = {|
 export type TestNoStreamRequest = {|
   
     message?: TestMessage;
-  
-  
   
 |};
 
@@ -91,8 +85,6 @@ export type TestNoStreamReply = {|
   
     err_msg?: string;
   
-  
-  
 |};
 
 
@@ -102,8 +94,6 @@ export type TestNoStreamReply = {|
 export type TestStreamRequestRequest = {|
   
     message?: TestMessage;
-  
-  
   
 |};
 
@@ -117,8 +107,6 @@ export type TestStreamRequestReply = {|
   
     err_msg?: string;
   
-  
-  
 |};
 
 
@@ -128,8 +116,6 @@ export type TestStreamRequestReply = {|
 export type TestStreamReplyRequest = {|
   
     message?: TestMessage;
-  
-  
   
 |};
 
@@ -143,8 +129,6 @@ export type TestStreamReplyReply = {|
   
     err_msg?: string;
   
-  
-  
 |};
 
 
@@ -154,8 +138,6 @@ export type TestStreamReplyReply = {|
 export type TestStreamBothRequest = {|
   
     message?: TestMessage;
-  
-  
   
 |};
 
@@ -168,8 +150,6 @@ export type TestStreamBothReply = {|
     message?: TestMessage;
   
     err_msg?: string;
-  
-  
   
 |};
 
