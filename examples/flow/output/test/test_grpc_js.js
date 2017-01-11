@@ -5,108 +5,109 @@ import base64 from 'base64-js'
 import test_pb from './test_pb'
 
 
-export type TestEnum = {|
-  ELEMENT_A?: 0;
-  ELEMENT_B?: 1;
-|};
+export type TestEnum = {
+    ELEMENT_A?: 0;
+    ELEMENT_B?: 1;
+};
+
+
+export type TestMessage$TestNestedEnum = {
+    ELEMENT_C?: 0;
+    ELEMENT_D?: 1;
+};
+
+
+export type TestMessage$TestNestedMessage = {
+    s?: string;
+    t?: number;
+};
+
+export type TestMessage = {
+    a?: string;
+    b?: number;
+    c?: number;
+    d?: number;
+    e?: number;
+    n?: Array<string>;
+    o?: Array<number>;
+    p?: Array<number>;
+    q?: Array<number>;
+    r?: Array<number>;
+    u?: TestEnum;
+    v?: TestMessage$TestNestedEnum;
+    w?: Array<TestMessage$TestNestedMessage>;
+};
 
 
 
 
 
-export type TestMessage$TestNestedEnum = {|
-  ELEMENT_C?: 0;
-  ELEMENT_D?: 1;
-|};
-
-
-export type TestMessage$TestNestedMessage = {|
-  s?: string;
-  t?: number;
-|};
-
-export type TestMessage = {|
-  a?: string;
-  b?: number;
-  c?: number;
-  d?: number;
-  e?: number;
-  n?: Array<string>;
-  o?: Array<number>;
-  p?: Array<number>;
-  q?: Array<number>;
-  r?: Array<number>;
-  u?: TestEnum;
-  v?: TestMessage$TestNestedEnum;
-  w?: Array<TestMessage$TestNestedMessage>;
-|};
+export type TestNoStreamRequest = {
+    message?: TestMessage;
+};
 
 
 
 
-export type TestNoStreamRequest = {|
-  message?: TestMessage;
-|};
+
+export type TestNoStreamReply = {
+    message?: TestMessage;
+    err_msg?: string;
+};
 
 
 
 
-export type TestNoStreamReply = {|
-  message?: TestMessage;
-  err_msg?: string;
-|};
+
+export type TestStreamRequestRequest = {
+    message?: TestMessage;
+};
 
 
 
 
-export type TestStreamRequestRequest = {|
-  message?: TestMessage;
-|};
+
+export type TestStreamRequestReply = {
+    message?: TestMessage;
+    err_msg?: string;
+};
 
 
 
 
-export type TestStreamRequestReply = {|
-  message?: TestMessage;
-  err_msg?: string;
-|};
+
+export type TestStreamReplyRequest = {
+    message?: TestMessage;
+};
 
 
 
 
-export type TestStreamReplyRequest = {|
-  message?: TestMessage;
-|};
+
+export type TestStreamReplyReply = {
+    message?: TestMessage;
+    err_msg?: string;
+};
 
 
 
 
-export type TestStreamReplyReply = {|
-  message?: TestMessage;
-  err_msg?: string;
-|};
+
+export type TestStreamBothRequest = {
+    message?: TestMessage;
+};
 
 
 
 
-export type TestStreamBothRequest = {|
-  message?: TestMessage;
-|};
 
+export type TestStreamBothReply = {
+    message?: TestMessage;
+    err_msg?: string;
+};
 
-
-
-export type TestStreamBothReply = {|
-  message?: TestMessage;
-  err_msg?: string;
-|};
-
-
-const serializeToBase64 = (byteArray: Uint8Array): string =>
-  base64.fromByteArray(byteArray)
-
-const deserializeFromBase64 = (base64Encoded: string): Uint8Array =>
-  new Uint8Array(base64.toByteArray(base64Encoded))
+const serializeToBase64 = (byteArray: Uint8Array): string => base64.fromByteArray(byteArray)
+const deserializeFromBase64 = (base64Encoded: string): Uint8Array => new Uint8Array(base64.toByteArray(base64Encoded))
 
 
 function serialize_test_TestNoStreamRequest(arg : TestNoStreamRequest): string {

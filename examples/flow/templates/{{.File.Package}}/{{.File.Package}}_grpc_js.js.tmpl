@@ -1,32 +1,49 @@
 // @flow
 // GENERATED CODE -- DO NOT EDIT!
-{{$Package:=.File.Package}}
+
+{{- $Package:=.File.Package}}
+
 import base64 from 'base64-js'
-import {{$Package}}_pb from './{{$Package}}_pb'{{range .File.Dependency}}
-import {{. | replace "/" "_" | trimSuffix ".proto" }}_pb from '../{{. | trimSuffix ".proto" }}_pb'{{end}}
+import {{$Package}}_pb from './{{$Package}}_pb'
+
+{{- range .File.Dependency}}
+import {{. | replace "/" "_" | trimSuffix ".proto" }}_pb from '../{{. | trimSuffix ".proto" }}_pb'
+{{- end}}
 
 {{range .File.EnumType}}
-export type {{.Name}} = {|{{range .Value}}
-  {{.Name}}?: {{.Number}};{{end}}
-|};
-{{end}}
+export type {{.Name}} = {
+  {{- range .Value}}
+    {{.Name}}?: {{.Number}};
+  {{- end}}
+};
+{{- end}}
 
-{{range .File.MessageType}}
-{{$MessageType := .Name}}
+{{- range .File.MessageType}}
+{{- $MessageType := .Name}}
+
 {{range .EnumType}}
-export type {{$MessageType}}${{.Name}} = {|{{range .Value}}
-  {{.Name}}?: {{.Number}};{{end}}
-|};
-{{end}}
+export type {{$MessageType}}${{.Name}} = {
+  {{- range .Value}}
+    {{.Name}}?: {{.Number}};
+  {{- end}}
+};
+{{- end}}
+
 {{range .NestedType}}
-export type {{$MessageType}}${{.Name}} = {|{{range .Field}}
-  {{.Name}}?: {{. | jsType}};{{end}}
-|};
-{{end}}
-export type {{.Name}} = {|{{range .Field}}
-  {{.Name}}?: {{. | jsType}};{{end}}
-|};
-{{end}}
+export type {{$MessageType}}${{.Name}} = {
+  {{- range .Field}}
+    {{.Name}}?: {{. | jsType}};
+  {{- end}}
+};
+{{- end}}
+
+export type {{.Name}} = {
+  {{- range .Field}}
+    {{.Name}}?: {{. | jsType}};
+  {{- end}}
+};
+
+{{- end}}
 
 const serializeToBase64 = (byteArray: Uint8Array): string => base64.fromByteArray(byteArray)
 const deserializeFromBase64 = (base64Encoded: string): Uint8Array => new Uint8Array(base64.toByteArray(base64Encoded))
