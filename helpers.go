@@ -57,12 +57,10 @@ var ProtoHelpersFuncMap = template.FuncMap{
 
 		return strings.ToLower(s[:1]) + s[1:]
 	},
-	"snakeCase": func(s string) string {
-		return xstrings.ToSnakeCase(s)
-	},
 	"kebabCase": func(s string) string {
 		return strings.Replace(xstrings.ToSnakeCase(s), "_", "-", -1)
 	},
+	"snakeCase":       xstrings.ToSnakeCase,
 	"getMessageType":  getMessageType,
 	"isFieldMessage":  isFieldMessage,
 	"isFieldRepeated": isFieldRepeated,
@@ -167,7 +165,7 @@ func jsType(f *descriptor.FieldDescriptorProto) string {
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
 		return fmt.Sprintf(template, "boolean")
 	case descriptor.FieldDescriptorProto_TYPE_BYTES:
-		return fmt.Sprintf(template, "Array<number>")
+		return fmt.Sprintf(template, "Uint8Array")
 	case descriptor.FieldDescriptorProto_TYPE_STRING:
 		return fmt.Sprintf(template, "string")
 	default:
