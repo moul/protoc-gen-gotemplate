@@ -11,35 +11,37 @@ import {{. | replace "/" "_" | trimSuffix ".proto" }}_pb from '../{{. | trimSuff
 {{- end}}
 
 {{range .File.EnumType}}
-export type {{.Name}} = {
+export type {{.Name}} = {|
   {{- range .Value}}
-    {{.Name}}?: {{.Number}};
+    {{.Name}}: {{.Number}};
   {{- end}}
-};
+|};
 {{- end}}
 
 {{- range .File.MessageType}}
 {{- $MessageType := .Name}}
 
 {{range .EnumType}}
-export type {{$MessageType}}${{.Name}} = {
+export type {{$MessageType}}${{.Name}} = {|
   {{- range .Value}}
-    {{.Name}}?: {{.Number}};
+    {{.Name}}: {{.Number}};
   {{- end}}
-};
+|};
 {{- end}}
 
 {{range .NestedType}}
 export type {{$MessageType}}${{.Name}} = {
   {{- range .Field}}
-    {{.Name}}?: {{. | jsType}};
+    {{.Name | getter}}: () => {{. | jsType}};
+    {{.Name | setter}}: ({{.Name}}: {{. | jsType}}) => void;
   {{- end}}
 };
 {{- end}}
 
 export type {{.Name}} = {
   {{- range .Field}}
-    {{.Name}}?: {{. | jsType}};
+    {{.Name | getter}}: () => {{. | jsType}};
+    {{.Name | setter}}: ({{.Name}}: {{. | jsType}}) => void;
   {{- end}}
 };
 

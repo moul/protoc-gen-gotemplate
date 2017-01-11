@@ -5,37 +5,52 @@ import base64 from 'base64-js'
 import test_pb from './test_pb'
 
 
-export type TestEnum = {
-    ELEMENT_A?: 0;
-    ELEMENT_B?: 1;
-};
+export type TestEnum = {|
+    ELEMENT_A: 0;
+    ELEMENT_B: 1;
+|};
 
 
-export type TestMessage$TestNestedEnum = {
-    ELEMENT_C?: 0;
-    ELEMENT_D?: 1;
-};
+export type TestMessage$TestNestedEnum = {|
+    ELEMENT_C: 0;
+    ELEMENT_D: 1;
+|};
 
 
 export type TestMessage$TestNestedMessage = {
-    s?: string;
-    t?: number;
+    getS: () => string;
+    setS: (s: string) => void;
+    getT: () => number;
+    setT: (t: number) => void;
 };
 
 export type TestMessage = {
-    a?: string;
-    b?: number;
-    c?: number;
-    d?: number;
-    e?: number;
-    n?: Array<string>;
-    o?: Array<number>;
-    p?: Array<number>;
-    q?: Array<number>;
-    r?: Array<number>;
-    u?: TestEnum;
-    v?: TestMessage$TestNestedEnum;
-    w?: Array<TestMessage$TestNestedMessage>;
+    getA: () => string;
+    setA: (a: string) => void;
+    getB: () => number;
+    setB: (b: number) => void;
+    getC: () => number;
+    setC: (c: number) => void;
+    getD: () => number;
+    setD: (d: number) => void;
+    getE: () => number;
+    setE: (e: number) => void;
+    getN: () => Array<string>;
+    setN: (n: Array<string>) => void;
+    getO: () => Array<number>;
+    setO: (o: Array<number>) => void;
+    getP: () => Array<number>;
+    setP: (p: Array<number>) => void;
+    getQ: () => Array<number>;
+    setQ: (q: Array<number>) => void;
+    getR: () => Array<number>;
+    setR: (r: Array<number>) => void;
+    getU: () => TestEnum;
+    setU: (u: TestEnum) => void;
+    getV: () => TestMessage$TestNestedEnum;
+    setV: (v: TestMessage$TestNestedEnum) => void;
+    getW: () => Array<TestMessage$TestNestedMessage>;
+    setW: (w: Array<TestMessage$TestNestedMessage>) => void;
 };
 
 
@@ -43,7 +58,8 @@ export type TestMessage = {
 
 
 export type TestNoStreamRequest = {
-    message?: TestMessage;
+    getMessage: () => TestMessage;
+    setMessage: (message: TestMessage) => void;
 };
 
 
@@ -51,8 +67,10 @@ export type TestNoStreamRequest = {
 
 
 export type TestNoStreamReply = {
-    message?: TestMessage;
-    err_msg?: string;
+    getMessage: () => TestMessage;
+    setMessage: (message: TestMessage) => void;
+    getErrMsg: () => string;
+    setErrMsg: (err_msg: string) => void;
 };
 
 
@@ -60,7 +78,8 @@ export type TestNoStreamReply = {
 
 
 export type TestStreamRequestRequest = {
-    message?: TestMessage;
+    getMessage: () => TestMessage;
+    setMessage: (message: TestMessage) => void;
 };
 
 
@@ -68,8 +87,10 @@ export type TestStreamRequestRequest = {
 
 
 export type TestStreamRequestReply = {
-    message?: TestMessage;
-    err_msg?: string;
+    getMessage: () => TestMessage;
+    setMessage: (message: TestMessage) => void;
+    getErrMsg: () => string;
+    setErrMsg: (err_msg: string) => void;
 };
 
 
@@ -77,7 +98,8 @@ export type TestStreamRequestReply = {
 
 
 export type TestStreamReplyRequest = {
-    message?: TestMessage;
+    getMessage: () => TestMessage;
+    setMessage: (message: TestMessage) => void;
 };
 
 
@@ -85,8 +107,10 @@ export type TestStreamReplyRequest = {
 
 
 export type TestStreamReplyReply = {
-    message?: TestMessage;
-    err_msg?: string;
+    getMessage: () => TestMessage;
+    setMessage: (message: TestMessage) => void;
+    getErrMsg: () => string;
+    setErrMsg: (err_msg: string) => void;
 };
 
 
@@ -94,7 +118,8 @@ export type TestStreamReplyReply = {
 
 
 export type TestStreamBothRequest = {
-    message?: TestMessage;
+    getMessage: () => TestMessage;
+    setMessage: (message: TestMessage) => void;
 };
 
 
@@ -102,8 +127,10 @@ export type TestStreamBothRequest = {
 
 
 export type TestStreamBothReply = {
-    message?: TestMessage;
-    err_msg?: string;
+    getMessage: () => TestMessage;
+    setMessage: (message: TestMessage) => void;
+    getErrMsg: () => string;
+    setErrMsg: (err_msg: string) => void;
 };
 
 const serializeToBase64 = (byteArray: Uint8Array): string => base64.fromByteArray(byteArray)
