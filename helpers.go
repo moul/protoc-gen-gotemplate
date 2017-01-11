@@ -50,17 +50,16 @@ var ProtoHelpersFuncMap = template.FuncMap{
 
 		return strings.ToUpper(s[:1])
 	},
+	"lowerCamelCase": func(s string) string {
+		if len(s) > 1 {
+			s = xstrings.ToCamelCase(s)
+		}
 
+		return strings.ToLower(s[:1]) + s[1:]
+	},
 	"kebabCase": func(s string) string {
 		return strings.Replace(xstrings.ToSnakeCase(s), "_", "-", -1)
 	},
-	"getter": func(s string) string {
-		return toLowerCamelCase("get_" + s)
-	},
-	"setter": func(s string) string {
-		return toLowerCamelCase("set_" + s)
-	},
-	"lowerCamelCase":  toLowerCamelCase,
 	"snakeCase":       xstrings.ToSnakeCase,
 	"getMessageType":  getMessageType,
 	"isFieldMessage":  isFieldMessage,
@@ -76,14 +75,6 @@ func init() {
 	for k, v := range sprig.TxtFuncMap() {
 		ProtoHelpersFuncMap[k] = v
 	}
-}
-
-func toLowerCamelCase(s string) string {
-	if len(s) > 1 {
-		s = xstrings.ToCamelCase(s)
-	}
-
-	return strings.ToLower(s[:1]) + s[1:]
 }
 
 func getMessageType(f *descriptor.FileDescriptorProto, name string) *descriptor.DescriptorProto {

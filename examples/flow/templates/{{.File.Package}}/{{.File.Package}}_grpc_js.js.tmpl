@@ -10,10 +10,27 @@ import {{$Package}}_pb from './{{$Package}}_pb'
 import {{. | replace "/" "_" | trimSuffix ".proto" }}_pb from '../{{. | trimSuffix ".proto" }}_pb'
 {{- end}}
 
+{{- define "fieldMethods"}}
+  {{- if isFieldRepeated .}}
+    get{{.Name | camelCase}}List?: () => {{. | jsType}};
+    set{{.Name | camelCase}}List?: ({{.Name}}: {{. | jsType}}) => void;
+    add{{.Name | camelCase}}?: ({{.Name}}: {{. | jsType | trimPrefix "Array<" | trimSuffix ">"}}) => void;
+    clear{{.Name | camelCase}}List?: () => void;
+  {{- else}}
+    get{{.Name | camelCase}}?: () => {{. | jsType}};
+    set{{.Name | camelCase}}?: ({{.Name}}: {{. | jsType}}) => void;
+
+    {{- if isFieldMessage .}}
+    clear{{.Name | camelCase}}?: () => void;
+    has{{.Name | camelCase}}?: () => boolean;
+    {{- end}}
+  {{- end}}
+{{- end}}
+
 {{range .File.EnumType}}
 export type {{.Name}} = {|
   {{- range .Value}}
-    {{.Name}}: {{.Number}};
+    {{.Name}}?: {{.Number}};
   {{- end}}
 |};
 {{- end}}
@@ -24,7 +41,7 @@ export type {{.Name}} = {|
 {{range .EnumType}}
 export type {{$MessageType}}${{.Name}} = {|
   {{- range .Value}}
-    {{.Name}}: {{.Number}};
+    {{.Name}}?: {{.Number}};
   {{- end}}
 |};
 {{- end}}
@@ -32,16 +49,14 @@ export type {{$MessageType}}${{.Name}} = {|
 {{range .NestedType}}
 export type {{$MessageType}}${{.Name}} = {
   {{- range .Field}}
-    {{.Name | getter}}: () => {{. | jsType}};
-    {{.Name | setter}}: ({{.Name}}: {{. | jsType}}) => void;
+    {{- template "fieldMethods" .}}
   {{- end}}
 };
 {{- end}}
 
 export type {{.Name}} = {
   {{- range .Field}}
-    {{.Name | getter}}: () => {{. | jsType}};
-    {{.Name | setter}}: ({{.Name}}: {{. | jsType}}) => void;
+    {{- template "fieldMethods" .}}
   {{- end}}
 };
 
