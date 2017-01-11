@@ -1,80 +1,76 @@
 // @flow
 // GENERATED CODE -- DO NOT EDIT!
 {{$Package:=.File.Package}}
-import grpc from 'grpc'
-import pbFile from './pbFile.js'
+import base64 from 'base64-js'
+import {{$Package}}_pb from './{{$Package}}_pb'{{range .File.Dependency}}
+import {{. | replace "/" "_" | trimSuffix ".proto" }}_pb from '../{{. | trimSuffix ".proto" }}_pb'{{end}}
 
 {{range .File.EnumType}}
-export type {{.Name}} = {|
-  {{range .Value}}
-    {{.Name}}?: {{.Number}};
-  {{end}}
+export type {{.Name}} = {|{{range .Value}}
+  {{.Name}}?: {{.Number}};{{end}}
 |};
 {{end}}
 
 {{range .File.MessageType}}
 {{$MessageType := .Name}}
 {{range .EnumType}}
-export type {{$MessageType}}${{.Name}} = {|
-  {{range .Value}}
-    {{.Name}}?: {{.Number}};
-  {{end}}
+export type {{$MessageType}}${{.Name}} = {|{{range .Value}}
+  {{.Name}}?: {{.Number}};{{end}}
 |};
 {{end}}
-
 {{range .NestedType}}
-export type {{$MessageType}}${{.Name}} = {|
-  {{range .Field}}
-    {{.Name}}?: {{. | jsType}};
-  {{end}}
+export type {{$MessageType}}${{.Name}} = {|{{range .Field}}
+  {{.Name}}?: {{. | jsType}};{{end}}
+|};
+{{end}}
+export type {{.Name}} = {|{{range .Field}}
+  {{.Name}}?: {{. | jsType}};{{end}}
 |};
 {{end}}
 
-export type {{.Name}} = {|
-  {{range .Field}}
-    {{.Name}}?: {{. | jsType}};
-  {{end}}
-|};
-{{end}}
+const serializeToBase64 = (byteArray: Uint8Array): string => base64.fromByteArray(byteArray)
+const deserializeFromBase64 = (base64Encoded: string): Uint8Array => new Uint8Array(base64.toByteArray(base64Encoded))
 
 {{range .File.Service}}{{range .Method}}
-function serialize_{{$Package}}_{{.InputType | shortType}}(arg: {{.InputType | shortType}}) {
-  if (!(arg instanceof pbFile.{{.InputType | shortType}})) {
+function serialize_{{$Package}}_{{.InputType | shortType}}(arg : {{.InputType | shortType}}): string {
+  if (!(arg instanceof {{$Package}}_pb.{{.InputType | shortType}})) {
     throw new Error('Expected argument of type {{.InputType | shortType}}')
   }
-  return new Buffer(arg.serializeBinary())
+  return serializeToBase64(arg.serializeBinary())
 }
 
-function deserialize_{{$Package}}_{{.InputType | shortType}}(buffer_arg: Array<number>) {
-  return pbFile.{{.InputType | shortType}}.deserializeBinary(new Uint8Array(buffer_arg))
+function deserialize_{{$Package}}_{{.InputType | shortType}}(base64Encoded: string): {{.InputType | shortType}} {
+  return {{$Package}}_pb.{{.InputType | shortType}}.deserializeBinary(deserializeFromBase64(base64Encoded))
 }
 
-function serialize_{{$Package}}_{{.OutputType | shortType}}(arg: {{.OutputType | shortType}}) {
-  if (!(arg instanceof pbFile.{{.OutputType | shortType}})) {
+function serialize_{{$Package}}_{{.OutputType | shortType}}(arg : {{.OutputType | shortType}}): string {
+  if (!(arg instanceof {{$Package}}_pb.{{.OutputType | shortType}})) {
     throw new Error('Expected argument of type {{.OutputType | shortType}}')
   }
-  return new Buffer(arg.serializeBinary())
+  return serializeToBase64(arg.serializeBinary())
 }
 
-function deserialize_{{$Package}}_{{.OutputType | shortType}}(buffer_arg: Array<number>) {
-  return pbFile.{{.OutputType | shortType}}.deserializeBinary(new Uint8Array(buffer_arg))
+function deserialize_{{$Package}}_{{.OutputType | shortType}}(base64Encoded: string): {{.OutputType | shortType}} {
+  return {{$Package}}_pb.{{.OutputType | shortType}}.deserializeBinary(deserializeFromBase64(base64Encoded))
 }
+
 {{end}}{{end}}
-{{range .File.Service}}
-export const {{.Name}}Service = {
+export default {
+  {{range .File.Service}}
+  {{.Name}}: {
   {{$serviceName:=.Name}}
-  {{range .Method}}{{.Name | lowerCamelCase}}: {
-    path: '/{{$Package}}.{{$serviceName}}/{{.Name}}',
-    requestStream: {{.ClientStreaming | default "false"}},
-    responseStream: {{.ServerStreaming | default "false"}},
-    requestType: pbFile.{{.InputType | shortType}},
-    responseType: pbFile.{{.OutputType | shortType}},
-    requestSerialize: serialize_{{$Package}}_{{.InputType | shortType}},
-    requestDeserialize: deserialize_{{$Package}}_{{.InputType | shortType}},
-    responseSerialize: serialize_{{$Package}}_{{.OutputType | shortType}},
-    responseDeserialize: deserialize_{{$Package}}_{{.OutputType | shortType}},
-  },
+    {{range .Method}}{{.Name | lowerCamelCase}}: {
+      path: '/{{$Package}}.{{$serviceName}}/{{.Name}}',
+      requestStream: {{.ClientStreaming | default "false"}},
+      responseStream: {{.ServerStreaming | default "false"}},
+      requestType: {{$Package}}_pb.{{.InputType | shortType}},
+      responseType: {{$Package}}_pb.{{.OutputType | shortType}},
+      requestSerialize: serialize_{{$Package}}_{{.InputType | shortType}},
+      requestDeserialize: deserialize_{{$Package}}_{{.InputType | shortType}},
+      responseSerialize: serialize_{{$Package}}_{{.OutputType | shortType}},
+      responseDeserialize: deserialize_{{$Package}}_{{.OutputType | shortType}},
+    },
+    {{end}}
+  }
   {{end}}
 }
-
-export const {{.Name}}Client = grpc.makeGenericClientConstructor({{.Name}}Service){{end}}
