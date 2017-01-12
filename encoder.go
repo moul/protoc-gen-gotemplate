@@ -37,7 +37,7 @@ type Ast struct {
 	Environment    []string                           `json:"environment"`
 }
 
-func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.ServiceDescriptorProto, file *descriptor.FileDescriptorProto, debug bool, destinationDir string) (e *GenericTemplateBasedEncoder) {
+func NewGenericServiceTemplateBasedEncoder(templateDir string, service *descriptor.ServiceDescriptorProto, file *descriptor.FileDescriptorProto, debug bool, destinationDir string) (e *GenericTemplateBasedEncoder) {
 	e = &GenericTemplateBasedEncoder{
 		service:        service,
 		file:           file,
@@ -48,6 +48,22 @@ func NewGenericTemplateBasedEncoder(templateDir string, service *descriptor.Serv
 
 	if debug {
 		log.Printf("new encoder: file=%q service=%q template-dir=%q", file.GetName(), service.GetName(), templateDir)
+	}
+
+	return
+}
+
+func NewGenericTemplateBasedEncoder(templateDir string, file *descriptor.FileDescriptorProto, debug bool, destinationDir string) (e *GenericTemplateBasedEncoder) {
+	e = &GenericTemplateBasedEncoder{
+		service:        nil,
+		file:           file,
+		templateDir:    templateDir,
+		debug:          debug,
+		destinationDir: destinationDir,
+	}
+
+	if debug {
+		log.Printf("new encoder: file=%q template-dir=%q", file.GetName(), templateDir)
 	}
 
 	return

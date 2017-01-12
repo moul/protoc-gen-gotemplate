@@ -32,6 +32,7 @@ func main() {
 	templateDir := "./templates"
 	destinationDir := "."
 	debug := false
+	all := false
 	if parameter := g.Request.GetParameter(); parameter != "" {
 		for _, param := range strings.Split(parameter, ",") {
 			parts := strings.Split(param, "=")
@@ -55,6 +56,15 @@ func main() {
 					log.Printf("Err: invalid value for debug: %q", parts[1])
 				}
 				break
+			case "all":
+				switch strings.ToLower(parts[1]) {
+				case "true", "t":
+					all = true
+				case "false", "f":
+				default:
+					log.Printf("Err: invalid value for debug: %q", parts[1])
+				}
+				break
 			default:
 				log.Printf("Err: unknown parameter: %q", param)
 			}
@@ -63,8 +73,14 @@ func main() {
 
 	// Generate the encoders
 	for _, file := range g.Request.GetProtoFile() {
+		if all {
+			encoder := NewGenericTemplateBasedEncoder(templateDir, file, debug, destinationDir)
+			g.Response.File = append(g.Response.File, encoder.Files()...)
+			continue
+		}
+
 		for _, service := range file.GetService() {
-			encoder := NewGenericTemplateBasedEncoder(templateDir, service, file, debug, destinationDir)
+			encoder := NewGenericServiceTemplateBasedEncoder(templateDir, service, file, debug, destinationDir)
 			g.Response.File = append(g.Response.File, encoder.Files()...)
 		}
 	}
