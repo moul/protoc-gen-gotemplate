@@ -60,16 +60,17 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"kebabCase": func(s string) string {
 		return strings.Replace(xstrings.ToSnakeCase(s), "_", "-", -1)
 	},
-	"snakeCase":          xstrings.ToSnakeCase,
-	"getMessageType":     getMessageType,
-	"isFieldMessage":     isFieldMessage,
-	"isFieldRepeated":    isFieldRepeated,
-	"goType":             goType,
-	"jsType":             jsType,
-	"namespacedFlowType": namespacedFlowType,
-	"httpVerb":           httpVerb,
-	"httpPath":           httpPath,
-	"shortType":          shortType,
+	"snakeCase":             xstrings.ToSnakeCase,
+	"getMessageType":        getMessageType,
+	"isFieldMessage":        isFieldMessage,
+	"isFieldRepeated":       isFieldRepeated,
+	"goType":                goType,
+	"jsType":                jsType,
+	"namespacedFlowType":    namespacedFlowType,
+	"httpVerb":              httpVerb,
+	"httpPath":              httpPath,
+	"shortType":             shortType,
+	"urlHasVarsFromMessage": urlHasVarsFromMessage,
 }
 
 func init() {
@@ -241,4 +242,16 @@ func httpVerb(m *descriptor.MethodDescriptorProto) string {
 	case *options.HttpRule_Custom:
 		return t.Custom.Kind
 	}
+}
+
+func urlHasVarsFromMessage(path string, d *descriptor.DescriptorProto) bool {
+	for _, field := range d.Field {
+		if !isFieldMessage(field) {
+			if strings.Contains(path, fmt.Sprintf("{%s}", *field.Name)) {
+				return true
+			}
+		}
+	}
+
+	return false
 }
