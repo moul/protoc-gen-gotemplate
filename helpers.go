@@ -112,18 +112,39 @@ func isFieldRepeated(f *descriptor.FieldDescriptorProto) bool {
 func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 	switch *f.Type {
 	case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]float64"
+		}
 		return "float64"
 	case descriptor.FieldDescriptorProto_TYPE_FLOAT:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]float32"
+		}
 		return "float32"
 	case descriptor.FieldDescriptorProto_TYPE_INT64:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]int64"
+		}
 		return "int64"
 	case descriptor.FieldDescriptorProto_TYPE_UINT64:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]uint64"
+		}
 		return "uint64"
 	case descriptor.FieldDescriptorProto_TYPE_INT32:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]uint32"
+		}
 		return "uint32"
 	case descriptor.FieldDescriptorProto_TYPE_BOOL:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]bool"
+		}
 		return "bool"
 	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]string"
+		}
 		return "string"
 	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
 		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
@@ -131,8 +152,14 @@ func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 		}
 		return fmt.Sprintf("*%s.%s", pkg, shortType(*f.TypeName))
 	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]byte"
+		}
 		return "byte"
 	case descriptor.FieldDescriptorProto_TYPE_UINT32:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]uint32"
+		}
 		return "uint32"
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
 		return fmt.Sprintf("*%s.%s", pkg, shortType(*f.TypeName))
