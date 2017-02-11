@@ -210,7 +210,7 @@ func shortType(s string) string {
 func namespacedFlowType(s string) string {
 	trimmed := strings.TrimLeft(s, ".")
 	splitted := strings.Split(trimmed, ".")
-	return strings.Join(splitted[1:], "$")
+	return strings.Join(splitted, "$")
 }
 
 func httpPath(m *descriptor.MethodDescriptorProto) string {
