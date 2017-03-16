@@ -12,6 +12,7 @@ test:	build
 	cd examples/flow && make
 	cd examples/concat && make
 	cd examples/flow && make
+	cd examples/sitemap && make
 	cd examples/go-kit && make
 
 .PHONY: docker.build

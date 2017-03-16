@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package sitemap;
+
+service DummyService {
+  rpc Posts(Request) returns (Response) {}
+  rpc Authors(Request) returns (Response) {}
+  rpc Comments(Request) returns (Response) {}
+}
+
+message Request {}
+message Response {}

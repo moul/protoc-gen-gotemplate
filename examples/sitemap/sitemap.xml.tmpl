@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{{range .Service.Method}}
+  <url>
+    <loc>/{{.Name | lower}}</loc>
+    <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>{{now | date "2006-01-02"}}</lastmod>
+  </url>{{end}}
+</urlset>
