@@ -1,14 +1,17 @@
 package session_endpoints
 
 import (
+	context "context"
 	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
-	context "golang.org/x/net/context"
+	oldcontext "golang.org/x/net/context"
 )
 
+var _ = endpoint.Chain
 var _ = fmt.Errorf
+var _ = context.Background
 
 type StreamEndpoint func(server interface{}, req interface{}) (err error)
 
@@ -16,7 +19,7 @@ type Endpoints struct {
 	LoginEndpoint endpoint.Endpoint
 }
 
-func (e *Endpoints) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginResponse, error) {
+func (e *Endpoints) Login(ctx oldcontext.Context, in *pb.LoginRequest) (*pb.LoginResponse, error) {
 	out, err := e.LoginEndpoint(ctx, in)
 	if err != nil {
 		return &pb.LoginResponse{ErrMsg: err.Error()}, err

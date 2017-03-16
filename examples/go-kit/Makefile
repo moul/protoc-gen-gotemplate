@@ -9,10 +9,11 @@ service_name =	$(word 2,$(subst /, ,$1))
 build: server
 
 server: $(TARGETS_GO) $(TARGETS_TMPL)
+	glide install
 	go build -o server .
 
 $(TARGETS_GO): %_go:
-	protoc --gogo_out=plugins=grpc:. "$*"
+	protoc --go_out=plugins=grpc:. "$*"
 	@mkdir -p services/$(call service_name,$*)/gen/pb
 	@mv ./services/$(call service_name,$*)/$(call service_name,$*).pb.go ./services/$(call service_name,$*)/gen/pb/pb.go
 

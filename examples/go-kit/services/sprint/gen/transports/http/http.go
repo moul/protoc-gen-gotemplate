@@ -1,8 +1,8 @@
 package sprint_httptransport
 
 import (
+	"context"
 	"encoding/json"
-	context "golang.org/x/net/context"
 	"log"
 	"net/http"
 
@@ -12,9 +12,12 @@ import (
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/pb"
 )
 
-func MakeAddSprintHandler(ctx context.Context, svc pb.SprintServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
+var _ = log.Printf
+var _ = gokit_endpoint.Chain
+var _ = httptransport.NewClient
+
+func MakeAddSprintHandler(svc pb.SprintServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
 	return httptransport.NewServer(
-		ctx,
 		endpoint,
 		decodeAddSprintRequest,
 		encodeResponse,
@@ -30,9 +33,8 @@ func decodeAddSprintRequest(ctx context.Context, r *http.Request) (interface{}, 
 	return &req, nil
 }
 
-func MakeCloseSprintHandler(ctx context.Context, svc pb.SprintServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
+func MakeCloseSprintHandler(svc pb.SprintServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
 	return httptransport.NewServer(
-		ctx,
 		endpoint,
 		decodeCloseSprintRequest,
 		encodeResponse,
@@ -48,9 +50,8 @@ func decodeCloseSprintRequest(ctx context.Context, r *http.Request) (interface{}
 	return &req, nil
 }
 
-func MakeGetSprintHandler(ctx context.Context, svc pb.SprintServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
+func MakeGetSprintHandler(svc pb.SprintServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
 	return httptransport.NewServer(
-		ctx,
 		endpoint,
 		decodeGetSprintRequest,
 		encodeResponse,
@@ -70,16 +71,16 @@ func encodeResponse(ctx context.Context, w http.ResponseWriter, response interfa
 	return json.NewEncoder(w).Encode(response)
 }
 
-func RegisterHandlers(ctx context.Context, svc pb.SprintServiceServer, mux *http.ServeMux, endpoints endpoints.Endpoints) error {
+func RegisterHandlers(svc pb.SprintServiceServer, mux *http.ServeMux, endpoints endpoints.Endpoints) error {
 
 	log.Println("new HTTP endpoint: \"/AddSprint\" (service=Sprint)")
-	mux.Handle("/AddSprint", MakeAddSprintHandler(ctx, svc, endpoints.AddSprintEndpoint))
+	mux.Handle("/AddSprint", MakeAddSprintHandler(svc, endpoints.AddSprintEndpoint))
 
 	log.Println("new HTTP endpoint: \"/CloseSprint\" (service=Sprint)")
-	mux.Handle("/CloseSprint", MakeCloseSprintHandler(ctx, svc, endpoints.CloseSprintEndpoint))
+	mux.Handle("/CloseSprint", MakeCloseSprintHandler(svc, endpoints.CloseSprintEndpoint))
 
 	log.Println("new HTTP endpoint: \"/GetSprint\" (service=Sprint)")
-	mux.Handle("/GetSprint", MakeGetSprintHandler(ctx, svc, endpoints.GetSprintEndpoint))
+	mux.Handle("/GetSprint", MakeGetSprintHandler(svc, endpoints.GetSprintEndpoint))
 
 	return nil
 }

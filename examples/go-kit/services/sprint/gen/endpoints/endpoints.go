@@ -1,14 +1,17 @@
 package sprint_endpoints
 
 import (
+	context "context"
 	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/pb"
-	context "golang.org/x/net/context"
+	oldcontext "golang.org/x/net/context"
 )
 
+var _ = endpoint.Chain
 var _ = fmt.Errorf
+var _ = context.Background
 
 type StreamEndpoint func(server interface{}, req interface{}) (err error)
 
@@ -20,7 +23,7 @@ type Endpoints struct {
 	GetSprintEndpoint endpoint.Endpoint
 }
 
-func (e *Endpoints) AddSprint(ctx context.Context, in *pb.AddSprintRequest) (*pb.AddSprintResponse, error) {
+func (e *Endpoints) AddSprint(ctx oldcontext.Context, in *pb.AddSprintRequest) (*pb.AddSprintResponse, error) {
 	out, err := e.AddSprintEndpoint(ctx, in)
 	if err != nil {
 		return &pb.AddSprintResponse{ErrMsg: err.Error()}, err
@@ -28,7 +31,7 @@ func (e *Endpoints) AddSprint(ctx context.Context, in *pb.AddSprintRequest) (*pb
 	return out.(*pb.AddSprintResponse), err
 }
 
-func (e *Endpoints) CloseSprint(ctx context.Context, in *pb.CloseSprintRequest) (*pb.CloseSprintResponse, error) {
+func (e *Endpoints) CloseSprint(ctx oldcontext.Context, in *pb.CloseSprintRequest) (*pb.CloseSprintResponse, error) {
 	out, err := e.CloseSprintEndpoint(ctx, in)
 	if err != nil {
 		return &pb.CloseSprintResponse{ErrMsg: err.Error()}, err
@@ -36,7 +39,7 @@ func (e *Endpoints) CloseSprint(ctx context.Context, in *pb.CloseSprintRequest) 
 	return out.(*pb.CloseSprintResponse), err
 }
 
-func (e *Endpoints) GetSprint(ctx context.Context, in *pb.GetSprintRequest) (*pb.GetSprintResponse, error) {
+func (e *Endpoints) GetSprint(ctx oldcontext.Context, in *pb.GetSprintRequest) (*pb.GetSprintResponse, error) {
 	out, err := e.GetSprintEndpoint(ctx, in)
 	if err != nil {
 		return &pb.GetSprintResponse{ErrMsg: err.Error()}, err

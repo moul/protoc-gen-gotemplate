@@ -10,6 +10,9 @@ install:
 test:	build
 	cd examples/dummy && make
 	cd examples/flow && make
+	cd examples/concat && make
+	cd examples/flow && make
+	cd examples/go-kit && make
 
 .PHONY: docker.build
 docker.build:

@@ -1,10 +1,11 @@
 package user_grpctransport
 
 import (
+	context "context"
 	"fmt"
 
 	grpctransport "github.com/go-kit/kit/transport/grpc"
-	context "golang.org/x/net/context"
+	oldcontext "golang.org/x/net/context"
 
 	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/endpoints"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/pb"
@@ -13,12 +14,12 @@ import (
 // avoid import errors
 var _ = fmt.Errorf
 
-func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.UserServiceServer {
-	options := []grpctransport.ServerOption{}
+func MakeGRPCServer(endpoints endpoints.Endpoints) pb.UserServiceServer {
+	var options []grpctransport.ServerOption
+	_ = options
 	return &grpcServer{
 
 		createuser: grpctransport.NewServer(
-			ctx,
 			endpoints.CreateUserEndpoint,
 			decodeRequest,
 			encodeCreateUserResponse,
@@ -26,7 +27,6 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.UserS
 		),
 
 		getuser: grpctransport.NewServer(
-			ctx,
 			endpoints.GetUserEndpoint,
 			decodeRequest,
 			encodeGetUserResponse,
@@ -41,7 +41,7 @@ type grpcServer struct {
 	getuser grpctransport.Handler
 }
 
-func (s *grpcServer) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+func (s *grpcServer) CreateUser(ctx oldcontext.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
 	_, rep, err := s.createuser.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func encodeCreateUserResponse(ctx context.Context, response interface{}) (interf
 	return resp, nil
 }
 
-func (s *grpcServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
+func (s *grpcServer) GetUser(ctx oldcontext.Context, req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
 	_, rep, err := s.getuser.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
