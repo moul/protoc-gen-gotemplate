@@ -16,9 +16,8 @@ var _ = log.Printf
 var _ = gokit_endpoint.Chain
 var _ = httptransport.NewClient
 
-func MakeLoginHandler(ctx context.Context, svc pb.SessionServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
+func MakeLoginHandler(svc pb.SessionServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
 	return httptransport.NewServer(
-		ctx,
 		endpoint,
 		decodeLoginRequest,
 		encodeResponse,
@@ -38,10 +37,10 @@ func encodeResponse(ctx context.Context, w http.ResponseWriter, response interfa
 	return json.NewEncoder(w).Encode(response)
 }
 
-func RegisterHandlers(ctx context.Context, svc pb.SessionServiceServer, mux *http.ServeMux, endpoints endpoints.Endpoints) error {
+func RegisterHandlers(svc pb.SessionServiceServer, mux *http.ServeMux, endpoints endpoints.Endpoints) error {
 
 	log.Println("new HTTP endpoint: \"/Login\" (service=Session)")
-	mux.Handle("/Login", MakeLoginHandler(ctx, svc, endpoints.LoginEndpoint))
+	mux.Handle("/Login", MakeLoginHandler(svc, endpoints.LoginEndpoint))
 
 	return nil
 }

@@ -16,9 +16,8 @@ var _ = log.Printf
 var _ = gokit_endpoint.Chain
 var _ = httptransport.NewClient
 
-func MakeCreateUserHandler(ctx context.Context, svc pb.UserServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
+func MakeCreateUserHandler(svc pb.UserServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
 	return httptransport.NewServer(
-		ctx,
 		endpoint,
 		decodeCreateUserRequest,
 		encodeResponse,
@@ -34,9 +33,8 @@ func decodeCreateUserRequest(ctx context.Context, r *http.Request) (interface{},
 	return &req, nil
 }
 
-func MakeGetUserHandler(ctx context.Context, svc pb.UserServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
+func MakeGetUserHandler(svc pb.UserServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
 	return httptransport.NewServer(
-		ctx,
 		endpoint,
 		decodeGetUserRequest,
 		encodeResponse,
@@ -56,13 +54,13 @@ func encodeResponse(ctx context.Context, w http.ResponseWriter, response interfa
 	return json.NewEncoder(w).Encode(response)
 }
 
-func RegisterHandlers(ctx context.Context, svc pb.UserServiceServer, mux *http.ServeMux, endpoints endpoints.Endpoints) error {
+func RegisterHandlers(svc pb.UserServiceServer, mux *http.ServeMux, endpoints endpoints.Endpoints) error {
 
 	log.Println("new HTTP endpoint: \"/CreateUser\" (service=User)")
-	mux.Handle("/CreateUser", MakeCreateUserHandler(ctx, svc, endpoints.CreateUserEndpoint))
+	mux.Handle("/CreateUser", MakeCreateUserHandler(svc, endpoints.CreateUserEndpoint))
 
 	log.Println("new HTTP endpoint: \"/GetUser\" (service=User)")
-	mux.Handle("/GetUser", MakeGetUserHandler(ctx, svc, endpoints.GetUserEndpoint))
+	mux.Handle("/GetUser", MakeGetUserHandler(svc, endpoints.GetUserEndpoint))
 
 	return nil
 }

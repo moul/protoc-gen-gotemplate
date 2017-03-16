@@ -9,7 +9,7 @@ service_name =	$(word 2,$(subst /, ,$1))
 build: server
 
 server: $(TARGETS_GO) $(TARGETS_TMPL)
-	go get ./...
+	glide install
 	go build -o server .
 
 $(TARGETS_GO): %_go:

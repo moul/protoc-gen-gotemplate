@@ -14,13 +14,12 @@ import (
 // avoid import errors
 var _ = fmt.Errorf
 
-func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.UserServiceServer {
+func MakeGRPCServer(endpoints endpoints.Endpoints) pb.UserServiceServer {
 	var options []grpctransport.ServerOption
 	_ = options
 	return &grpcServer{
 
 		createuser: grpctransport.NewServer(
-			ctx,
 			endpoints.CreateUserEndpoint,
 			decodeRequest,
 			encodeCreateUserResponse,
@@ -28,7 +27,6 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.UserS
 		),
 
 		getuser: grpctransport.NewServer(
-			ctx,
 			endpoints.GetUserEndpoint,
 			decodeRequest,
 			encodeGetUserResponse,

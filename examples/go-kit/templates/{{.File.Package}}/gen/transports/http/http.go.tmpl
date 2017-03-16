@@ -21,9 +21,8 @@ var _ = httptransport.NewClient
 
 {{range .Service.Method}}
 	{{if and (not .ServerStreaming) (not .ClientStreaming)}}
-		func Make{{.Name}}Handler(ctx context.Context, svc pb.{{$file.Package | title}}ServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
+		func Make{{.Name}}Handler(svc pb.{{$file.Package | title}}ServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
 			return httptransport.NewServer(
-				ctx,
 				endpoint,
 				decode{{.Name}}Request,
 				encodeResponse,
@@ -45,11 +44,11 @@ func encodeResponse(ctx context.Context, w http.ResponseWriter, response interfa
 	return json.NewEncoder(w).Encode(response)
 }
 
-func RegisterHandlers(ctx context.Context, svc pb.{{$file.Package | title}}ServiceServer, mux *http.ServeMux, endpoints endpoints.Endpoints) error {
+func RegisterHandlers(svc pb.{{$file.Package | title}}ServiceServer, mux *http.ServeMux, endpoints endpoints.Endpoints) error {
 	{{range .Service.Method}}
 		{{if and (not .ServerStreaming) (not .ClientStreaming)}}
 			log.Println("new HTTP endpoint: \"/{{.Name}}\" (service={{$file.Package | title}})")
-			mux.Handle("/{{.Name}}", Make{{.Name}}Handler(ctx, svc, endpoints.{{.Name}}Endpoint))
+			mux.Handle("/{{.Name}}", Make{{.Name}}Handler(svc, endpoints.{{.Name}}Endpoint))
 		{{end}}
 	{{end}}
 	return nil

@@ -16,7 +16,7 @@ import (
 // avoid import errors
 var _ = fmt.Errorf
 
-func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.{{.File.Package | title}}ServiceServer {
+func MakeGRPCServer(endpoints endpoints.Endpoints) pb.{{.File.Package | title}}ServiceServer {
      	var options []grpctransport.ServerOption
         _ = options
 	return &grpcServer{
@@ -27,7 +27,6 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.{{.Fi
 				},
 			{{else}}
 				{{.Name | lower}}: grpctransport.NewServer(
-					ctx,
 					endpoints.{{.Name}}Endpoint,
 					decodeRequest,
 					encode{{.Name}}Response,

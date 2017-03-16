@@ -1,0 +1,20 @@
+package: github.com/moul/protoc-gen-gotemplate/examples/go-kit
+import:
+- package: github.com/go-kit/kit
+  subpackages:
+  - auth/jwt
+  - endpoint
+  - log
+  - transport/grpc
+  - transport/http
+- package: github.com/golang/protobuf
+  subpackages:
+  - proto
+  version: c9c7427a2a70d2eb3bafa0ab2dc163e45f143317
+- package: github.com/gorilla/handlers
+- package: golang.org/x/net
+  subpackages:
+  - context
+  - http2
+  version: a6577fac2d73be281a500b310739095313165611
+- package: google.golang.org/grpc

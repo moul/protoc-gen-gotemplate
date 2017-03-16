@@ -14,13 +14,12 @@ import (
 // avoid import errors
 var _ = fmt.Errorf
 
-func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.SprintServiceServer {
+func MakeGRPCServer(endpoints endpoints.Endpoints) pb.SprintServiceServer {
 	var options []grpctransport.ServerOption
 	_ = options
 	return &grpcServer{
 
 		addsprint: grpctransport.NewServer(
-			ctx,
 			endpoints.AddSprintEndpoint,
 			decodeRequest,
 			encodeAddSprintResponse,
@@ -28,7 +27,6 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.Sprin
 		),
 
 		closesprint: grpctransport.NewServer(
-			ctx,
 			endpoints.CloseSprintEndpoint,
 			decodeRequest,
 			encodeCloseSprintResponse,
@@ -36,7 +34,6 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.Sprin
 		),
 
 		getsprint: grpctransport.NewServer(
-			ctx,
 			endpoints.GetSprintEndpoint,
 			decodeRequest,
 			encodeGetSprintResponse,

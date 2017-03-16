@@ -14,13 +14,12 @@ import (
 // avoid import errors
 var _ = fmt.Errorf
 
-func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.SessionServiceServer {
+func MakeGRPCServer(endpoints endpoints.Endpoints) pb.SessionServiceServer {
 	var options []grpctransport.ServerOption
 	_ = options
 	return &grpcServer{
 
 		login: grpctransport.NewServer(
-			ctx,
 			endpoints.LoginEndpoint,
 			decodeRequest,
 			encodeLoginResponse,
