@@ -1,8 +1,8 @@
 package sprint_httptransport
 
 import (
+	"context"
 	"encoding/json"
-	context "golang.org/x/net/context"
 	"log"
 	"net/http"
 
@@ -11,6 +11,10 @@ import (
 	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/endpoints"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/pb"
 )
+
+var _ = log.Printf
+var _ = gokit_endpoint.Chain
+var _ = httptransport.NewClient
 
 func MakeAddSprintHandler(ctx context.Context, svc pb.SprintServiceServer, endpoint gokit_endpoint.Endpoint) *httptransport.Server {
 	return httptransport.NewServer(

@@ -1,10 +1,11 @@
 package session_grpctransport
 
 import (
+	context "context"
 	"fmt"
 
 	grpctransport "github.com/go-kit/kit/transport/grpc"
-	context "golang.org/x/net/context"
+	oldcontext "golang.org/x/net/context"
 
 	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/endpoints"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
@@ -14,7 +15,8 @@ import (
 var _ = fmt.Errorf
 
 func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.SessionServiceServer {
-	options := []grpctransport.ServerOption{}
+	var options []grpctransport.ServerOption
+	_ = options
 	return &grpcServer{
 
 		login: grpctransport.NewServer(
@@ -31,7 +33,7 @@ type grpcServer struct {
 	login grpctransport.Handler
 }
 
-func (s *grpcServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+func (s *grpcServer) Login(ctx oldcontext.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
 	_, rep, err := s.login.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err

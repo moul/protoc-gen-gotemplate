@@ -6,7 +6,7 @@ import (
        "log"
 	"net/http"
 	"encoding/json"
-	context "golang.org/x/net/context"
+	"context"
 
         pb "{{cat .GoPWD "/" .DestinationDir | nospace | clean}}/pb"
         gokit_endpoint "github.com/go-kit/kit/endpoint"

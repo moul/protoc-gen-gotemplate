@@ -1,11 +1,12 @@
 package sprint_clientgrpc
 
 import (
+	context "context"
+
 	jwt "github.com/go-kit/kit/auth/jwt"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/log"
 	grpctransport "github.com/go-kit/kit/transport/grpc"
-	context "golang.org/x/net/context"
 	"google.golang.org/grpc"
 
 	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/endpoints"

@@ -1,10 +1,11 @@
 package sprint_grpctransport
 
 import (
+	context "context"
 	"fmt"
 
 	grpctransport "github.com/go-kit/kit/transport/grpc"
-	context "golang.org/x/net/context"
+	oldcontext "golang.org/x/net/context"
 
 	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/endpoints"
 	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/pb"
@@ -14,7 +15,8 @@ import (
 var _ = fmt.Errorf
 
 func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.SprintServiceServer {
-	options := []grpctransport.ServerOption{}
+	var options []grpctransport.ServerOption
+	_ = options
 	return &grpcServer{
 
 		addsprint: grpctransport.NewServer(
@@ -51,7 +53,7 @@ type grpcServer struct {
 	getsprint grpctransport.Handler
 }
 
-func (s *grpcServer) AddSprint(ctx context.Context, req *pb.AddSprintRequest) (*pb.AddSprintResponse, error) {
+func (s *grpcServer) AddSprint(ctx oldcontext.Context, req *pb.AddSprintRequest) (*pb.AddSprintResponse, error) {
 	_, rep, err := s.addsprint.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
@@ -64,7 +66,7 @@ func encodeAddSprintResponse(ctx context.Context, response interface{}) (interfa
 	return resp, nil
 }
 
-func (s *grpcServer) CloseSprint(ctx context.Context, req *pb.CloseSprintRequest) (*pb.CloseSprintResponse, error) {
+func (s *grpcServer) CloseSprint(ctx oldcontext.Context, req *pb.CloseSprintRequest) (*pb.CloseSprintResponse, error) {
 	_, rep, err := s.closesprint.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
@@ -77,7 +79,7 @@ func encodeCloseSprintResponse(ctx context.Context, response interface{}) (inter
 	return resp, nil
 }
 
-func (s *grpcServer) GetSprint(ctx context.Context, req *pb.GetSprintRequest) (*pb.GetSprintResponse, error) {
+func (s *grpcServer) GetSprint(ctx oldcontext.Context, req *pb.GetSprintRequest) (*pb.GetSprintResponse, error) {
 	_, rep, err := s.getsprint.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err

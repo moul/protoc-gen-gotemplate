@@ -3,9 +3,10 @@ package {{.File.Package}}_grpctransport
 {{$file := .File}}
 
 import (
+	context "context"
         "fmt"
 
-	context "golang.org/x/net/context"
+        oldcontext "golang.org/x/net/context"
 	grpctransport "github.com/go-kit/kit/transport/grpc"
 
         pb "{{cat .GoPWD "/" .DestinationDir | nospace | clean}}/pb"
@@ -57,7 +58,7 @@ type grpcServer struct {
 		        return s.{{.Name | lower}}.Do(server, req)
 		}
 	{{else}}
-		func (s *grpcServer) {{.Name}}(ctx context.Context, req *pb.{{.InputType | splitArray "." | last}}) (*pb.{{.OutputType | splitArray "." | last}}, error) {
+		func (s *grpcServer) {{.Name}}(ctx oldcontext.Context, req *pb.{{.InputType | splitArray "." | last}}) (*pb.{{.OutputType | splitArray "." | last}}, error) {
 		_, rep, err := s.{{.Name | lower}}.ServeGRPC(ctx, req)
 			if err != nil {
 				return nil, err
