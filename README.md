@@ -5,7 +5,7 @@ A generic **code**/script/data generator based on [Protobuf](https://developers.
 
 ---
 
-This is a generator plugin for the Google Protocol Buffers compiler (`protoc`).
+This project is a generator plugin for the Google Protocol Buffers compiler (`protoc`).
 
 The plugin parses **protobuf** files, generates an **ast**, and walks a local **templates directory** to generate files using the [Golang's `text/template` engine](https://golang.org/pkg/text/template/).
 
@@ -26,7 +26,7 @@ The plugin parses **protobuf** files, generates an **ast**, and walks a local **
 
 `protoc-gen-gotemplate` requires a **template_dir** directory *(by default `./templates`)*.
 
-Every files ending with `.tmpl` will be processed and written in the destination folder, following the file hierarchy of the `template_dir`, and removing the `.tmpl` extension.
+Every file ending with `.tmpl` will be processed and written to the destination folder, following the file hierarchy of the `template_dir`, and remove the `.tmpl` extension.
 
 ---
 
@@ -49,6 +49,12 @@ $> protoc --gotemplate_out=debug=true,template_dir=/path/to/template/directory:.
 
 ---
 
+##### Hints
+
+Shipping the templates with your project is very smart and useful when contributing on git-based projects.
+
+Another workflow consists in having a dedicated repository for generic templates which is then versioned and vendored with multiple projects (npm package, golang vendor package, ...)
+
 See [examples](./examples).
 
 ## Funcmap
@@ -64,10 +70,6 @@ Non-exhaustive list of new helpers:
 * `last`
 
 See the project helpers for the complete list.
-
-## Hacks
-
-
 
 ## Install
 
