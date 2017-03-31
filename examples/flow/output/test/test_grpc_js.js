@@ -55,13 +55,13 @@ export type TestMessage = {
     setRList?: (r: Array<number>) => void;
     addR?: (r: number) => void;
     clearRList?: () => void;
-    getU?: () => TestEnum;
-    setU?: (u: TestEnum) => void;
-    getV?: () => TestMessage$TestNestedEnum;
-    setV?: (v: TestMessage$TestNestedEnum) => void;
-    getWList?: () => Array<TestMessage$TestNestedMessage>;
-    setWList?: (w: Array<TestMessage$TestNestedMessage>) => void;
-    addW?: (w: TestMessage$TestNestedMessage) => void;
+    getU?: () => test$TestEnum;
+    setU?: (u: test$TestEnum) => void;
+    getV?: () => test$TestMessage$TestNestedEnum;
+    setV?: (v: test$TestMessage$TestNestedEnum) => void;
+    getWList?: () => Array<test$TestMessage$TestNestedMessage>;
+    setWList?: (w: Array<test$TestMessage$TestNestedMessage>) => void;
+    addW?: (w: test$TestMessage$TestNestedMessage) => void;
     clearWList?: () => void;
 };
 
@@ -70,8 +70,8 @@ export type TestMessage = {
 
 
 export type TestNoStreamRequest = {
-    getMessage?: () => TestMessage;
-    setMessage?: (message: TestMessage) => void;
+    getMessage?: () => test$TestMessage;
+    setMessage?: (message: test$TestMessage) => void;
     clearMessage?: () => void;
     hasMessage?: () => boolean;
 };
@@ -81,8 +81,8 @@ export type TestNoStreamRequest = {
 
 
 export type TestNoStreamReply = {
-    getMessage?: () => TestMessage;
-    setMessage?: (message: TestMessage) => void;
+    getMessage?: () => test$TestMessage;
+    setMessage?: (message: test$TestMessage) => void;
     clearMessage?: () => void;
     hasMessage?: () => boolean;
     getErrMsg?: () => string;
@@ -94,8 +94,8 @@ export type TestNoStreamReply = {
 
 
 export type TestStreamRequestRequest = {
-    getMessage?: () => TestMessage;
-    setMessage?: (message: TestMessage) => void;
+    getMessage?: () => test$TestMessage;
+    setMessage?: (message: test$TestMessage) => void;
     clearMessage?: () => void;
     hasMessage?: () => boolean;
 };
@@ -105,8 +105,8 @@ export type TestStreamRequestRequest = {
 
 
 export type TestStreamRequestReply = {
-    getMessage?: () => TestMessage;
-    setMessage?: (message: TestMessage) => void;
+    getMessage?: () => test$TestMessage;
+    setMessage?: (message: test$TestMessage) => void;
     clearMessage?: () => void;
     hasMessage?: () => boolean;
     getErrMsg?: () => string;
@@ -118,8 +118,8 @@ export type TestStreamRequestReply = {
 
 
 export type TestStreamReplyRequest = {
-    getMessage?: () => TestMessage;
-    setMessage?: (message: TestMessage) => void;
+    getMessage?: () => test$TestMessage;
+    setMessage?: (message: test$TestMessage) => void;
     clearMessage?: () => void;
     hasMessage?: () => boolean;
 };
@@ -129,8 +129,8 @@ export type TestStreamReplyRequest = {
 
 
 export type TestStreamReplyReply = {
-    getMessage?: () => TestMessage;
-    setMessage?: (message: TestMessage) => void;
+    getMessage?: () => test$TestMessage;
+    setMessage?: (message: test$TestMessage) => void;
     clearMessage?: () => void;
     hasMessage?: () => boolean;
     getErrMsg?: () => string;
@@ -142,8 +142,8 @@ export type TestStreamReplyReply = {
 
 
 export type TestStreamBothRequest = {
-    getMessage?: () => TestMessage;
-    setMessage?: (message: TestMessage) => void;
+    getMessage?: () => test$TestMessage;
+    setMessage?: (message: test$TestMessage) => void;
     clearMessage?: () => void;
     hasMessage?: () => boolean;
 };
@@ -153,8 +153,8 @@ export type TestStreamBothRequest = {
 
 
 export type TestStreamBothReply = {
-    getMessage?: () => TestMessage;
-    setMessage?: (message: TestMessage) => void;
+    getMessage?: () => test$TestMessage;
+    setMessage?: (message: test$TestMessage) => void;
     clearMessage?: () => void;
     hasMessage?: () => boolean;
     getErrMsg?: () => string;
