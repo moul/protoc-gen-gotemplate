@@ -1,8 +1,8 @@
 language: go
-go: 1.7.x
+go: 1.8.x
 install:
-- mkdir -p $GOPATH/bin && curl https://glide.sh/get | sh
-- wget https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/.travis/install-protoc.sh && chmod +x install-protoc.sh && ./install-protoc.sh 3.1.0
+- go get github.com/Masterminds/glide
+- wget https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/.travis/install-protoc.sh && chmod +x install-protoc.sh && ./install-protoc.sh 3.2.0
 - go get -u github.com/golang/protobuf/protoc-gen-go
 script:
 - make install

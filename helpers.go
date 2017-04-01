@@ -11,7 +11,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
-	options "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"
+	options "google.golang.org/genproto/googleapis/api/annotations"
 )
 
 var ProtoHelpersFuncMap = template.FuncMap{

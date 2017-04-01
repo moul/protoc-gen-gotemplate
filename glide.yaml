@@ -9,3 +9,6 @@ import:
 - package: github.com/kr/fs
 - package: github.com/Masterminds/sprig
 - package: github.com/huandu/xstrings
+- package: google.golang.org/genproto
+  subpackages:
+  - googleapis/api/annotations
