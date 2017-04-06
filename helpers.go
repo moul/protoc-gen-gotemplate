@@ -147,10 +147,13 @@ func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 		}
 		return "string"
 	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
-		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
-			return fmt.Sprintf("[]*%s.%s", pkg, shortType(*f.TypeName))
+		if pkg != "" {
+			pkg = pkg + "."
 		}
-		return fmt.Sprintf("*%s.%s", pkg, shortType(*f.TypeName))
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return fmt.Sprintf("[]*%s%s", pkg, shortType(*f.TypeName))
+		}
+		return fmt.Sprintf("*%s%s", pkg, shortType(*f.TypeName))
 	case descriptor.FieldDescriptorProto_TYPE_BYTES:
 		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
 			return "[]byte"
