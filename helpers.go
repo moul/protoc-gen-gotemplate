@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 	"text/template"
 
@@ -13,6 +14,8 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	options "google.golang.org/genproto/googleapis/api/annotations"
 )
+
+var jsReservedRe *regexp.Regexp = regexp.MustCompile(`(^|[^A-Za-z])(do|if|in|for|let|new|try|var|case|else|enum|eval|false|null|this|true|void|with|break|catch|class|const|super|throw|while|yield|delete|export|import|public|return|static|switch|typeof|default|extends|finally|package|private|continue|debugger|function|arguments|interface|protected|implements|instanceof)($|[^A-Za-z])`)
 
 var ProtoHelpersFuncMap = template.FuncMap{
 	"string": func(i interface {
@@ -66,6 +69,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"isFieldRepeated":       isFieldRepeated,
 	"goType":                goType,
 	"jsType":                jsType,
+	"jsSuffixReserved":      jsSuffixReservedKeyword,
 	"namespacedFlowType":    namespacedFlowType,
 	"httpVerb":              httpVerb,
 	"httpPath":              httpPath,
@@ -203,6 +207,10 @@ func jsType(f *descriptor.FieldDescriptorProto) string {
 	default:
 		return fmt.Sprintf(template, "any")
 	}
+}
+
+func jsSuffixReservedKeyword(s string) string {
+	return jsReservedRe.ReplaceAllString(s, "${1}${2}_${3}")
 }
 
 func shortType(s string) string {
