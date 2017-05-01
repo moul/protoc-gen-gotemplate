@@ -68,6 +68,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"isFieldMessage":        isFieldMessage,
 	"isFieldRepeated":       isFieldRepeated,
 	"goType":                goType,
+	"goTypeWithPackage":     goTypeWithPackage,
 	"jsType":                jsType,
 	"jsSuffixReserved":      jsSuffixReservedKeyword,
 	"namespacedFlowType":    namespacedFlowType,
@@ -111,6 +112,11 @@ func isFieldRepeated(f *descriptor.FieldDescriptorProto) bool {
 	}
 
 	return false
+}
+
+func goTypeWithPackage(f *descriptor.FieldDescriptorProto) string {
+	pkg := getPackageTypeName(*f.TypeName)
+	return goType(pkg, f)
 }
 
 func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
@@ -211,6 +217,13 @@ func jsType(f *descriptor.FieldDescriptorProto) string {
 
 func jsSuffixReservedKeyword(s string) string {
 	return jsReservedRe.ReplaceAllString(s, "${1}${2}_${3}")
+}
+
+func getPackageTypeName(s string) string {
+	if strings.Contains(s, ".") {
+		return strings.Split(s, ".")[1]
+	}
+	return ""
 }
 
 func shortType(s string) string {

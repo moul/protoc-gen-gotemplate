@@ -8,6 +8,7 @@ install:
 
 .PHONY: test
 test:	build
+	cd examples/import && make
 	cd examples/dummy && make
 	cd examples/flow && make
 	cd examples/concat && make

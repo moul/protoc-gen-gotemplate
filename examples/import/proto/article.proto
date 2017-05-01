@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package article;
+
+option go_package = "models/article;article";
+
+import "proto/common.proto";
+
+message GetArticleRequest {  common.GetArticle getarticle = 1;}
+message GetArticleResponse {  Article article = 1;}
+
+message Article{
+  string id = 1;
+  string name = 2;
+}
+
+service articlesvc {
+  rpc GetArticle (GetArticleRequest) returns (GetArticleResponse){}
+}
