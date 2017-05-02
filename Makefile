@@ -1,13 +1,13 @@
 .PHONY: build
 build:
-	go build -o protoc-gen-gotemplate .
+	go build -v -i -o protoc-gen-gotemplate .
 
 .PHONY: install
 install:
 	go install .
 
 .PHONY: test
-test:	build
+test:	install
 	cd examples/import && make
 	cd examples/dummy && make
 	cd examples/flow && make

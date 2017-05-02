@@ -1,9 +1,8 @@
 {
-  "build-date": "2017-03-31T17:59:35.936239356+02:00",
-  "build-hostname": "Valerios-MacBook-Pro.local",
-  "build-user": "vgheri",
-  "go-pwd": "github.com/moul/protoc-gen-gotemplate/examples/dummy",
-  "pwd": "/Users/vgheri/go/src/github.com/moul/protoc-gen-gotemplate/examples/dummy",
+  "build-date": "2017-05-02T11:50:25.063291628+02:00",
+  "build-hostname": "manfred-spacegray.local",
+  "build-user": "moul",
+  "pwd": "/Users/moul/Git/moul/protoc-gen-gotemplate/examples/dummy",
   "debug": false,
   "destination-dir": ".",
   "file": {
@@ -840,29 +839,5 @@
         "options": {}
       }
     ]
-  },
-  "environment": [
-    "TERM_PROGRAM=platformio-ide-terminal",
-    "TERM=xterm-256color",
-    "SHELL=/bin/bash",
-    "MAKEFLAGS=",
-    "TMPDIR=/var/folders/9v/4b6h7ftd5ldfqv7gr82mbj340000gn/T/",
-    "Apple_PubSub_Socket_Render=/private/tmp/com.apple.launchd.Zt6NPL5gZZ/Render",
-    "USER=vgheri",
-    "SSH_AUTH_SOCK=/private/tmp/com.apple.launchd.UvxCW75B4v/Listeners",
-    "__CF_USER_TEXT_ENCODING=0x1F5:0x0:0x0",
-    "MAKELEVEL=2",
-    "MFLAGS=",
-    "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:/usr/local/go/bin:/usr/local/protoc/bin:/Users/vgheri/go/bin:/usr/local/protoc/bin:/Users/vgheri/go/bin",
-    "_=/usr/local/protoc/bin/protoc",
-    "PWD=/Users/vgheri/go/src/github.com/moul/protoc-gen-gotemplate/examples/dummy",
-    "LANG=en_US.UTF-8",
-    "XPC_FLAGS=0x0",
-    "XPC_SERVICE_NAME=0",
-    "HISTCONTROL=ignoreboth:erasedups",
-    "SHLVL=15",
-    "HOME=/Users/vgheri",
-    "LOGNAME=vgheri",
-    "GOPATH=/Users/vgheri/go"
-  ]
+  }
 }
