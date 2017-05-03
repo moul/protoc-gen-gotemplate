@@ -115,7 +115,10 @@ func isFieldRepeated(f *descriptor.FieldDescriptorProto) bool {
 }
 
 func goTypeWithPackage(f *descriptor.FieldDescriptorProto) string {
-	pkg := getPackageTypeName(*f.TypeName)
+	pkg := ""
+	if *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE {
+		pkg = getPackageTypeName(*f.TypeName)
+	}
 	return goType(pkg, f)
 }
 
