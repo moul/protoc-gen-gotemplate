@@ -1,0 +1,9 @@
+-red
+-blue
+-black
+-yellow
+-green
+-dark
+-white
+-gray
+-orange
