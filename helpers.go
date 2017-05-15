@@ -65,6 +65,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	},
 	"snakeCase":             xstrings.ToSnakeCase,
 	"getMessageType":        getMessageType,
+	"getEnumValue":          getEnumValue,
 	"isFieldMessage":        isFieldMessage,
 	"isFieldRepeated":       isFieldRepeated,
 	"goType":                goType,
@@ -92,6 +93,16 @@ func getMessageType(f *descriptor.FileDescriptorProto, name string) *descriptor.
 	for _, m := range f.MessageType {
 		if target == *m.Name {
 			return m
+		}
+	}
+
+	return nil
+}
+
+func getEnumValue(f []*descriptor.EnumDescriptorProto, name string) []*descriptor.EnumValueDescriptorProto {
+	for _, item := range f {
+		if strings.EqualFold(*item.Name, name) {
+			return item.GetValue()
 		}
 	}
 

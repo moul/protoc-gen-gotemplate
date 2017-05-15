@@ -1,0 +1,14 @@
+syntax = "proto3";
+package Sample;
+
+enum Colors {
+    red = 0;
+    blue = 1;
+    black = 2;
+    yellow = 3;
+    green = 4;
+    dark = 5;
+    white = 6;
+    gray = 7;
+    orange = 8;
+}
