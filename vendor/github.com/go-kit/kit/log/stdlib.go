@@ -39,7 +39,7 @@ func TimestampKey(key string) StdlibAdapterOption {
 	return func(a *StdlibAdapter) { a.timestampKey = key }
 }
 
-// FileKey sets the key for the file and line field. By default, it's "caller".
+// FileKey sets the key for the file and line field. By default, it's "file".
 func FileKey(key string) StdlibAdapterOption {
 	return func(a *StdlibAdapter) { a.fileKey = key }
 }
@@ -55,7 +55,7 @@ func NewStdlibAdapter(logger Logger, options ...StdlibAdapterOption) io.Writer {
 	a := StdlibAdapter{
 		Logger:       logger,
 		timestampKey: "ts",
-		fileKey:      "caller",
+		fileKey:      "file",
 		messageKey:   "msg",
 	}
 	for _, option := range options {

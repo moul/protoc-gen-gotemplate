@@ -1,12 +1,12 @@
 package handling
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
+	"golang.org/x/net/context"
 
 	kitlog "github.com/go-kit/kit/log"
 	kithttp "github.com/go-kit/kit/transport/http"
@@ -17,7 +17,7 @@ import (
 )
 
 // MakeHandler returns a handler for the handling service.
-func MakeHandler(hs Service, logger kitlog.Logger) http.Handler {
+func MakeHandler(ctx context.Context, hs Service, logger kitlog.Logger) http.Handler {
 	r := mux.NewRouter()
 
 	opts := []kithttp.ServerOption{
@@ -26,6 +26,7 @@ func MakeHandler(hs Service, logger kitlog.Logger) http.Handler {
 	}
 
 	registerIncidentHandler := kithttp.NewServer(
+		ctx,
 		makeRegisterIncidentEndpoint(hs),
 		decodeRegisterIncidentRequest,
 		encodeResponse,

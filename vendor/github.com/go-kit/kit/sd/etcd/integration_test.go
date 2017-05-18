@@ -3,11 +3,12 @@
 package etcd
 
 import (
-	"context"
 	"io"
 	"os"
 	"testing"
 	"time"
+
+	"golang.org/x/net/context"
 
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/log"
@@ -49,7 +50,7 @@ func TestIntegration(t *testing.T) {
 	registrar := NewRegistrar(client, Service{
 		Key:   key,
 		Value: value,
-	}, log.With(log.NewLogfmtLogger(os.Stderr), "component", "registrar"))
+	}, log.NewContext(log.NewLogfmtLogger(os.Stderr)).With("component", "registrar"))
 
 	// Register our instance.
 	registrar.Register()
@@ -71,7 +72,7 @@ func TestIntegration(t *testing.T) {
 		client,
 		prefix,
 		func(string) (endpoint.Endpoint, io.Closer, error) { return endpoint.Nop, nil, nil },
-		log.With(log.NewLogfmtLogger(os.Stderr), "component", "subscriber"),
+		log.NewContext(log.NewLogfmtLogger(os.Stderr)).With("component", "subscriber"),
 	)
 	if err != nil {
 		t.Fatalf("NewSubscriber: %v", err)

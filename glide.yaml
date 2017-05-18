@@ -12,3 +12,5 @@ import:
 - package: google.golang.org/genproto
   subpackages:
   - googleapis/api/annotations
+- package: github.com/grpc-ecosystem/grpc-gateway
+  version: 1.2.2

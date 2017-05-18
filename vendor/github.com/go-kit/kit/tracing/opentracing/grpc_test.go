@@ -1,11 +1,11 @@
 package opentracing_test
 
 import (
-	"context"
 	"testing"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/mocktracer"
+	"golang.org/x/net/context"
 	"google.golang.org/grpc/metadata"
 
 	"github.com/go-kit/kit/log"
@@ -41,7 +41,7 @@ func TestTraceGRPCRequestRoundtrip(t *testing.T) {
 
 	// Use FromGRPCRequest to verify that we can join with the trace given MD.
 	fromGRPCFunc := kitot.FromGRPCRequest(tracer, "joined", logger)
-	joinCtx := fromGRPCFunc(afterCtx, md)
+	joinCtx := fromGRPCFunc(afterCtx, &md)
 	joinedSpan := opentracing.SpanFromContext(joinCtx).(*mocktracer.MockSpan)
 
 	joinedContext := joinedSpan.Context().(mocktracer.MockSpanContext)

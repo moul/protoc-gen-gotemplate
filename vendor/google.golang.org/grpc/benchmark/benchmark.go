@@ -47,8 +47,7 @@ import (
 	"google.golang.org/grpc/grpclog"
 )
 
-// Allows reuse of the same testpb.Payload object.
-func setPayload(p *testpb.Payload, t testpb.PayloadType, size int) {
+func newPayload(t testpb.PayloadType, size int) *testpb.Payload {
 	if size < 0 {
 		grpclog.Fatalf("Requested a response with invalid length %d", size)
 	}
@@ -60,15 +59,10 @@ func setPayload(p *testpb.Payload, t testpb.PayloadType, size int) {
 	default:
 		grpclog.Fatalf("Unsupported payload type: %d", t)
 	}
-	p.Type = t
-	p.Body = body
-	return
-}
-
-func newPayload(t testpb.PayloadType, size int) *testpb.Payload {
-	p := new(testpb.Payload)
-	setPayload(p, t, size)
-	return p
+	return &testpb.Payload{
+		Type: t,
+		Body: body,
+	}
 }
 
 type testServer struct {
@@ -81,13 +75,8 @@ func (s *testServer) UnaryCall(ctx context.Context, in *testpb.SimpleRequest) (*
 }
 
 func (s *testServer) StreamingCall(stream testpb.BenchmarkService_StreamingCallServer) error {
-	response := &testpb.SimpleResponse{
-		Payload: new(testpb.Payload),
-	}
-	in := new(testpb.SimpleRequest)
 	for {
-		// use ServerStream directly to reuse the same testpb.SimpleRequest object
-		err := stream.(grpc.ServerStream).RecvMsg(in)
+		in, err := stream.Recv()
 		if err == io.EOF {
 			// read done.
 			return nil
@@ -95,8 +84,9 @@ func (s *testServer) StreamingCall(stream testpb.BenchmarkService_StreamingCallS
 		if err != nil {
 			return err
 		}
-		setPayload(response.Payload, in.ResponseType, int(in.ResponseSize))
-		if err := stream.Send(response); err != nil {
+		if err := stream.Send(&testpb.SimpleResponse{
+			Payload: newPayload(in.ResponseType, int(in.ResponseSize)),
+		}); err != nil {
 			return err
 		}
 	}

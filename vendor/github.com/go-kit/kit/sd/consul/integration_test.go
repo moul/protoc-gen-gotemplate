@@ -14,9 +14,11 @@ import (
 )
 
 func TestIntegration(t *testing.T) {
-	consulAddr := os.Getenv("CONSUL_ADDR")
+	// Connect to Consul.
+	// docker run -p 8500:8500 progrium/consul -server -bootstrap
+	consulAddr := os.Getenv("CONSUL_ADDRESS")
 	if consulAddr == "" {
-		t.Fatal("CONSUL_ADDR is not set")
+		t.Fatal("CONSUL_ADDRESS is not set")
 	}
 	stdClient, err := stdconsul.NewClient(&stdconsul.Config{
 		Address: consulAddr,
@@ -46,7 +48,7 @@ func TestIntegration(t *testing.T) {
 	subscriber := NewSubscriber(
 		client,
 		factory,
-		log.With(logger, "component", "subscriber"),
+		log.NewContext(logger).With("component", "subscriber"),
 		r.Name,
 		r.Tags,
 		true,
@@ -64,7 +66,7 @@ func TestIntegration(t *testing.T) {
 	}
 
 	// Build a registrar for r.
-	registrar := NewRegistrar(client, r, log.With(logger, "component", "registrar"))
+	registrar := NewRegistrar(client, r, log.NewContext(logger).With("component", "registrar"))
 	registrar.Register()
 	defer registrar.Deregister()
 

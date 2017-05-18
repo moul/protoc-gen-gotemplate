@@ -1,12 +1,12 @@
 package tracking
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"golang.org/x/net/context"
 
 	kitlog "github.com/go-kit/kit/log"
 	kithttp "github.com/go-kit/kit/transport/http"
@@ -15,7 +15,7 @@ import (
 )
 
 // MakeHandler returns a handler for the tracking service.
-func MakeHandler(ts Service, logger kitlog.Logger) http.Handler {
+func MakeHandler(ctx context.Context, ts Service, logger kitlog.Logger) http.Handler {
 	r := mux.NewRouter()
 
 	opts := []kithttp.ServerOption{
@@ -24,6 +24,7 @@ func MakeHandler(ts Service, logger kitlog.Logger) http.Handler {
 	}
 
 	trackCargoHandler := kithttp.NewServer(
+		ctx,
 		makeTrackCargoEndpoint(ts),
 		decodeTrackCargoRequest,
 		encodeResponse,

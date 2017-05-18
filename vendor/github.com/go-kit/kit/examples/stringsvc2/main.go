@@ -5,6 +5,7 @@ import (
 	"os"
 
 	stdprometheus "github.com/prometheus/client_golang/prometheus"
+	"golang.org/x/net/context"
 
 	"github.com/go-kit/kit/log"
 	kitprometheus "github.com/go-kit/kit/metrics/prometheus"
@@ -12,6 +13,7 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
 	logger := log.NewLogfmtLogger(os.Stderr)
 
 	fieldKeys := []string{"method", "error"}
@@ -40,12 +42,14 @@ func main() {
 	svc = instrumentingMiddleware{requestCount, requestLatency, countResult, svc}
 
 	uppercaseHandler := httptransport.NewServer(
+		ctx,
 		makeUppercaseEndpoint(svc),
 		decodeUppercaseRequest,
 		encodeResponse,
 	)
 
 	countHandler := httptransport.NewServer(
+		ctx,
 		makeCountEndpoint(svc),
 		decodeCountRequest,
 		encodeResponse,

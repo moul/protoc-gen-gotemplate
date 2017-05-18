@@ -4,14 +4,15 @@ package profilesvc
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"net/http"
+
 	"net/url"
 
 	"github.com/gorilla/mux"
+	"golang.org/x/net/context"
 
 	"github.com/go-kit/kit/log"
 	httptransport "github.com/go-kit/kit/transport/http"
@@ -25,7 +26,7 @@ var (
 
 // MakeHTTPHandler mounts all of the service endpoints into an http.Handler.
 // Useful in a profilesvc server.
-func MakeHTTPHandler(s Service, logger log.Logger) http.Handler {
+func MakeHTTPHandler(ctx context.Context, s Service, logger log.Logger) http.Handler {
 	r := mux.NewRouter()
 	e := MakeServerEndpoints(s)
 	options := []httptransport.ServerOption{
@@ -44,54 +45,63 @@ func MakeHTTPHandler(s Service, logger log.Logger) http.Handler {
 	// DELETE  /profiles/:id/addresses/:addressID  remove an address
 
 	r.Methods("POST").Path("/profiles/").Handler(httptransport.NewServer(
+		ctx,
 		e.PostProfileEndpoint,
 		decodePostProfileRequest,
 		encodeResponse,
 		options...,
 	))
 	r.Methods("GET").Path("/profiles/{id}").Handler(httptransport.NewServer(
+		ctx,
 		e.GetProfileEndpoint,
 		decodeGetProfileRequest,
 		encodeResponse,
 		options...,
 	))
 	r.Methods("PUT").Path("/profiles/{id}").Handler(httptransport.NewServer(
+		ctx,
 		e.PutProfileEndpoint,
 		decodePutProfileRequest,
 		encodeResponse,
 		options...,
 	))
 	r.Methods("PATCH").Path("/profiles/{id}").Handler(httptransport.NewServer(
+		ctx,
 		e.PatchProfileEndpoint,
 		decodePatchProfileRequest,
 		encodeResponse,
 		options...,
 	))
 	r.Methods("DELETE").Path("/profiles/{id}").Handler(httptransport.NewServer(
+		ctx,
 		e.DeleteProfileEndpoint,
 		decodeDeleteProfileRequest,
 		encodeResponse,
 		options...,
 	))
 	r.Methods("GET").Path("/profiles/{id}/addresses/").Handler(httptransport.NewServer(
+		ctx,
 		e.GetAddressesEndpoint,
 		decodeGetAddressesRequest,
 		encodeResponse,
 		options...,
 	))
 	r.Methods("GET").Path("/profiles/{id}/addresses/{addressID}").Handler(httptransport.NewServer(
+		ctx,
 		e.GetAddressEndpoint,
 		decodeGetAddressRequest,
 		encodeResponse,
 		options...,
 	))
 	r.Methods("POST").Path("/profiles/{id}/addresses/").Handler(httptransport.NewServer(
+		ctx,
 		e.PostAddressEndpoint,
 		decodePostAddressRequest,
 		encodeResponse,
 		options...,
 	))
 	r.Methods("DELETE").Path("/profiles/{id}/addresses/{addressID}").Handler(httptransport.NewServer(
+		ctx,
 		e.DeleteAddressEndpoint,
 		decodeDeleteAddressRequest,
 		encodeResponse,
@@ -395,6 +405,16 @@ func codeFrom(err error) int {
 	case ErrAlreadyExists, ErrInconsistentIDs:
 		return http.StatusBadRequest
 	default:
+		if e, ok := err.(httptransport.Error); ok {
+			switch e.Domain {
+			case httptransport.DomainDecode:
+				return http.StatusBadRequest
+			case httptransport.DomainDo:
+				return http.StatusServiceUnavailable
+			default:
+				return http.StatusInternalServerError
+			}
+		}
 		return http.StatusInternalServerError
 	}
 }

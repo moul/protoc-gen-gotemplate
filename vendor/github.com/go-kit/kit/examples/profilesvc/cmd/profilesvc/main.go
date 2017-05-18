@@ -1,4 +1,4 @@
-﻿package main
+package main
 
 import (
 	"flag"
@@ -7,6 +7,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"golang.org/x/net/context"
 
 	"github.com/go-kit/kit/examples/profilesvc"
 	"github.com/go-kit/kit/log"
@@ -21,8 +23,13 @@ func main() {
 	var logger log.Logger
 	{
 		logger = log.NewLogfmtLogger(os.Stderr)
-		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
-		logger = log.With(logger, "caller", log.DefaultCaller)
+		logger = log.NewContext(logger).With("ts", log.DefaultTimestampUTC)
+		logger = log.NewContext(logger).With("caller", log.DefaultCaller)
+	}
+
+	var ctx context.Context
+	{
+		ctx = context.Background()
 	}
 
 	var s profilesvc.Service
@@ -33,7 +40,7 @@ func main() {
 
 	var h http.Handler
 	{
-		h = profilesvc.MakeHTTPHandler(s, log.With(logger, "component", "HTTP"))
+		h = profilesvc.MakeHTTPHandler(ctx, s, log.NewContext(logger).With("component", "HTTP"))
 	}
 
 	errs := make(chan error)

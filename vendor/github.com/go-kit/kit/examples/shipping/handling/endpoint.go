@@ -1,8 +1,9 @@
 package handling
 
 import (
-	"context"
 	"time"
+
+	"golang.org/x/net/context"
 
 	"github.com/go-kit/kit/endpoint"
 

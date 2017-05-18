@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"net/url"
@@ -10,6 +9,7 @@ import (
 
 	jujuratelimit "github.com/juju/ratelimit"
 	"github.com/sony/gobreaker"
+	"golang.org/x/net/context"
 
 	"github.com/go-kit/kit/circuitbreaker"
 	"github.com/go-kit/kit/endpoint"
@@ -20,7 +20,7 @@ import (
 	httptransport "github.com/go-kit/kit/transport/http"
 )
 
-func proxyingMiddleware(ctx context.Context, instances string, logger log.Logger) ServiceMiddleware {
+func proxyingMiddleware(instances string, ctx context.Context, logger log.Logger) ServiceMiddleware {
 	// If instances is empty, don't proxy.
 	if instances == "" {
 		logger.Log("proxy_to", "none")

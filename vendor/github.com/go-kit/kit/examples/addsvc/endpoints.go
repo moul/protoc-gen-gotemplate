@@ -6,9 +6,10 @@ package addsvc
 // formats. It also includes endpoint middlewares.
 
 import (
-	"context"
 	"fmt"
 	"time"
+
+	"golang.org/x/net/context"
 
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/log"

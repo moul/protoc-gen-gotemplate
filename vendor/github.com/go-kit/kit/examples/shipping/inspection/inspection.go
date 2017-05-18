@@ -1,9 +1,7 @@
 // Package inspection provides means to inspect cargos.
 package inspection
 
-import (
-	"github.com/go-kit/kit/examples/shipping/cargo"
-)
+import "github.com/go-kit/kit/examples/shipping/cargo"
 
 // EventHandler provides means of subscribing to inspection events.
 type EventHandler interface {

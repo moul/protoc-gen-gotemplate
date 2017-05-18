@@ -4,10 +4,8 @@ package addsvc
 // It utilizes the transport/grpc.Server.
 
 import (
-	"context"
-
 	stdopentracing "github.com/opentracing/opentracing-go"
-	oldcontext "golang.org/x/net/context"
+	"golang.org/x/net/context"
 
 	"github.com/go-kit/kit/examples/addsvc/pb"
 	"github.com/go-kit/kit/log"
@@ -16,18 +14,20 @@ import (
 )
 
 // MakeGRPCServer makes a set of endpoints available as a gRPC AddServer.
-func MakeGRPCServer(endpoints Endpoints, tracer stdopentracing.Tracer, logger log.Logger) pb.AddServer {
+func MakeGRPCServer(ctx context.Context, endpoints Endpoints, tracer stdopentracing.Tracer, logger log.Logger) pb.AddServer {
 	options := []grpctransport.ServerOption{
 		grpctransport.ServerErrorLogger(logger),
 	}
 	return &grpcServer{
 		sum: grpctransport.NewServer(
+			ctx,
 			endpoints.SumEndpoint,
 			DecodeGRPCSumRequest,
 			EncodeGRPCSumResponse,
 			append(options, grpctransport.ServerBefore(opentracing.FromGRPCRequest(tracer, "Sum", logger)))...,
 		),
 		concat: grpctransport.NewServer(
+			ctx,
 			endpoints.ConcatEndpoint,
 			DecodeGRPCConcatRequest,
 			EncodeGRPCConcatResponse,
@@ -41,7 +41,7 @@ type grpcServer struct {
 	concat grpctransport.Handler
 }
 
-func (s *grpcServer) Sum(ctx oldcontext.Context, req *pb.SumRequest) (*pb.SumReply, error) {
+func (s *grpcServer) Sum(ctx context.Context, req *pb.SumRequest) (*pb.SumReply, error) {
 	_, rep, err := s.sum.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func (s *grpcServer) Sum(ctx oldcontext.Context, req *pb.SumRequest) (*pb.SumRep
 	return rep.(*pb.SumReply), nil
 }
 
-func (s *grpcServer) Concat(ctx oldcontext.Context, req *pb.ConcatRequest) (*pb.ConcatReply, error) {
+func (s *grpcServer) Concat(ctx context.Context, req *pb.ConcatRequest) (*pb.ConcatReply, error) {
 	_, rep, err := s.concat.ServeGRPC(ctx, req)
 	if err != nil {
 		return nil, err
