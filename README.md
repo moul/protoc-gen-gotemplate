@@ -39,15 +39,21 @@ input.proto     templates/doc.txt.tmpl      templates/config.json.tmpl
 doc.txt         config.json
 ```
 
----
+### Options
 
-You can specify a custom `template_dir` or enable `debug`:
+You can specify custom options, as follow:
 
 ```console
 $> protoc --gotemplate_out=debug=true,template_dir=/path/to/template/directory:. input.proto
 ```
 
----
+| Option                | Default Value | Accepted Values           | Description
+|-----------------------|---------------|---------------------------|-----------------------
+| `template_dir`        | `./template`  | absolute or relative path | path to look for templates
+| `destination_dir`     | `.`           | absolute or relative path | base path to write output
+| `single-package-mode` | *false*       | `true` or `false`         | if *true*, `protoc` won't accept multiple packages to be compiled at once (*!= from `all`*), but will support `Message` lookup across the imported protobuf dependencies
+| `debug`               | *false*       | `true` or `false`         | if *true*, `protoc` will generate a more verbose output
+| `all`                 | *false*       | `true` or `false`         | if *true*, protobuf files without `Service` will also be parsed
 
 ##### Hints
 
@@ -61,13 +67,34 @@ See [examples](./examples).
 
 This project uses [Masterminds/sprig](https://github.com/Masterminds/sprig) library and additional functions to extend the builtin [text/template](https://golang.org/pkg/text/template) helpers.
 
-Non-exhaustive list of new helpers:
+Non-exhaustive list of new helpers:s
 
 * **all the functions from [sprig](https://github.com/Masterminds/sprig)**
 * `json`
 * `prettyjson`
 * `first`
 * `last`
+* `splitArray`
+* `upperFirst`
+* `lowerFirst`
+* `camelCase`
+* `lowerCamelCase`
+* `kebabCase`
+* `snakeCase`
+* `getProtoFile`
+* `getMessageType`
+* `getEnumValue`
+* `isFieldMessage`
+* `isFieldRepeated`
+* `goType`
+* `goTypeWithPackage`
+* `jsType`
+* `jsSuffixReserved`
+* `namespacedFlowType`
+* `httpVerb`
+* `httpPath`
+* `shortType`
+* `urlHasVarsFromMessage`
 
 See the project helpers for the complete list.
 
