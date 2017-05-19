@@ -104,6 +104,17 @@ See the project helpers for the complete list.
 * Install **protobuf**: `go get -u github.com/golang/protobuf/{proto,protoc-gen-go}`
 * Install **protoc-gen-gotemplate**: `go get -u github.com/moul/protoc-gen-gotemplate`
 
+## Docker
+
+* automated docker hub build: [https://hub.docker.com/r/moul/protoc-gen-gotemplate/](https://hub.docker.com/r/moul/protoc-gen-gotemplate/)
+* Based on [http://github.com/znly/protoc](http://github.com/znly/protoc)
+
+Usage:
+
+```console
+$> docker run --rm -v "$(pwd):$(pwd)" -w "$(pwd)" moul/protoc-gen-gotemplate -I. --gotemplate_out=./output/ ./*.proto
+```
+
 ## Projects using `protoc-gen-gotemplate`
 
 * [kafka-gateway](https://github.com/moul/kafka-gateway/): Kafka gateway/proxy (gRPC + http) using Go-Kit
