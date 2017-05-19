@@ -11,6 +11,8 @@ import (
 
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
+
+	pgghelpers "github.com/moul/protoc-gen-gotemplate/helpers"
 )
 
 type GenericTemplateBasedEncoder struct {
@@ -122,7 +124,7 @@ func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, err
 		Enum:           e.enum,
 	}
 	buffer := new(bytes.Buffer)
-	tmpl, err := template.New("").Funcs(ProtoHelpersFuncMap).Parse(templateFilename)
+	tmpl, err := template.New("").Funcs(pgghelpers.ProtoHelpersFuncMap).Parse(templateFilename)
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +139,7 @@ func (e *GenericTemplateBasedEncoder) buildContent(templateFilename string) (str
 	// initialize template engine
 	fullPath := filepath.Join(e.templateDir, templateFilename)
 	templateName := filepath.Base(fullPath)
-	tmpl, err := template.New(templateName).Funcs(ProtoHelpersFuncMap).ParseFiles(fullPath)
+	tmpl, err := template.New(templateName).Funcs(pgghelpers.ProtoHelpersFuncMap).ParseFiles(fullPath)
 	if err != nil {
 		return "", "", err
 	}

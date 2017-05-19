@@ -1,4 +1,4 @@
-package main
+package pgghelpers
 
 import (
 	"encoding/json"
@@ -16,6 +16,14 @@ import (
 )
 
 var jsReservedRe *regexp.Regexp = regexp.MustCompile(`(^|[^A-Za-z])(do|if|in|for|let|new|try|var|case|else|enum|eval|false|null|this|true|void|with|break|catch|class|const|super|throw|while|yield|delete|export|import|public|return|static|switch|typeof|default|extends|finally|package|private|continue|debugger|function|arguments|interface|protected|implements|instanceof)($|[^A-Za-z])`)
+
+var (
+	registry *ggdescriptor.Registry // some helpers need access to registry
+)
+
+func SetRegistry(reg *ggdescriptor.Registry) {
+	registry = reg
+}
 
 var ProtoHelpersFuncMap = template.FuncMap{
 	"string": func(i interface {

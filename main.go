@@ -10,6 +10,8 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
 	ggdescriptor "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+
+	pgghelpers "github.com/moul/protoc-gen-gotemplate/helpers"
 )
 
 var (
@@ -101,6 +103,7 @@ func main() {
 
 	if singlePackageMode {
 		registry = ggdescriptor.NewRegistry()
+		pgghelpers.SetRegistry(registry)
 		if err := registry.Load(g.Request); err != nil {
 			g.Error(err, "registry: failed to load the request")
 		}
