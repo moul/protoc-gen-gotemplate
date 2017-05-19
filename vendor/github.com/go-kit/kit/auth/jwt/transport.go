@@ -1,11 +1,11 @@
 package jwt
 
 import (
-	"context"
 	"fmt"
 	stdhttp "net/http"
 	"strings"
 
+	"golang.org/x/net/context"
 	"google.golang.org/grpc/metadata"
 
 	"github.com/go-kit/kit/transport/grpc"
@@ -44,10 +44,10 @@ func FromHTTPContext() http.RequestFunc {
 
 // ToGRPCContext moves JWT token from grpc metadata to context. Particularly
 // userful for servers.
-func ToGRPCContext() grpc.ServerRequestFunc {
-	return func(ctx context.Context, md metadata.MD) context.Context {
+func ToGRPCContext() grpc.RequestFunc {
+	return func(ctx context.Context, md *metadata.MD) context.Context {
 		// capital "Key" is illegal in HTTP/2.
-		authHeader, ok := md["authorization"]
+		authHeader, ok := (*md)["authorization"]
 		if !ok {
 			return ctx
 		}
@@ -63,7 +63,7 @@ func ToGRPCContext() grpc.ServerRequestFunc {
 
 // FromGRPCContext moves JWT token from context to grpc metadata. Particularly
 // useful for clients.
-func FromGRPCContext() grpc.ClientRequestFunc {
+func FromGRPCContext() grpc.RequestFunc {
 	return func(ctx context.Context, md *metadata.MD) context.Context {
 		token, ok := ctx.Value(JWTTokenContextKey).(string)
 		if ok {

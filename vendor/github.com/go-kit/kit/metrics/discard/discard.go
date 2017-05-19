@@ -25,9 +25,6 @@ func (g gauge) With(labelValues ...string) metrics.Gauge { return g }
 // Set implements Gauge.
 func (g gauge) Set(value float64) {}
 
-// Add implements metrics.Gauge.
-func (g gauge) Add(delta float64) {}
-
 type histogram struct{}
 
 // NewHistogram returns a new no-op histogram.

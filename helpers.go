@@ -8,10 +8,10 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
-	"github.com/huandu/xstrings"
-
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+	ggdescriptor "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	"github.com/huandu/xstrings"
 	options "google.golang.org/genproto/googleapis/api/annotations"
 )
 
@@ -64,6 +64,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		return strings.Replace(xstrings.ToSnakeCase(s), "_", "-", -1)
 	},
 	"snakeCase":             xstrings.ToSnakeCase,
+	"getProtoFile":          getProtoFile,
 	"getMessageType":        getMessageType,
 	"getEnumValue":          getEnumValue,
 	"isFieldMessage":        isFieldMessage,
@@ -85,17 +86,37 @@ func init() {
 	}
 }
 
-func getMessageType(f *descriptor.FileDescriptorProto, name string) *descriptor.DescriptorProto {
+func getProtoFile(name string) *ggdescriptor.File {
+	if registry == nil {
+		return nil
+	}
+	file, err := registry.LookupFile(name)
+	if err != nil {
+		panic(err)
+	}
+	return file
+}
+
+func getMessageType(f *descriptor.FileDescriptorProto, name string) *ggdescriptor.Message {
+	if registry != nil {
+		msg, err := registry.LookupMsg(".", name)
+		if err != nil {
+			panic(err)
+		}
+		return msg
+	}
+
 	// name is in the form .packageName.MessageTypeName.InnerMessageTypeName...
 	// e.g. .article.ProductTag
 	splits := strings.Split(name, ".")
 	target := splits[len(splits)-1]
 	for _, m := range f.MessageType {
 		if target == *m.Name {
-			return m
+			return &ggdescriptor.Message{
+				DescriptorProto: m,
+			}
 		}
 	}
-
 	return nil
 }
 

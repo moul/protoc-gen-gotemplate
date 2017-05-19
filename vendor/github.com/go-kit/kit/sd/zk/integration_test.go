@@ -4,7 +4,8 @@ package zk
 
 import (
 	"bytes"
-	"log"
+	"flag"
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -17,11 +18,21 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	zkAddr := os.Getenv("ZK_ADDR")
-	if zkAddr == "" {
-		log.Fatal("ZK_ADDR is not set")
+	flag.Parse()
+
+	fmt.Println("Starting ZooKeeper server...")
+
+	ts, err := stdzk.StartTestCluster(1, nil, nil)
+	if err != nil {
+		fmt.Printf("ZooKeeper server error: %v\n", err)
+		os.Exit(1)
 	}
-	host = []string{zkAddr}
+
+	host = []string{fmt.Sprintf("localhost:%d", ts.Servers[0].Port)}
+	code := m.Run()
+
+	ts.Stop()
+	os.Exit(code)
 }
 
 func TestCreateParentNodesOnServer(t *testing.T) {

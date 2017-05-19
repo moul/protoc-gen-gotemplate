@@ -2,10 +2,11 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+
+	"golang.org/x/net/context"
 
 	"github.com/go-kit/kit/endpoint"
 )

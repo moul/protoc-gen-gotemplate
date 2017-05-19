@@ -1,7 +1,6 @@
-﻿package main
+package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"net"
@@ -17,6 +16,7 @@ import (
 	stdopentracing "github.com/opentracing/opentracing-go"
 	zipkin "github.com/openzipkin/zipkin-go-opentracing"
 	stdprometheus "github.com/prometheus/client_golang/prometheus"
+	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"sourcegraph.com/sourcegraph/appdash"
 	appdashot "sourcegraph.com/sourcegraph/appdash/opentracing"
@@ -40,8 +40,7 @@ func main() {
 		thriftProtocol   = flag.String("thrift.protocol", "binary", "binary, compact, json, simplejson")
 		thriftBufferSize = flag.Int("thrift.buffer.size", 0, "0 for unbuffered")
 		thriftFramed     = flag.Bool("thrift.framed", false, "true to enable framing")
-		zipkinAddr       = flag.String("zipkin.addr", "", "Enable Zipkin tracing via a Zipkin HTTP Collector endpoint")
-		zipkinKafkaAddr  = flag.String("zipkin.kafka.addr", "", "Enable Zipkin tracing via a Kafka server host:port")
+		zipkinAddr       = flag.String("zipkin.addr", "", "Enable Zipkin tracing via a Kafka server host:port")
 		appdashAddr      = flag.String("appdash.addr", "", "Enable Appdash tracing via an Appdash server host:port")
 		lightstepToken   = flag.String("lightstep.token", "", "Enable LightStep tracing via a LightStep access token")
 	)
@@ -51,8 +50,8 @@ func main() {
 	var logger log.Logger
 	{
 		logger = log.NewLogfmtLogger(os.Stdout)
-		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
-		logger = log.With(logger, "caller", log.DefaultCaller)
+		logger = log.NewContext(logger).With("ts", log.DefaultTimestampUTC)
+		logger = log.NewContext(logger).With("caller", log.DefaultCaller)
 	}
 	logger.Log("msg", "hello")
 	defer logger.Log("msg", "goodbye")
@@ -86,38 +85,16 @@ func main() {
 	var tracer stdopentracing.Tracer
 	{
 		if *zipkinAddr != "" {
-			logger := log.With(logger, "tracer", "ZipkinHTTP")
+			logger := log.NewContext(logger).With("tracer", "Zipkin")
 			logger.Log("addr", *zipkinAddr)
-
-			// endpoint typically looks like: http://zipkinhost:9411/api/v1/spans
-			collector, err := zipkin.NewHTTPCollector(*zipkinAddr)
-			if err != nil {
-				logger.Log("err", err)
-				os.Exit(1)
-			}
-			defer collector.Close()
-
-			tracer, err = zipkin.NewTracer(
-				zipkin.NewRecorder(collector, false, "localhost:80", "addsvc"),
-			)
-			if err != nil {
-				logger.Log("err", err)
-				os.Exit(1)
-			}
-		} else if *zipkinKafkaAddr != "" {
-			logger := log.With(logger, "tracer", "ZipkinKafka")
-			logger.Log("addr", *zipkinKafkaAddr)
-
 			collector, err := zipkin.NewKafkaCollector(
-				strings.Split(*zipkinKafkaAddr, ","),
-				zipkin.KafkaLogger(log.NewNopLogger()),
+				strings.Split(*zipkinAddr, ","),
+				zipkin.KafkaLogger(logger),
 			)
 			if err != nil {
 				logger.Log("err", err)
 				os.Exit(1)
 			}
-			defer collector.Close()
-
 			tracer, err = zipkin.NewTracer(
 				zipkin.NewRecorder(collector, false, "localhost:80", "addsvc"),
 			)
@@ -126,18 +103,18 @@ func main() {
 				os.Exit(1)
 			}
 		} else if *appdashAddr != "" {
-			logger := log.With(logger, "tracer", "Appdash")
+			logger := log.NewContext(logger).With("tracer", "Appdash")
 			logger.Log("addr", *appdashAddr)
 			tracer = appdashot.NewTracer(appdash.NewRemoteCollector(*appdashAddr))
 		} else if *lightstepToken != "" {
-			logger := log.With(logger, "tracer", "LightStep")
+			logger := log.NewContext(logger).With("tracer", "LightStep")
 			logger.Log() // probably don't want to print out the token :)
 			tracer = lightstep.NewTracer(lightstep.Options{
 				AccessToken: *lightstepToken,
 			})
 			defer lightstep.FlushLightStepTracer(tracer)
 		} else {
-			logger := log.With(logger, "tracer", "none")
+			logger := log.NewContext(logger).With("tracer", "none")
 			logger.Log()
 			tracer = stdopentracing.GlobalTracer() // no-op
 		}
@@ -155,7 +132,7 @@ func main() {
 	var sumEndpoint endpoint.Endpoint
 	{
 		sumDuration := duration.With("method", "Sum")
-		sumLogger := log.With(logger, "method", "Sum")
+		sumLogger := log.NewContext(logger).With("method", "Sum")
 
 		sumEndpoint = addsvc.MakeSumEndpoint(service)
 		sumEndpoint = opentracing.TraceServer(tracer, "Sum")(sumEndpoint)
@@ -165,7 +142,7 @@ func main() {
 	var concatEndpoint endpoint.Endpoint
 	{
 		concatDuration := duration.With("method", "Concat")
-		concatLogger := log.With(logger, "method", "Concat")
+		concatLogger := log.NewContext(logger).With("method", "Concat")
 
 		concatEndpoint = addsvc.MakeConcatEndpoint(service)
 		concatEndpoint = opentracing.TraceServer(tracer, "Concat")(concatEndpoint)
@@ -190,7 +167,7 @@ func main() {
 
 	// Debug listener.
 	go func() {
-		logger := log.With(logger, "transport", "debug")
+		logger := log.NewContext(logger).With("transport", "debug")
 
 		m := http.NewServeMux()
 		m.Handle("/debug/pprof/", http.HandlerFunc(pprof.Index))
@@ -206,15 +183,15 @@ func main() {
 
 	// HTTP transport.
 	go func() {
-		logger := log.With(logger, "transport", "HTTP")
-		h := addsvc.MakeHTTPHandler(endpoints, tracer, logger)
+		logger := log.NewContext(logger).With("transport", "HTTP")
+		h := addsvc.MakeHTTPHandler(ctx, endpoints, tracer, logger)
 		logger.Log("addr", *httpAddr)
 		errc <- http.ListenAndServe(*httpAddr, h)
 	}()
 
 	// gRPC transport.
 	go func() {
-		logger := log.With(logger, "transport", "gRPC")
+		logger := log.NewContext(logger).With("transport", "gRPC")
 
 		ln, err := net.Listen("tcp", *grpcAddr)
 		if err != nil {
@@ -222,7 +199,7 @@ func main() {
 			return
 		}
 
-		srv := addsvc.MakeGRPCServer(endpoints, tracer, logger)
+		srv := addsvc.MakeGRPCServer(ctx, endpoints, tracer, logger)
 		s := grpc.NewServer()
 		pb.RegisterAddServer(s, srv)
 
@@ -232,7 +209,7 @@ func main() {
 
 	// Thrift transport.
 	go func() {
-		logger := log.With(logger, "transport", "Thrift")
+		logger := log.NewContext(logger).With("transport", "Thrift")
 
 		var protocolFactory thrift.TProtocolFactory
 		switch *thriftProtocol {

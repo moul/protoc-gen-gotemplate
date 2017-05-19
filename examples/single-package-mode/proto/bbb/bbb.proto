@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package the.bbb.package;
+
+option go_package = "github.com/moul/protoc-gen-gotemplate/examples/single-package-mode/output/bbb";
+
+import "aaa/aaa.proto";
+
+service BbbService {
+  rpc Aaa(the.aaa.package.AaaRequest) returns (the.aaa.package.AaaReply);
+  rpc Bbb(BbbRequest) returns (BbbReply);
+}
+
+message BbbRequest {
+  bool enable = 1;
+}
+message BbbReply {
+  bool done = 1;
+}

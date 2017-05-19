@@ -5,13 +5,13 @@ package addsvc
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"net/http"
 
 	stdopentracing "github.com/opentracing/opentracing-go"
+	"golang.org/x/net/context"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/tracing/opentracing"
@@ -20,19 +20,21 @@ import (
 
 // MakeHTTPHandler returns a handler that makes a set of endpoints available
 // on predefined paths.
-func MakeHTTPHandler(endpoints Endpoints, tracer stdopentracing.Tracer, logger log.Logger) http.Handler {
+func MakeHTTPHandler(ctx context.Context, endpoints Endpoints, tracer stdopentracing.Tracer, logger log.Logger) http.Handler {
 	options := []httptransport.ServerOption{
 		httptransport.ServerErrorEncoder(errorEncoder),
 		httptransport.ServerErrorLogger(logger),
 	}
 	m := http.NewServeMux()
 	m.Handle("/sum", httptransport.NewServer(
+		ctx,
 		endpoints.SumEndpoint,
 		DecodeHTTPSumRequest,
 		EncodeHTTPGenericResponse,
 		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "Sum", logger)))...,
 	))
 	m.Handle("/concat", httptransport.NewServer(
+		ctx,
 		endpoints.ConcatEndpoint,
 		DecodeHTTPConcatRequest,
 		EncodeHTTPGenericResponse,
@@ -45,9 +47,18 @@ func errorEncoder(_ context.Context, err error, w http.ResponseWriter) {
 	code := http.StatusInternalServerError
 	msg := err.Error()
 
-	switch err {
-	case ErrTwoZeroes, ErrMaxSizeExceeded, ErrIntOverflow:
-		code = http.StatusBadRequest
+	if e, ok := err.(httptransport.Error); ok {
+		msg = e.Err.Error()
+		switch e.Domain {
+		case httptransport.DomainDecode:
+			code = http.StatusBadRequest
+
+		case httptransport.DomainDo:
+			switch e.Err {
+			case ErrTwoZeroes, ErrMaxSizeExceeded, ErrIntOverflow:
+				code = http.StatusBadRequest
+			}
+		}
 	}
 
 	w.WriteHeader(code)

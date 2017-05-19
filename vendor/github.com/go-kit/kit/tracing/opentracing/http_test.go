@@ -1,7 +1,6 @@
 package opentracing_test
 
 import (
-	"context"
 	"net/http"
 	"reflect"
 	"testing"
@@ -9,6 +8,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 	"github.com/opentracing/opentracing-go/mocktracer"
+	"golang.org/x/net/context"
 
 	"github.com/go-kit/kit/log"
 	kitot "github.com/go-kit/kit/tracing/opentracing"

@@ -9,6 +9,11 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
+	ggdescriptor "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+)
+
+var (
+	registry *ggdescriptor.Registry // some helpers need access to registry
 )
 
 func main() {
@@ -30,10 +35,13 @@ func main() {
 	g.CommandLineParameters(g.Request.GetParameter())
 
 	// Parse parameters
-	templateDir := "./templates"
-	destinationDir := "."
-	debug := false
-	all := false
+	var (
+		templateDir       = "./templates"
+		destinationDir    = "."
+		debug             = false
+		all               = false
+		singlePackageMode = false
+	)
 	if parameter := g.Request.GetParameter(); parameter != "" {
 		for _, param := range strings.Split(parameter, ",") {
 			parts := strings.Split(param, "=")
@@ -47,6 +55,15 @@ func main() {
 				break
 			case "destination_dir":
 				destinationDir = parts[1]
+				break
+			case "single-package-mode":
+				switch strings.ToLower(parts[1]) {
+				case "true", "t":
+					singlePackageMode = true
+				case "false", "f":
+				default:
+					log.Printf("Err: invalid value for single-package-mode: %q", parts[1])
+				}
 				break
 			case "debug":
 				switch strings.ToLower(parts[1]) {
@@ -74,17 +91,29 @@ func main() {
 
 	tmplMap := make(map[string]*plugin_go.CodeGeneratorResponse_File)
 	concatOrAppend := func(file *plugin_go.CodeGeneratorResponse_File) {
-		if val, ok := tmplMap[*file.Name]; ok {
-			*val.Content += *file.Content
+		if val, ok := tmplMap[file.GetName()]; ok {
+			*val.Content += file.GetContent()
 		} else {
-			tmplMap[*file.Name] = file
+			tmplMap[file.GetName()] = file
 			g.Response.File = append(g.Response.File, file)
+		}
+	}
+
+	if singlePackageMode {
+		registry = ggdescriptor.NewRegistry()
+		if err := registry.Load(g.Request); err != nil {
+			g.Error(err, "registry: failed to load the request")
 		}
 	}
 
 	// Generate the encoders
 	for _, file := range g.Request.GetProtoFile() {
 		if all {
+			if singlePackageMode {
+				if _, err := registry.LookupFile(file.GetName()); err != nil {
+					g.Error(err, "registry: failed to lookup file %q", file.GetName())
+				}
+			}
 			encoder := NewGenericTemplateBasedEncoder(templateDir, file, debug, destinationDir)
 			for _, tmpl := range encoder.Files() {
 				concatOrAppend(tmpl)

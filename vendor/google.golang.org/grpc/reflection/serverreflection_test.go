@@ -51,15 +51,13 @@ import (
 var (
 	s = &serverReflectionServer{}
 	// fileDescriptor of each test proto file.
-	fdTest       *dpb.FileDescriptorProto
-	fdProto2     *dpb.FileDescriptorProto
-	fdProto2Ext  *dpb.FileDescriptorProto
-	fdProto2Ext2 *dpb.FileDescriptorProto
+	fdTest      *dpb.FileDescriptorProto
+	fdProto2    *dpb.FileDescriptorProto
+	fdProto2Ext *dpb.FileDescriptorProto
 	// fileDescriptor marshalled.
-	fdTestByte       []byte
-	fdProto2Byte     []byte
-	fdProto2ExtByte  []byte
-	fdProto2Ext2Byte []byte
+	fdTestByte      []byte
+	fdProto2Byte    []byte
+	fdProto2ExtByte []byte
 )
 
 func loadFileDesc(filename string) (*dpb.FileDescriptorProto, []byte) {
@@ -82,7 +80,6 @@ func init() {
 	fdTest, fdTestByte = loadFileDesc("test.proto")
 	fdProto2, fdProto2Byte = loadFileDesc("proto2.proto")
 	fdProto2Ext, fdProto2ExtByte = loadFileDesc("proto2_ext.proto")
-	fdProto2Ext2, fdProto2Ext2Byte = loadFileDesc("proto2_ext2.proto")
 }
 
 func TestFileDescForType(t *testing.T) {
@@ -91,7 +88,7 @@ func TestFileDescForType(t *testing.T) {
 		wantFd *dpb.FileDescriptorProto
 	}{
 		{reflect.TypeOf(pb.SearchResponse_Result{}), fdTest},
-		{reflect.TypeOf(pb.ToBeExtended{}), fdProto2},
+		{reflect.TypeOf(pb.ToBeExtened{}), fdProto2},
 	} {
 		fd, err := s.fileDescForType(test.st)
 		if err != nil || !reflect.DeepEqual(fd, test.wantFd) {
@@ -131,11 +128,7 @@ func TestFileDescContainingExtension(t *testing.T) {
 		extNum int32
 		want   *dpb.FileDescriptorProto
 	}{
-		{reflect.TypeOf(pb.ToBeExtended{}), 13, fdProto2Ext},
-		{reflect.TypeOf(pb.ToBeExtended{}), 17, fdProto2Ext},
-		{reflect.TypeOf(pb.ToBeExtended{}), 19, fdProto2Ext},
-		{reflect.TypeOf(pb.ToBeExtended{}), 23, fdProto2Ext2},
-		{reflect.TypeOf(pb.ToBeExtended{}), 29, fdProto2Ext2},
+		{reflect.TypeOf(pb.ToBeExtened{}), 17, fdProto2Ext},
 	} {
 		fd, err := s.fileDescContainingExtension(test.st, test.extNum)
 		if err != nil || !reflect.DeepEqual(fd, test.want) {
@@ -156,7 +149,7 @@ func TestAllExtensionNumbersForType(t *testing.T) {
 		st   reflect.Type
 		want []int32
 	}{
-		{reflect.TypeOf(pb.ToBeExtended{}), []int32{13, 17, 19, 23, 29}},
+		{reflect.TypeOf(pb.ToBeExtened{}), []int32{13, 17}},
 	} {
 		r, err := s.allExtensionNumbersForType(test.st)
 		sort.Sort(intArray(r))
@@ -285,7 +278,7 @@ func testFileContainingSymbol(t *testing.T, stream rpb.ServerReflection_ServerRe
 		{"grpc.testing.SearchService.Search", fdTestByte},
 		{"grpc.testing.SearchService.StreamingSearch", fdTestByte},
 		{"grpc.testing.SearchResponse", fdTestByte},
-		{"grpc.testing.ToBeExtended", fdProto2Byte},
+		{"grpc.testing.ToBeExtened", fdProto2Byte},
 	} {
 		if err := stream.Send(&rpb.ServerReflectionRequest{
 			MessageRequest: &rpb.ServerReflectionRequest_FileContainingSymbol{
@@ -316,7 +309,7 @@ func testFileContainingSymbolError(t *testing.T, stream rpb.ServerReflection_Ser
 		"grpc.testing.SerchService",
 		"grpc.testing.SearchService.SearchE",
 		"grpc.tesing.SearchResponse",
-		"gpc.testing.ToBeExtended",
+		"gpc.testing.ToBeExtened",
 	} {
 		if err := stream.Send(&rpb.ServerReflectionRequest{
 			MessageRequest: &rpb.ServerReflectionRequest_FileContainingSymbol{
@@ -345,11 +338,7 @@ func testFileContainingExtension(t *testing.T, stream rpb.ServerReflection_Serve
 		extNum   int32
 		want     []byte
 	}{
-		{"grpc.testing.ToBeExtended", 13, fdProto2ExtByte},
-		{"grpc.testing.ToBeExtended", 17, fdProto2ExtByte},
-		{"grpc.testing.ToBeExtended", 19, fdProto2ExtByte},
-		{"grpc.testing.ToBeExtended", 23, fdProto2Ext2Byte},
-		{"grpc.testing.ToBeExtended", 29, fdProto2Ext2Byte},
+		{"grpc.testing.ToBeExtened", 17, fdProto2ExtByte},
 	} {
 		if err := stream.Send(&rpb.ServerReflectionRequest{
 			MessageRequest: &rpb.ServerReflectionRequest_FileContainingExtension{
@@ -383,8 +372,8 @@ func testFileContainingExtensionError(t *testing.T, stream rpb.ServerReflection_
 		typeName string
 		extNum   int32
 	}{
-		{"grpc.testing.ToBExtended", 17},
-		{"grpc.testing.ToBeExtended", 15},
+		{"grpc.testing.ToBExtened", 17},
+		{"grpc.testing.ToBeExtened", 15},
 	} {
 		if err := stream.Send(&rpb.ServerReflectionRequest{
 			MessageRequest: &rpb.ServerReflectionRequest_FileContainingExtension{
@@ -415,7 +404,7 @@ func testAllExtensionNumbersOfType(t *testing.T, stream rpb.ServerReflection_Ser
 		typeName string
 		want     []int32
 	}{
-		{"grpc.testing.ToBeExtended", []int32{13, 17, 19, 23, 29}},
+		{"grpc.testing.ToBeExtened", []int32{13, 17}},
 	} {
 		if err := stream.Send(&rpb.ServerReflectionRequest{
 			MessageRequest: &rpb.ServerReflectionRequest_AllExtensionNumbersOfType{
@@ -446,7 +435,7 @@ func testAllExtensionNumbersOfType(t *testing.T, stream rpb.ServerReflection_Ser
 
 func testAllExtensionNumbersOfTypeError(t *testing.T, stream rpb.ServerReflection_ServerReflectionInfoClient) {
 	for _, test := range []string{
-		"grpc.testing.ToBeExtendedE",
+		"grpc.testing.ToBeExtenedE",
 	} {
 		if err := stream.Send(&rpb.ServerReflectionRequest{
 			MessageRequest: &rpb.ServerReflectionRequest_AllExtensionNumbersOfType{

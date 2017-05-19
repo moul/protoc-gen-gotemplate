@@ -67,10 +67,10 @@ func New(instance string, tracer stdopentracing.Tracer, logger log.Logger) (adds
 		).Endpoint()
 		concatEndpoint = opentracing.TraceClient(tracer, "Concat")(concatEndpoint)
 		concatEndpoint = limiter(concatEndpoint)
-		concatEndpoint = circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
+		sumEndpoint = circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
 			Name:    "Concat",
 			Timeout: 30 * time.Second,
-		}))(concatEndpoint)
+		}))(sumEndpoint)
 	}
 
 	return addsvc.Endpoints{

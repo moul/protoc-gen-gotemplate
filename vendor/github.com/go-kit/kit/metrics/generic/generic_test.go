@@ -7,7 +7,6 @@ package generic_test
 import (
 	"math"
 	"math/rand"
-	"sync"
 	"testing"
 
 	"github.com/go-kit/kit/metrics/generic"
@@ -15,11 +14,7 @@ import (
 )
 
 func TestCounter(t *testing.T) {
-	name := "my_counter"
-	counter := generic.NewCounter(name).With("label", "counter").(*generic.Counter)
-	if want, have := name, counter.Name; want != have {
-		t.Errorf("Name: want %q, have %q", want, have)
-	}
+	counter := generic.NewCounter("my_counter").With("label", "counter").(*generic.Counter)
 	value := func() float64 { return counter.Value() }
 	if err := teststat.TestCounter(counter, value); err != nil {
 		t.Fatal(err)
@@ -40,11 +35,7 @@ func TestValueReset(t *testing.T) {
 }
 
 func TestGauge(t *testing.T) {
-	name := "my_gauge"
-	gauge := generic.NewGauge(name).With("label", "gauge").(*generic.Gauge)
-	if want, have := name, gauge.Name; want != have {
-		t.Errorf("Name: want %q, have %q", want, have)
-	}
+	gauge := generic.NewGauge("my_gauge").With("label", "gauge").(*generic.Gauge)
 	value := func() float64 { return gauge.Value() }
 	if err := teststat.TestGauge(gauge, value); err != nil {
 		t.Fatal(err)
@@ -52,38 +43,13 @@ func TestGauge(t *testing.T) {
 }
 
 func TestHistogram(t *testing.T) {
-	name := "my_histogram"
-	histogram := generic.NewHistogram(name, 50).With("label", "histogram").(*generic.Histogram)
-	if want, have := name, histogram.Name; want != have {
-		t.Errorf("Name: want %q, have %q", want, have)
-	}
+	histogram := generic.NewHistogram("my_histogram", 50).With("label", "histogram").(*generic.Histogram)
 	quantiles := func() (float64, float64, float64, float64) {
 		return histogram.Quantile(0.50), histogram.Quantile(0.90), histogram.Quantile(0.95), histogram.Quantile(0.99)
 	}
 	if err := teststat.TestHistogram(histogram, quantiles, 0.01); err != nil {
 		t.Fatal(err)
 	}
-}
-
-func TestIssue424(t *testing.T) {
-	var (
-		histogram   = generic.NewHistogram("dont_panic", 50)
-		concurrency = 100
-		operations  = 1000
-		wg          sync.WaitGroup
-	)
-
-	wg.Add(concurrency)
-	for i := 0; i < concurrency; i++ {
-		go func() {
-			defer wg.Done()
-			for j := 0; j < operations; j++ {
-				histogram.Observe(float64(j))
-				histogram.Observe(histogram.Quantile(0.5))
-			}
-		}()
-	}
-	wg.Wait()
 }
 
 func TestSimpleHistogram(t *testing.T) {

@@ -1,7 +1,6 @@
 package zk
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -9,6 +8,7 @@ import (
 	"time"
 
 	"github.com/samuel/go-zookeeper/zk"
+	"golang.org/x/net/context"
 
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/log"

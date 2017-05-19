@@ -16,6 +16,7 @@ test:	install
 	cd examples/flow && make
 	cd examples/sitemap && make
 	cd examples/go-generate && make
+	cd examples/single-package-mode && make
 #	cd examples/go-kit && make
 
 .PHONY: docker.build

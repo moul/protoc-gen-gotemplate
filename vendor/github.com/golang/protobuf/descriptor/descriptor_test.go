@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang/protobuf/descriptor"
 	tpb "github.com/golang/protobuf/proto/testdata"
-	protobuf "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	protobuf "google.golang.org/genproto/protobuf"
 )
 
 func TestMessage(t *testing.T) {

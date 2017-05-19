@@ -1,0 +1,26 @@
+// file generated with protoc-gen-gotemplate
+package {{.File.Name | dir}}
+
+{{- $file := .File}}
+{{- $currentFile := $file.Name | getProtoFile}}
+
+import (
+	"fmt"
+
+	"golang.org/x/net/context"
+
+	{{- range .File.Dependency}}
+	{{- $dependency := . | getProtoFile}}
+	{{$dependency.GoPkg}}
+	{{end}}
+)
+
+type Service struct {}
+
+{{- range .Service.Method}}
+{{- $in := .InputType | getMessageType $file}}
+{{- $out := .OutputType | getMessageType $file}}
+func (service Service) {{.Name}}(ctx context.Context, input *{{$in.GoType $currentFile.GoPkg.Path}}) (*{{$out.GoType $currentFile.GoPkg.Path}}, error) {
+	return nil, fmt.Errorf("method not implemented")
+}
+{{end}}

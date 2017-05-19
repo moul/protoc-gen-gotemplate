@@ -1,12 +1,12 @@
-hash: 952872c40b8721f6bcd8bc1eab4f174aa0aebc5e8d9acb70ecdffb91068845b5
-updated: 2017-03-31T17:55:29.337081111+02:00
+hash: 1944ae13e983e8da7b26c697fc40d79d34326b8c7f56c8939fb16f1ff8caca5b
+updated: 2017-05-18T19:20:01.855895064+02:00
 imports:
 - name: github.com/aokoli/goutils
-  version: 9c37978a95bd5c709a15883b6242714ea6709e64
+  version: e57d01ace047c1a43e6a49ecf3ecc50ed2be81d1
 - name: github.com/dgrijalva/jwt-go
-  version: d2709f9f1f31ebcda9651b03077758c1f3a0018c
+  version: c9eaceb2896dbb515dae7ec352b377a226a52721
 - name: github.com/go-kit/kit
-  version: fadad6fffe0466b19df9efd9acde5c9a52df5fa4
+  version: 9f5c614cd1e70102f80b644edbc760805ebf16d5
   subpackages:
   - auth/jwt
   - endpoint
@@ -16,22 +16,28 @@ imports:
 - name: github.com/go-logfmt/logfmt
   version: 390ab7935ee28ec6b286364bba9b4dd6410cb3d5
 - name: github.com/go-stack/stack
-  version: 100eb0c0a9c5b306ca2fb4f165df21d80ada4b82
+  version: 7a2f19628aabfe68f0766b59e74d6315f8347d22
+- name: github.com/golang/glog
+  version: 23def4e6c14b4da8ac2ed8007337bc5eb5007998
 - name: github.com/golang/protobuf
-  version: 2bba0603135d7d7f5cb73b2125beeda19c09f4ef
+  version: 8ee79997227bf9b34611aee7946ae64735e6fd93
   subpackages:
   - proto
   - protoc-gen-go/descriptor
   - protoc-gen-go/generator
   - protoc-gen-go/plugin
 - name: github.com/gorilla/handlers
-  version: 13d73096a474cac93275c679c7b8a2dc17ddba82
+  version: e1b2144f2167de0e1042d1d35e5cba5119d4fb5d
 - name: github.com/grpc-ecosystem/grpc-gateway
-  version: 18d159699f2e83fc5bb9ef2f79465ca3f3122676
+  version: 589b126116b5fc961939b3e156c29e4d9d58222f
   subpackages:
-  - third_party/googleapis/google/api
+  - protoc-gen-grpc-gateway/descriptor
+  - protoc-gen-grpc-gateway/httprule
+  - utilities
 - name: github.com/huandu/xstrings
   version: 3959339b333561bf62a38b424fd41517c2c90f40
+- name: github.com/imdario/mergo
+  version: 3e95a51e0639b4cf372f2ccf74c86749d747fbdc
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
 - name: github.com/kr/logfmt
@@ -39,16 +45,16 @@ imports:
 - name: github.com/Masterminds/semver
   version: 59c29afe1a994eacb71c833025ca7acf874bb1da
 - name: github.com/Masterminds/sprig
-  version: cd9291e11ed2b78cdc1991bdd3e8adf51d6236bb
+  version: 2f4371ac162f912989f01cc2b6af4ba6660e6a30
 - name: github.com/satori/go.uuid
   version: 879c5887cd475cd7864858769793b2ceb0d44feb
 - name: golang.org/x/crypto
-  version: 3cb07270c9455e8ad27956a70891c962d121a228
+  version: 0fe963104e9d1877082f8fb38f816fcd97eb1d10
   subpackages:
   - pbkdf2
   - scrypt
 - name: golang.org/x/net
-  version: ffcf1bedda3b04ebb15a168a59800a73d6dc0f4d
+  version: da2b4fa28524a3baf148c1b94df4440267063c88
   subpackages:
   - context
   - context/ctxhttp
@@ -59,28 +65,25 @@ imports:
   - lex/httplex
   - trace
 - name: golang.org/x/text
-  version: c3b0cbb40eb9a862fdc91f79bed8c7ac8e7a36e8
+  version: a49bea13b776691cb1b49873e5d8df96ec74831a
   subpackages:
   - secure/bidirule
   - transform
   - unicode/bidi
   - unicode/norm
 - name: google.golang.org/genproto
-  version: de9f5e90fe9b278809363f08c2072d2f2a429de7
+  version: bb3573be0c484136831138976d444b8754777aff
   subpackages:
   - googleapis/api/annotations
 - name: google.golang.org/grpc
-  version: cdee119ee21e61eef7093a41ba148fa83585e143
+  version: 777daa17ff9b5daef1cfdf915088a2ada3332bf0
   subpackages:
   - codes
   - credentials
   - grpclog
   - internal
-  - keepalive
   - metadata
   - naming
   - peer
-  - stats
-  - tap
   - transport
 testImports: []
