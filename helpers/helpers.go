@@ -338,7 +338,7 @@ func httpVerb(m *descriptor.MethodDescriptorProto) string {
 	}
 }
 
-func urlHasVarsFromMessage(path string, d *descriptor.DescriptorProto) bool {
+func urlHasVarsFromMessage(path string, d *ggdescriptor.Message) bool {
 	for _, field := range d.Field {
 		if !isFieldMessage(field) {
 			if strings.Contains(path, fmt.Sprintf("{%s}", *field.Name)) {

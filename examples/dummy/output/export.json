@@ -1,6 +1,6 @@
 {
-  "build-date": "2017-05-02T11:50:25.063291628+02:00",
-  "build-hostname": "manfred-spacegray.local",
+  "build-date": "2017-05-19T20:09:45.954357761+02:00",
+  "build-hostname": "manfred-spacegray.aircard",
   "build-user": "moul",
   "pwd": "/Users/moul/Git/moul/protoc-gen-gotemplate/examples/dummy",
   "debug": false,
@@ -839,5 +839,6 @@
         "options": {}
       }
     ]
-  }
+  },
+  "enum": null
 }
