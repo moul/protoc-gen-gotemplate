@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package foo;
+
+import "google/protobuf/timestamp.proto";
+
+message GetFooRequest {  google.protobuf.Timestamp timestamp = 1;}
+message GetFooResponse {  string result = 1;}
+
+service foosvc {
+  rpc GetFoo (GetFooRequest) returns (GetFooResponse){}
+}

@@ -8,6 +8,7 @@ install:
 
 .PHONY: test
 test:	install
+	cd examples/time && make
 	cd examples/enum && make
 	cd examples/import && make
 	cd examples/dummy && make

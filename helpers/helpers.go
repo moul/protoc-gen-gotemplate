@@ -263,6 +263,9 @@ func jsSuffixReservedKeyword(s string) string {
 }
 
 func getPackageTypeName(s string) string {
+	if strings.Compare(s, ".google.protobuf.Timestamp") == 0 {
+		return "timestamp"
+	}
 	if strings.Contains(s, ".") {
 		return strings.Split(s, ".")[1]
 	}
