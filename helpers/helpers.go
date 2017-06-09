@@ -186,6 +186,11 @@ func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 		return "uint64"
 	case descriptor.FieldDescriptorProto_TYPE_INT32:
 		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]int32"
+		}
+		return "int32"
+	case descriptor.FieldDescriptorProto_TYPE_UINT32:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
 			return "[]uint32"
 		}
 		return "uint32"
@@ -212,11 +217,6 @@ func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 			return "[]byte"
 		}
 		return "byte"
-	case descriptor.FieldDescriptorProto_TYPE_UINT32:
-		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
-			return "[]uint32"
-		}
-		return "uint32"
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
 		return fmt.Sprintf("*%s.%s", pkg, shortType(*f.TypeName))
 	default:
