@@ -84,6 +84,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"getEnumValue":          getEnumValue,
 	"isFieldMessage":        isFieldMessage,
 	"isFieldRepeated":       isFieldRepeated,
+	"haskellType":           haskellType,
 	"goType":                goType,
 	"goTypeWithPackage":     goTypeWithPackage,
 	"jsType":                jsType,
@@ -167,6 +168,68 @@ func goTypeWithPackage(f *descriptor.FieldDescriptorProto) string {
 		pkg = getPackageTypeName(*f.TypeName)
 	}
 	return goType(pkg, f)
+}
+
+func haskellType(pkg string, f *descriptor.FieldDescriptorProto) string {
+	switch *f.Type {
+	case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[Float]"
+		}
+		return "Float"
+	case descriptor.FieldDescriptorProto_TYPE_FLOAT:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[Float]"
+		}
+		return "Float"
+	case descriptor.FieldDescriptorProto_TYPE_INT64:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[Int64]"
+		}
+		return "Int64"
+	case descriptor.FieldDescriptorProto_TYPE_UINT64:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[Word]"
+		}
+		return "Word"
+	case descriptor.FieldDescriptorProto_TYPE_INT32:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[Int]"
+		}
+		return "Int"
+	case descriptor.FieldDescriptorProto_TYPE_UINT32:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[Word]"
+		}
+		return "Word"
+	case descriptor.FieldDescriptorProto_TYPE_BOOL:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[Bool]"
+		}
+		return "Bool"
+	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[Text]"
+		}
+		return "Text"
+	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+		if pkg != "" {
+			pkg = pkg + "."
+		}
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return fmt.Sprintf("[%s%s]", pkg, shortType(*f.TypeName))
+		}
+		return fmt.Sprintf("%s%s", pkg, shortType(*f.TypeName))
+	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[Word8]"
+		}
+		return "Word8"
+	case descriptor.FieldDescriptorProto_TYPE_ENUM:
+		return fmt.Sprintf("%s%s", pkg, shortType(*f.TypeName))
+	default:
+		return "Generic"
+	}
 }
 
 func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
