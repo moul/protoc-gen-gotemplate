@@ -40,7 +40,14 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		return string(a)
 	},
 	"splitArray": func(sep string, s string) []string {
-		return strings.Split(s, sep)
+		var r []string
+		t := strings.Split(s, sep)
+		for i := range t {
+			if t[i] != "" {
+				r = append(r, t[i])
+			}
+		}
+		return r
 	},
 	"first": func(a []string) string {
 		return a[0]
