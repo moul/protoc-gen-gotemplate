@@ -233,6 +233,9 @@ func haskellType(pkg string, f *descriptor.FieldDescriptorProto) string {
 }
 
 func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
+	if pkg != "" {
+		pkg = pkg + "."
+	}
 	switch *f.Type {
 	case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
 		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
@@ -275,9 +278,6 @@ func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 		}
 		return "string"
 	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
-		if pkg != "" {
-			pkg = pkg + "."
-		}
 		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
 			return fmt.Sprintf("[]*%s%s", pkg, shortType(*f.TypeName))
 		}
@@ -288,7 +288,7 @@ func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 		}
 		return "byte"
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
-		return fmt.Sprintf("*%s.%s", pkg, shortType(*f.TypeName))
+		return fmt.Sprintf("*%s%s", pkg, shortType(*f.TypeName))
 	default:
 		return "interface{}"
 	}
