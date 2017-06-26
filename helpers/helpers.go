@@ -78,6 +78,12 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"kebabCase": func(s string) string {
 		return strings.Replace(xstrings.ToSnakeCase(s), "_", "-", -1)
 	},
+	"contains": func(sub, s string) bool {
+		return strings.Contains(s, sub)
+	},
+	"trimstr": func(cutset, s string) string {
+		return strings.Trim(s, cutset)
+	},
 	"snakeCase":             xstrings.ToSnakeCase,
 	"getProtoFile":          getProtoFile,
 	"getMessageType":        getMessageType,
