@@ -84,22 +84,23 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"trimstr": func(cutset, s string) string {
 		return strings.Trim(s, cutset)
 	},
-	"snakeCase":             xstrings.ToSnakeCase,
-	"getProtoFile":          getProtoFile,
-	"getMessageType":        getMessageType,
-	"getEnumValue":          getEnumValue,
-	"isFieldMessage":        isFieldMessage,
-	"isFieldRepeated":       isFieldRepeated,
-	"haskellType":           haskellType,
-	"goType":                goType,
-	"goTypeWithPackage":     goTypeWithPackage,
-	"jsType":                jsType,
-	"jsSuffixReserved":      jsSuffixReservedKeyword,
-	"namespacedFlowType":    namespacedFlowType,
-	"httpVerb":              httpVerb,
-	"httpPath":              httpPath,
-	"shortType":             shortType,
-	"urlHasVarsFromMessage": urlHasVarsFromMessage,
+	"snakeCase":               xstrings.ToSnakeCase,
+	"getProtoFile":            getProtoFile,
+	"getMessageType":          getMessageType,
+	"getEnumValue":            getEnumValue,
+	"isFieldMessage":          isFieldMessage,
+	"isFieldMessageTimeStamp": isFieldMessageTimeStamp,
+	"isFieldRepeated":         isFieldRepeated,
+	"haskellType":             haskellType,
+	"goType":                  goType,
+	"goTypeWithPackage":       goTypeWithPackage,
+	"jsType":                  jsType,
+	"jsSuffixReserved":        jsSuffixReservedKeyword,
+	"namespacedFlowType":      namespacedFlowType,
+	"httpVerb":                httpVerb,
+	"httpPath":                httpPath,
+	"shortType":               shortType,
+	"urlHasVarsFromMessage":   urlHasVarsFromMessage,
 }
 
 func init() {
@@ -150,6 +151,15 @@ func getEnumValue(f []*descriptor.EnumDescriptorProto, name string) []*descripto
 	}
 
 	return nil
+}
+
+func isFieldMessageTimeStamp(f *descriptor.FieldDescriptorProto) bool {
+	if f.Type != nil && *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE {
+		if strings.Compare(*f.Name, "timestamp") == 0 {
+			return true
+		}
+	}
+	return false
 }
 
 func isFieldMessage(f *descriptor.FieldDescriptorProto) bool {
