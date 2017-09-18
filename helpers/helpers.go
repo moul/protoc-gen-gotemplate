@@ -155,7 +155,7 @@ func getEnumValue(f []*descriptor.EnumDescriptorProto, name string) []*descripto
 
 func isFieldMessageTimeStamp(f *descriptor.FieldDescriptorProto) bool {
 	if f.Type != nil && *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE {
-		if strings.Compare(*f.Name, "timestamp") == 0 {
+		if strings.Compare(*f.TypeName, ".google.protobuf.Timestamp") == 0 {
 			return true
 		}
 	}
