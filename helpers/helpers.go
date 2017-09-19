@@ -99,6 +99,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"namespacedFlowType":      namespacedFlowType,
 	"httpVerb":                httpVerb,
 	"httpPath":                httpPath,
+	"httpBody":                httpBody,
 	"shortType":               shortType,
 	"urlHasVarsFromMessage":   urlHasVarsFromMessage,
 }
@@ -425,6 +426,19 @@ func httpVerb(m *descriptor.MethodDescriptorProto) string {
 	case *options.HttpRule_Custom:
 		return t.Custom.Kind
 	}
+}
+
+func httpBody(m *descriptor.MethodDescriptorProto) string {
+
+	ext, err := proto.GetExtension(m.Options, options.E_Http)
+	if err != nil {
+		return err.Error()
+	}
+	opts, ok := ext.(*options.HttpRule)
+	if !ok {
+		return fmt.Sprintf("extension is %T; want an HttpRule", ext)
+	}
+	return opts.Body
 }
 
 func urlHasVarsFromMessage(path string, d *ggdescriptor.Message) bool {
