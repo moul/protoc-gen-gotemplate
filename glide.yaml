@@ -14,3 +14,5 @@ import:
   - googleapis/api/annotations
 - package: github.com/grpc-ecosystem/grpc-gateway
   version: 1.2.2
+- package: github.com/gorilla/mux
+  version: ^1.5.0

@@ -10,4 +10,4 @@ RUN		apk --update add make git go rsync libc-dev \
 # Install protoc-gen-gotemplate
 COPY		.	/go/src/github.com/moul/protoc-gen-gotemplate
 WORKDIR		/go/src/github.com/moul/protoc-gen-gotemplate
-RUN		go install .
+RUN		go install . ./cmd/web-editor

@@ -1,5 +1,5 @@
-hash: 1944ae13e983e8da7b26c697fc40d79d34326b8c7f56c8939fb16f1ff8caca5b
-updated: 2017-05-18T19:20:01.855895064+02:00
+hash: 1971d053430c1e52bc18cb507ed44360e28782c9d1f5ff4c5d8d4acfb226c882
+updated: 2017-10-26T17:01:26.57468+02:00
 imports:
 - name: github.com/aokoli/goutils
   version: e57d01ace047c1a43e6a49ecf3ecc50ed2be81d1
@@ -26,8 +26,13 @@ imports:
   - protoc-gen-go/descriptor
   - protoc-gen-go/generator
   - protoc-gen-go/plugin
+  - ptypes/timestamp
+- name: github.com/gorilla/context
+  version: 1ea25387ff6f684839d82767c1733ff4d4d15d0a
 - name: github.com/gorilla/handlers
   version: e1b2144f2167de0e1042d1d35e5cba5119d4fb5d
+- name: github.com/gorilla/mux
+  version: 24fca303ac6da784b9e8269f724ddeb0b2eea5e7
 - name: github.com/grpc-ecosystem/grpc-gateway
   version: 589b126116b5fc961939b3e156c29e4d9d58222f
   subpackages:
@@ -37,7 +42,7 @@ imports:
 - name: github.com/huandu/xstrings
   version: 3959339b333561bf62a38b424fd41517c2c90f40
 - name: github.com/imdario/mergo
-  version: 3e95a51e0639b4cf372f2ccf74c86749d747fbdc
+  version: 7fe0c75c13abdee74b09fcacef5ea1c6bba6a874
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
 - name: github.com/kr/logfmt

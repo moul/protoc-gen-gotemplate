@@ -5,6 +5,7 @@ build:
 .PHONY: install
 install:
 	go install .
+	go install ./cmd/web-editor
 
 .PHONY: test
 test:	install

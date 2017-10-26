@@ -1,0 +1,136 @@
+<html>
+  <head>
+    <title>protoc-gen-gotemplate web editor</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-animate.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.3.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.3/ui-bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/mode-protobuf.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/mode-golang.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/theme-cobalt.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/worker-javascript.js"></script>
+    <script src="//angular-ui.github.io/ui-ace/dist/ui-ace.min.js"></script>
+
+    <script type="text/javascript">
+     var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9+/=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/rn/g,"n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}
+
+     angular.module("pggt", ['pggt.controllers','ngAnimate','ui.bootstrap', 'ui.ace']);
+     angular.module("pggt.controllers", [])
+            .controller('PggtCtrl', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
+       $scope.requestType = 'post';
+       $scope.url = '/generate';
+       $scope.response = null;
+       $scope.errors = null;
+
+       $scope.inputHasChanged = false;
+
+       $scope.checkModel = {
+         optimize: false,
+         disableNetwork: false,
+         toArm: false,
+       };
+
+       $scope.$watchCollection('checkModel', function() {
+         $scope.sendRequest();
+       });
+
+       var cron = $interval(function() {
+         if ($scope.inputHasChanged) {
+           $scope.sendRequest();
+         }
+       }, 2000);
+
+       // b64encoded version of https://github.com/grpc/grpc-go/blob/master/examples/route_guide/routeguide/route_guide.proto
+       $scope.protobuf = Base64.decode("Ly8gQ29weXJpZ2h0IDIwMTUgZ1JQQyBhdXRob3JzLg0KLy8NCi8vIExpY2Vuc2VkIHVuZGVyIHRoZSBBcGFjaGUgTGljZW5zZSwgVmVyc2lvbiAyLjAgKHRoZSAiTGljZW5zZSIpOw0KLy8geW91IG1heSBub3QgdXNlIHRoaXMgZmlsZSBleGNlcHQgaW4gY29tcGxpYW5jZSB3aXRoIHRoZSBMaWNlbnNlLg0KLy8gWW91IG1heSBvYnRhaW4gYSBjb3B5IG9mIHRoZSBMaWNlbnNlIGF0DQovLw0KLy8gICAgIGh0dHA6Ly93d3cuYXBhY2hlLm9yZy9saWNlbnNlcy9MSUNFTlNFLTIuMA0KLy8NCi8vIFVubGVzcyByZXF1aXJlZCBieSBhcHBsaWNhYmxlIGxhdyBvciBhZ3JlZWQgdG8gaW4gd3JpdGluZywgc29mdHdhcmUNCi8vIGRpc3RyaWJ1dGVkIHVuZGVyIHRoZSBMaWNlbnNlIGlzIGRpc3RyaWJ1dGVkIG9uIGFuICJBUyBJUyIgQkFTSVMsDQovLyBXSVRIT1VUIFdBUlJBTlRJRVMgT1IgQ09ORElUSU9OUyBPRiBBTlkgS0lORCwgZWl0aGVyIGV4cHJlc3Mgb3IgaW1wbGllZC4NCi8vIFNlZSB0aGUgTGljZW5zZSBmb3IgdGhlIHNwZWNpZmljIGxhbmd1YWdlIGdvdmVybmluZyBwZXJtaXNzaW9ucyBhbmQNCi8vIGxpbWl0YXRpb25zIHVuZGVyIHRoZSBMaWNlbnNlLg0KDQpzeW50YXggPSAicHJvdG8zIjsNCg0Kb3B0aW9uIGphdmFfbXVsdGlwbGVfZmlsZXMgPSB0cnVlOw0Kb3B0aW9uIGphdmFfcGFja2FnZSA9ICJpby5ncnBjLmV4YW1wbGVzLnJvdXRlZ3VpZGUiOw0Kb3B0aW9uIGphdmFfb3V0ZXJfY2xhc3NuYW1lID0gIlJvdXRlR3VpZGVQcm90byI7DQoNCnBhY2thZ2Ugcm91dGVndWlkZTsNCg0KLy8gSW50ZXJmYWNlIGV4cG9ydGVkIGJ5IHRoZSBzZXJ2ZXIuDQpzZXJ2aWNlIFJvdXRlR3VpZGUgew0KICAvLyBBIHNpbXBsZSBSUEMuDQogIC8vDQogIC8vIE9idGFpbnMgdGhlIGZlYXR1cmUgYXQgYSBnaXZlbiBwb3NpdGlvbi4NCiAgLy8NCiAgLy8gQSBmZWF0dXJlIHdpdGggYW4gZW1wdHkgbmFtZSBpcyByZXR1cm5lZCBpZiB0aGVyZSdzIG5vIGZlYXR1cmUgYXQgdGhlIGdpdmVuDQogIC8vIHBvc2l0aW9uLg0KICBycGMgR2V0RmVhdHVyZShQb2ludCkgcmV0dXJucyAoRmVhdHVyZSkge30NCg0KICAvLyBBIHNlcnZlci10by1jbGllbnQgc3RyZWFtaW5nIFJQQy4NCiAgLy8NCiAgLy8gT2J0YWlucyB0aGUgRmVhdHVyZXMgYXZhaWxhYmxlIHdpdGhpbiB0aGUgZ2l2ZW4gUmVjdGFuZ2xlLiAgUmVzdWx0cyBhcmUNCiAgLy8gc3RyZWFtZWQgcmF0aGVyIHRoYW4gcmV0dXJuZWQgYXQgb25jZSAoZS5nLiBpbiBhIHJlc3BvbnNlIG1lc3NhZ2Ugd2l0aCBhDQogIC8vIHJlcGVhdGVkIGZpZWxkKSwgYXMgdGhlIHJlY3RhbmdsZSBtYXkgY292ZXIgYSBsYXJnZSBhcmVhIGFuZCBjb250YWluIGENCiAgLy8gaHVnZSBudW1iZXIgb2YgZmVhdHVyZXMuDQogIHJwYyBMaXN0RmVhdHVyZXMoUmVjdGFuZ2xlKSByZXR1cm5zIChzdHJlYW0gRmVhdHVyZSkge30NCg0KICAvLyBBIGNsaWVudC10by1zZXJ2ZXIgc3RyZWFtaW5nIFJQQy4NCiAgLy8NCiAgLy8gQWNjZXB0cyBhIHN0cmVhbSBvZiBQb2ludHMgb24gYSByb3V0ZSBiZWluZyB0cmF2ZXJzZWQsIHJldHVybmluZyBhDQogIC8vIFJvdXRlU3VtbWFyeSB3aGVuIHRyYXZlcnNhbCBpcyBjb21wbGV0ZWQuDQogIHJwYyBSZWNvcmRSb3V0ZShzdHJlYW0gUG9pbnQpIHJldHVybnMgKFJvdXRlU3VtbWFyeSkge30NCg0KICAvLyBBIEJpZGlyZWN0aW9uYWwgc3RyZWFtaW5nIFJQQy4NCiAgLy8NCiAgLy8gQWNjZXB0cyBhIHN0cmVhbSBvZiBSb3V0ZU5vdGVzIHNlbnQgd2hpbGUgYSByb3V0ZSBpcyBiZWluZyB0cmF2ZXJzZWQsDQogIC8vIHdoaWxlIHJlY2VpdmluZyBvdGhlciBSb3V0ZU5vdGVzIChlLmcuIGZyb20gb3RoZXIgdXNlcnMpLg0KICBycGMgUm91dGVDaGF0KHN0cmVhbSBSb3V0ZU5vdGUpIHJldHVybnMgKHN0cmVhbSBSb3V0ZU5vdGUpIHt9DQp9DQoNCi8vIFBvaW50cyBhcmUgcmVwcmVzZW50ZWQgYXMgbGF0aXR1ZGUtbG9uZ2l0dWRlIHBhaXJzIGluIHRoZSBFNyByZXByZXNlbnRhdGlvbg0KLy8gKGRlZ3JlZXMgbXVsdGlwbGllZCBieSAxMCoqNyBhbmQgcm91bmRlZCB0byB0aGUgbmVhcmVzdCBpbnRlZ2VyKS4NCi8vIExhdGl0dWRlcyBzaG91bGQgYmUgaW4gdGhlIHJhbmdlICsvLSA5MCBkZWdyZWVzIGFuZCBsb25naXR1ZGUgc2hvdWxkIGJlIGluDQovLyB0aGUgcmFuZ2UgKy8tIDE4MCBkZWdyZWVzIChpbmNsdXNpdmUpLg0KbWVzc2FnZSBQb2ludCB7DQogIGludDMyIGxhdGl0dWRlID0gMTsNCiAgaW50MzIgbG9uZ2l0dWRlID0gMjsNCn0NCg0KLy8gQSBsYXRpdHVkZS1sb25naXR1ZGUgcmVjdGFuZ2xlLCByZXByZXNlbnRlZCBhcyB0d28gZGlhZ29uYWxseSBvcHBvc2l0ZQ0KLy8gcG9pbnRzICJsbyIgYW5kICJoaSIuDQptZXNzYWdlIFJlY3RhbmdsZSB7DQogIC8vIE9uZSBjb3JuZXIgb2YgdGhlIHJlY3RhbmdsZS4NCiAgUG9pbnQgbG8gPSAxOw0KDQogIC8vIFRoZSBvdGhlciBjb3JuZXIgb2YgdGhlIHJlY3RhbmdsZS4NCiAgUG9pbnQgaGkgPSAyOw0KfQ0KDQovLyBBIGZlYXR1cmUgbmFtZXMgc29tZXRoaW5nIGF0IGEgZ2l2ZW4gcG9pbnQuDQovLw0KLy8gSWYgYSBmZWF0dXJlIGNvdWxkIG5vdCBiZSBuYW1lZCwgdGhlIG5hbWUgaXMgZW1wdHkuDQptZXNzYWdlIEZlYXR1cmUgew0KICAvLyBUaGUgbmFtZSBvZiB0aGUgZmVhdHVyZS4NCiAgc3RyaW5nIG5hbWUgPSAxOw0KDQogIC8vIFRoZSBwb2ludCB3aGVyZSB0aGUgZmVhdHVyZSBpcyBkZXRlY3RlZC4NCiAgUG9pbnQgbG9jYXRpb24gPSAyOw0KfQ0KDQovLyBBIFJvdXRlTm90ZSBpcyBhIG1lc3NhZ2Ugc2VudCB3aGlsZSBhdCBhIGdpdmVuIHBvaW50Lg0KbWVzc2FnZSBSb3V0ZU5vdGUgew0KICAvLyBUaGUgbG9jYXRpb24gZnJvbSB3aGljaCB0aGUgbWVzc2FnZSBpcyBzZW50Lg0KICBQb2ludCBsb2NhdGlvbiA9IDE7DQoNCiAgLy8gVGhlIG1lc3NhZ2UgdG8gYmUgc2VudC4NCiAgc3RyaW5nIG1lc3NhZ2UgPSAyOw0KfQ0KDQovLyBBIFJvdXRlU3VtbWFyeSBpcyByZWNlaXZlZCBpbiByZXNwb25zZSB0byBhIFJlY29yZFJvdXRlIHJwYy4NCi8vDQovLyBJdCBjb250YWlucyB0aGUgbnVtYmVyIG9mIGluZGl2aWR1YWwgcG9pbnRzIHJlY2VpdmVkLCB0aGUgbnVtYmVyIG9mDQovLyBkZXRlY3RlZCBmZWF0dXJlcywgYW5kIHRoZSB0b3RhbCBkaXN0YW5jZSBjb3ZlcmVkIGFzIHRoZSBjdW11bGF0aXZlIHN1bSBvZg0KLy8gdGhlIGRpc3RhbmNlIGJldHdlZW4gZWFjaCBwb2ludC4NCm1lc3NhZ2UgUm91dGVTdW1tYXJ5IHsNCiAgLy8gVGhlIG51bWJlciBvZiBwb2ludHMgcmVjZWl2ZWQuDQogIGludDMyIHBvaW50X2NvdW50ID0gMTsNCg0KICAvLyBUaGUgbnVtYmVyIG9mIGtub3duIGZlYXR1cmVzIHBhc3NlZCB3aGlsZSB0cmF2ZXJzaW5nIHRoZSByb3V0ZS4NCiAgaW50MzIgZmVhdHVyZV9jb3VudCA9IDI7DQoNCiAgLy8gVGhlIGRpc3RhbmNlIGNvdmVyZWQgaW4gbWV0cmVzLg0KICBpbnQzMiBkaXN0YW5jZSA9IDM7DQoNCiAgLy8gVGhlIGR1cmF0aW9uIG9mIHRoZSB0cmF2ZXJzYWwgaW4gc2Vjb25kcy4NCiAgaW50MzIgZWxhcHNlZF90aW1lID0gNDsNCn0=");
+       $scope.template = Base64.decode("Ly8gQ29kZSBnZW5lcmF0ZWQgYnkgcHJvdG9jLWdlbi1nb3RlbXBsYXRlDQpwYWNrYWdlIHt7LlNlcnZpY2UuTmFtZX19cGINCg0KaW1wb3J0ICgNCiAgImdvbGFuZy5vcmcveC9uZXQvY29udGV4dCINCikNCg0KdHlwZSBTZXJ2aWNlIGludGVyZmFjZSB7DQp7ey0gcmFuZ2UgLlNlcnZpY2UuTWV0aG9kfX0NCnt7LSBpZiBhbmQgKG5vdCAuU2VydmVyU3RyZWFtaW5nKSAobm90IC5DbGllbnRTdHJlYW1pbmcpfX0NCiAge3suTmFtZX19KGNvbnRleHQuQ29udGV4dCwgKnt7Lk5hbWV9fVJlcXVlc3QpICgqe3suTmFtZX19UmVzcG9uc2UsIGVycm9yKQ0Ke3stIGVsc2UgaWYgYW5kIC5TZXJ2ZXJTdHJlYW1pbmcgKG5vdCAuQ2xpZW50U3RyZWFtaW5nKX19DQoge3suTmFtZX19KGNvbnRleHQuQ29udGV4dCwgKnt7Lk5hbWV9fVJlcXVlc3QsIGNoYW4gc3RydWN0e30pIChjaGFuICp7ey5OYW1lfX1SZXNwb25zZSwgZXJyb3IpDQp7ey0gZWxzZSBpZiBhbmQgKG5vdCAuU2VydmVyU3RyZWFtaW5nKSAuQ2xpZW50U3RyZWFtaW5nfX0NCiAge3suTmFtZX19KGNvbnRleHQuQ29udGV4dCwgY2hhbiAqe3suTmFtZX19UmVxdWVzdCkgKCp7ey5OYW1lfX1SZXNwb25zZSwgZXJyb3IpDQp7ey0gZWxzZSBpZiBhbmQgKC5TZXJ2ZXJTdHJlYW1pbmcpICguQ2xpZW50U3RyZWFtaW5nKX19DQogIHt7Lk5hbWV9fShjb250ZXh0LkNvbnRleHQsIGNoYW4gKnt7Lk5hbWV9fVJlcXVlc3QpIChjaGFuICp7ey5OYW1lfX1SZXNwb25zZSwgZXJyb3IpDQp7ey0gZW5kfX0ge3svKiBzdHJlYW1pbmcgaWZzKi99fQ0Ke3stIGVuZH19IHt7LypyYW5nZSBNZXRob2QqL319DQp9DQoNCi8vIE1ldGhvZHMNCi8vIC0tLS0tLS0NCnt7LSByYW5nZSAuU2VydmljZS5NZXRob2R9fQ0KLy8gKiB7ey5OYW1lfX0NCnt7LSBlbmR9fQ0KLy8NCi8vIE1lc3NhZ2UgdHlwZXMNCi8vIC0tLS0tLS0tLS0tLS0NCnt7LSByYW5nZSAuRmlsZS5NZXNzYWdlVHlwZX19DQovLyAqIHt7Lk5hbWV9fQ0Ke3stIGVuZH19");
+
+       $scope.inputLoaded = function(_editor) {
+         $scope.inputEditor = _editor;
+       };
+       $scope.outputLoaded = function(_editor) {
+         $scope.outputEditor = _editor;
+       };
+       $scope.inputChanged = function(e) {
+         $scope.inputHasChanged = true;
+       };
+
+       $scope.sendRequest = function(){
+         $scope.inputHasChanged = false;
+         var data = {
+           protobuf: $scope.protobuf,
+           template: $scope.template,
+         };
+         $http.post($scope.url, data)
+              .success(function(data,status,headers,config) {
+           $scope.errors = {};
+           $scope.response = {};
+           $scope.response.data = data;
+           $scope.response.status = status;
+           $scope.response.headers = headers;
+           $scope.response.config = config;
+           $scope.outputEditor.setValue(data['output'], 1);
+         })
+              .error(function(data,status,headers,config) {
+           $scope.errors = {};
+           $scope.response = {};
+           $scope.errors.data = data;
+           $scope.errors.status = status;
+           $scope.errors.headers = headers;
+           $scope.errors.config = config;
+           $scope.outputEditor.setValue(data['error'], 1);
+         });
+       };
+     }]);
+    </script>
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+    <style>.ace_editor { height: 80%; }</style>
+  </head>
+  <body ng-app="pggt">
+    <div class="container-fluid" ng-controller="PggtCtrl">
+      <div class="row">
+        <div class="col-md-8">
+          <form name="dpform" ng-submit="sendRequest()" class="well">
+            <fieldset>
+              <legend>`protoc-gen-gotemplate`: input</legend>
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="protobuf">./example.proto</label>
+                  <div ng-model="protobuf" name="protobuf" id="protobuf" language="protobuf"
+                       ui-ace="{mode:'protobuf',theme:'cobalt',onChange:inputChanged,onLoad:inputLoaded,useWrapMode:true}">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="template">./example.txt.tmpl</label>
+                  <div ng-model="template" name="template" id="template" language="text"
+                       ui-ace="{mode:'text',theme:'cobalt',onChange:inputChanged,onLoad:inputLoaded,useWrapMode:true}">
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <div class="col-md-4">
+          <div class="well">
+            <fieldset>
+              <legend>Output</legend>
+              <label>./example.txt</label>
+              <div ui-ace="{mode:'text',theme:'cobalt',onLoad:outputLoaded,useWrapMode:true}" readonly></div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          Command: <code>protoc --gotemplate_out=template_dir=.:. example.proto</code>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
