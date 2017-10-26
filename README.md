@@ -22,6 +22,12 @@ The plugin parses **protobuf** files, generates an **ast**, and walks a local **
 3. the `ast` is given to [Golang's `text/template` engine](https://golang.org/pkg/text/template/) for each *user* template files
 4. the *funcmap* enriching the template engine is based on [Masterminds/sprig](https://github.com/Masterminds/sprig), and contains type-manipulation, iteration and language-specific helpers
 
+## Web editor
+
+![Web editor screenshot](https://github.com/moul/protoc-gen-gotemplate/raw/master/assets/web-editor.jpg)
+
+[Demo server](http://protoc-gen-gotemplate.m.42.am/)
+
 ## Usage
 
 `protoc-gen-gotemplate` requires a **template_dir** directory *(by default `./templates`)*.
