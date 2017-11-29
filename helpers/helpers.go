@@ -102,6 +102,8 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"httpBody":                httpBody,
 	"shortType":               shortType,
 	"urlHasVarsFromMessage":   urlHasVarsFromMessage,
+	"lowerGoNormalize":        lowerGoNormalize,
+	"goNormalize":             goNormalize,
 }
 
 func init() {
@@ -451,4 +453,46 @@ func urlHasVarsFromMessage(path string, d *ggdescriptor.Message) bool {
 	}
 
 	return false
+}
+
+// lowerGoNormalize takes a string and applies formatting
+// rules to conform to Golang convention. It applies a camel
+// case filter, lowers the first character and formats fields
+// with `id` to `ID`.
+func lowerGoNormalize(s string) string {
+	fmtd := xstrings.ToCamelCase(s)
+	fmtd = xstrings.FirstRuneToLower(fmtd)
+	return formatID(s, fmtd)
+}
+
+// goNormalize takes a string and applies formatting rules
+// to conform to Golang convention. It applies a camel case
+// filter and formats fields with `id` to `ID`.
+func goNormalize(s string) string {
+	fmtd := xstrings.ToCamelCase(s)
+	return formatID(s, fmtd)
+}
+
+// formatID takes a base string alonsgide a formatted string.
+// It acts as a transformation filter for fields containing
+// `id` in order to conform to Golang convention.
+func formatID(base string, formatted string) string {
+	if formatted == "" {
+		return formatted
+	}
+	switch {
+	case base == "id":
+		// id -> ID
+		return "ID"
+	case strings.HasPrefix(base, "id_"):
+		// id_some -> IDSome
+		return "ID" + formatted[2:]
+	case strings.HasSuffix(base, "_id"):
+		// some_id -> SomeID
+		return formatted[:len(formatted)-2] + "ID"
+	case strings.HasSuffix(base, "_ids"):
+		// some_ids -> SomeIDs
+		return formatted[:len(formatted)-3] + "IDs"
+	}
+	return formatted
 }
