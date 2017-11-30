@@ -39,8 +39,8 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		a, _ := json.MarshalIndent(v, "", "  ")
 		return string(a)
 	},
-	"splitArray": func(sep string, s string) []string {
-		var r []string
+	"splitArray": func(sep string, s string) []interface{} {
+		var r []interface{}
 		t := strings.Split(s, sep)
 		for i := range t {
 			if t[i] != "" {
