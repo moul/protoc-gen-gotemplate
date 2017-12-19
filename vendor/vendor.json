@@ -8,9 +8,12 @@
 			"revision": "59c29afe1a994eacb71c833025ca7acf874bb1da"
 		},
 		{
-			"checksumSHA1": "93uQlRcUdWLxcNPDnxAFsM4/zCI=",
+			"checksumSHA1": "HQ1JY9GVh1XndI1v/SLztYDVA/I=",
 			"path": "github.com/Masterminds/sprig",
-			"revision": "2f4371ac162f912989f01cc2b6af4ba6660e6a30"
+			"revision": "b217b9c388de2cacde4354c536e520c52c055563",
+			"revisionTime": "2017-12-01T20:06:51Z",
+			"version": "v2.14.1",
+			"versionExact": "v2.14.1"
 		},
 		{
 			"checksumSHA1": "oLdNE7TyNIKK+ZYVPvEwhLmVb98=",
