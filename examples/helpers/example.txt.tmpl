@@ -1,0 +1,56 @@
+# Common variables
+{{`{{.File.Name}}`}}:                                                                           {{.File.Name}}
+{{`{{.File.Name | upper}}`}}:                                                                   {{.File.Name | upper}}
+{{`{{.File.Package | base | replace "." "-"}}`}}                                                {{.File.Package | base | replace "." "-"}}
+{{- /*{{`{{$file := .File}}{{$file}}`}}                                                               {{$file := .File}}{{$file}}*/}}
+{{`{{$packageDir := .File.Name | dir}}{{$packageDir}}`}}                                        {{$packageDir := .File.Name | dir}}{{$packageDir}}
+{{`{{$packageName := .File.Name | base | replace ".proto" ""}}{{$packageName}}`}}               {{$packageName := .File.Name | base | replace ".proto" ""}}{{$packageName}}
+{{`{{$packageImport := .File.Package | replace "." "_"}}{{$packageImport}}`}}                   {{$packageImport := .File.Package | replace "." "_"}}{{$packageImport}}
+{{`{{$namespacedPackage := .File.Package}}{{$namespacedPackage}}`}}                             {{$namespacedPackage := .File.Package}}{{$namespacedPackage}}
+{{`{{$currentFile := .File.Name | getProtoFile}}{{$currentFile}}`}}                             {{$currentFile := .File.Name | getProtoFile}}{{$currentFile}}
+{{`{{- /*{{- $currentPackageName := $currentFile.GoPkg.Name}}{{$currentPackageName}}*/}}`}}     {{- /*{{- $currentPackageName := $currentFile.GoPkg.Name}}{{$currentPackageName}}*/}}
+# TODO: more variables
+
+# Sprig: strings
+{{`{{trim "   hello    "}}`}}:                                                            {{trim "   hello    "}}
+{{`{{trimAll "$" "$5.00"}}`}}:                                                            {{trimAll "$" "$5.00"}}
+{{`{{trimSuffix "-" "hello-"}}`}}:                                                        {{trimSuffix "-" "hello-"}}
+{{`{{upper "hello"}}`}}:                                                                  {{upper "hello"}}
+{{`{{lower "HELLO"}}`}}:                                                                  {{lower "HELLO"}}
+{{`{{title "hello world"}}`}}:                                                            {{title "hello world"}}
+{{`{{untitle "Hello World"}}`}}:                                                          {{untitle "Hello World"}}
+{{`{{repeat 3 "hello"}}`}}:                                                               {{repeat 3 "hello"}}
+{{`{{substr 0 5 "hello world"}}`}}:                                                       {{substr 0 5 "hello world"}}
+{{`{{nospace "hello w o r l d"}}`}}:                                                      {{nospace "hello w o r l d"}}
+{{`{{trunc 5 "hello world"}}`}}:                                                          {{trunc 5 "hello world"}}
+{{`{{abbrev 5 "hello world"}}`}}:                                                         {{abbrev 5 "hello world"}}
+{{`{{abbrevboth 5 10 "1234 5678 9123"}}`}}:                                               {{abbrevboth 5 10 "1234 5678 9123"}}
+{{`{{initials "First Try"}}`}}:                                                           {{initials "First Try"}}
+{{`{{randNumeric 3}}`}}:                                                                  {{randNumeric 3}}
+{{`{{- /*{{wrap 80 $someText}}*/}}`}}:                                                    {{- /*{{wrap 80 $someText}}*/}}
+{{`{{wrapWith 5 "\t" "Hello World"}}`}}:                                                  {{wrapWith 5 "\t" "Hello World"}}
+{{`{{contains "cat" "catch"}}`}}:                                                         {{contains "cat" "catch"}}
+{{`{{hasPrefix "cat" "catch"}}`}}:                                                        {{hasPrefix "cat" "catch"}}
+{{`{{cat "hello" "beautiful" "world"}}`}}:                                                {{cat "hello" "beautiful" "world"}}
+{{`{{- /*{{indent 4 $lots_of_text}}*/}}`}}:                                               {{- /*{{indent 4 $lots_of_text}}*/}}
+{{`{{- /*{{indent 4 $lots_of_text}}*/}}`}}:                                               {{- /*{{indent 4 $lots_of_text}}*/}}
+{{`{{"I Am Henry VIII" | replace " " "-"}}`}}:                                            {{"I Am Henry VIII" | replace " " "-"}}
+{{`{{len .Service.Method | plural "one anchovy" "many anchovies"}}`}}:                    {{len .Service.Method | plural "one anchovy" "many anchovies"}}
+{{`{{snakecase "FirstName"}}`}}:                                                          {{snakecase "FirstName"}}
+{{`{{camelcase "http_server"}}`}}:                                                        {{camelcase "http_server"}}
+{{`{{shuffle "hello"}}`}}:                                                                {{shuffle "hello"}}
+{{`{{regexMatch "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}" "test@acme.com"}}`}}:   {{regexMatch "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}" "test@acme.com"}}
+{{`{{- /*{{regexFindAll "[2,4,6,8]" "123456789"}}*/}}`}}:                                 {{- /*{{regexFindAll "[2,4,6,8]" "123456789"}}*/}}
+{{`{{regexFind "[a-zA-Z][1-9]" "abcd1234"}}`}}:                                           {{regexFind "[a-zA-Z][1-9]" "abcd1234"}}
+{{`{{regexReplaceAll "a(x*)b" "-ab-axxb-" "${1}W"}}`}}:                                   {{regexReplaceAll "a(x*)b" "-ab-axxb-" "${1}W"}}
+{{`{{regexReplaceAllLiteral "a(x*)b" "-ab-axxb-" "${1}"}}`}}:                             {{regexReplaceAllLiteral "a(x*)b" "-ab-axxb-" "${1}"}}
+{{`{{regexSplit "z+" "pizza" -1}}`}}:                                                     {{regexSplit "z+" "pizza" -1}}
+
+# Sprig: advanced
+{{`{{if contains "cat" "catch"}}yes{{else}}no{{end}}`}}:   {{if contains "cat" "catch"}}yes{{else}}no{{end}}
+{{`{{1 | plural "one anchovy" "many anchovies"}}`}}:       {{1 | plural "one anchovy" "many anchovies"}}
+{{`{{2 | plural "one anchovy" "many anchovies"}}`}}:       {{2 | plural "one anchovy" "many anchovies"}}
+{{`{{3 | plural "one anchovy" "many anchovies"}}`}}:       {{3 | plural "one anchovy" "many anchovies"}}
+
+# TODO: more sprig examples
+# TODO: all built-in examples
