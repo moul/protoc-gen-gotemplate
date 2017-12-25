@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -32,18 +33,23 @@ func generate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		returnError(w, err)
 	}
-	defer os.RemoveAll(dir) // clean up
-	if err := ioutil.WriteFile(filepath.Join(dir, "example.proto"), []byte(input.Protobuf), 0644); err != nil {
+	// clean up
+	defer func() {
+		if err = os.RemoveAll(dir); err != nil {
+			log.Printf("error: failed to remove temporary directory: %v", err)
+		}
+	}()
+	if err = ioutil.WriteFile(filepath.Join(dir, "example.proto"), []byte(input.Protobuf), 0644); err != nil {
 		returnError(w, err)
 		return
 	}
-	if err := ioutil.WriteFile(filepath.Join(dir, "example.output.tmpl"), []byte(input.Template), 0644); err != nil {
+	if err = ioutil.WriteFile(filepath.Join(dir, "example.output.tmpl"), []byte(input.Template), 0644); err != nil {
 		returnError(w, err)
 		return
 	}
 
 	// generate
-	cmd := exec.Command("protoc", "-I"+dir, "--gotemplate_out=template_dir="+dir+",debug=true:"+dir, filepath.Join(dir, "example.proto"))
+	cmd := exec.Command("protoc", "-I"+dir, "--gotemplate_out=template_dir="+dir+",debug=true:"+dir, filepath.Join(dir, "example.proto")) // #nosec
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		returnError(w, errors.New(string(out)))
@@ -64,20 +70,32 @@ func returnContent(w http.ResponseWriter, output interface{}) {
 	payload := map[string]interface{}{
 		"output": fmt.Sprintf("%s", output),
 	}
-	response, _ := json.Marshal(payload)
+	response, err := json.Marshal(payload)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(response)
+	if _, err := w.Write(response); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func returnError(w http.ResponseWriter, err error) {
 	payload := map[string]interface{}{
 		"error": fmt.Sprintf("%v", err),
 	}
-	response, _ := json.Marshal(payload)
+	response, err := json.Marshal(payload)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusInternalServerError)
-	w.Write(response)
+	if _, err := w.Write(response); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func main() {
@@ -94,5 +112,7 @@ func main() {
 	h := handlers.LoggingHandler(os.Stderr, r)
 	h = handlers.CompressHandler(h)
 	h = handlers.RecoveryHandler()(h)
-	http.ListenAndServe(addr, r)
+	if err := http.ListenAndServe(addr, h); err != nil {
+		panic(err)
+	}
 }
