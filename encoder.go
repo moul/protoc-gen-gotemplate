@@ -100,11 +100,20 @@ func (e *GenericTemplateBasedEncoder) templates() ([]string, error) {
 
 func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, error) {
 	// prepare the ast passed to the template engine
-	hostname, _ := os.Hostname()
-	pwd, _ := os.Getwd()
+	hostname, err := os.Hostname()
+	if err != nil {
+		return nil, err
+	}
+	pwd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
 	goPwd := ""
 	if os.Getenv("GOPATH") != "" {
-		goPwd, _ = filepath.Rel(os.Getenv("GOPATH")+"/src", pwd)
+		goPwd, err = filepath.Rel(os.Getenv("GOPATH")+"/src", pwd)
+		if err != nil {
+			return nil, err
+		}
 		if strings.Contains(goPwd, "../") {
 			goPwd = ""
 		}
@@ -170,7 +179,8 @@ func (e *GenericTemplateBasedEncoder) Files() []*plugin_go.CodeGeneratorResponse
 	resultChan := make(chan *plugin_go.CodeGeneratorResponse_File, length)
 	for _, templateFilename := range templates {
 		go func(tmpl string) {
-			content, translatedFilename, err := e.buildContent(tmpl)
+			var translatedFilename, content string
+			content, translatedFilename, err = e.buildContent(tmpl)
 			if err != nil {
 				errChan <- err
 				return

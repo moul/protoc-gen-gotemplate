@@ -15,7 +15,7 @@ import (
 	options "google.golang.org/genproto/googleapis/api/annotations"
 )
 
-var jsReservedRe *regexp.Regexp = regexp.MustCompile(`(^|[^A-Za-z])(do|if|in|for|let|new|try|var|case|else|enum|eval|false|null|this|true|void|with|break|catch|class|const|super|throw|while|yield|delete|export|import|public|return|static|switch|typeof|default|extends|finally|package|private|continue|debugger|function|arguments|interface|protected|implements|instanceof)($|[^A-Za-z])`)
+var jsReservedRe = regexp.MustCompile(`(^|[^A-Za-z])(do|if|in|for|let|new|try|var|case|else|enum|eval|false|null|this|true|void|with|break|catch|class|const|super|throw|while|yield|delete|export|import|public|return|static|switch|typeof|default|extends|finally|package|private|continue|debugger|function|arguments|interface|protected|implements|instanceof)($|[^A-Za-z])`)
 
 var (
 	registry *ggdescriptor.Registry // some helpers need access to registry
@@ -32,11 +32,17 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		return i.String()
 	},
 	"json": func(v interface{}) string {
-		a, _ := json.Marshal(v)
+		a, err := json.Marshal(v)
+		if err != nil {
+			return err.Error()
+		}
 		return string(a)
 	},
 	"prettyjson": func(v interface{}) string {
-		a, _ := json.MarshalIndent(v, "", "  ")
+		a, err := json.MarshalIndent(v, "", "  ")
+		if err != nil {
+			return err.Error()
+		}
 		return string(a)
 	},
 	"splitArray": func(sep string, s string) []interface{} {
@@ -315,7 +321,7 @@ func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 
 func jsType(f *descriptor.FieldDescriptorProto) string {
 	template := "%s"
-	if isFieldRepeated(f) == true {
+	if isFieldRepeated(f) {
 		template = "Array<%s>"
 	}
 

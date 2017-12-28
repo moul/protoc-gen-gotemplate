@@ -29,3 +29,7 @@ docker.build:
 .PHONY: docker.push
 docker.push: docker.build
 	docker push moul/protoc-gen-gotemplate
+
+.PHONY: lint
+lint:
+	gometalinter --disable-all --enable=errcheck --enable=vet --enable=vetshadow --enable=golint --enable=gas --enable=ineffassign --enable=goconst --enable=goimports --enable=gofmt --exclude="Binds to all network interfaces" --exclude="should have comment" --enable=staticcheck --enable=gosimple --enable=misspell --deadline=120s . ./cmd/... ./helpers/...

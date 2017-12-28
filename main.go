@@ -18,6 +18,11 @@ var (
 	registry *ggdescriptor.Registry // some helpers need access to registry
 )
 
+const (
+	boolTrue  = "true"
+	boolFalse = "false"
+)
+
 func main() {
 	g := generator.New()
 
@@ -26,7 +31,7 @@ func main() {
 		g.Error(err, "reading input")
 	}
 
-	if err := proto.Unmarshal(data, g.Request); err != nil {
+	if err = proto.Unmarshal(data, g.Request); err != nil {
 		g.Error(err, "parsing input proto")
 	}
 
@@ -54,37 +59,32 @@ func main() {
 			switch parts[0] {
 			case "template_dir":
 				templateDir = parts[1]
-				break
 			case "destination_dir":
 				destinationDir = parts[1]
-				break
 			case "single-package-mode":
 				switch strings.ToLower(parts[1]) {
-				case "true", "t":
+				case boolTrue, "t":
 					singlePackageMode = true
-				case "false", "f":
+				case boolFalse, "f":
 				default:
 					log.Printf("Err: invalid value for single-package-mode: %q", parts[1])
 				}
-				break
 			case "debug":
 				switch strings.ToLower(parts[1]) {
-				case "true", "t":
+				case boolTrue, "t":
 					debug = true
-				case "false", "f":
+				case boolFalse, "f":
 				default:
 					log.Printf("Err: invalid value for debug: %q", parts[1])
 				}
-				break
 			case "all":
 				switch strings.ToLower(parts[1]) {
-				case "true", "t":
+				case boolTrue, "t":
 					all = true
-				case "false", "f":
+				case boolFalse, "f":
 				default:
 					log.Printf("Err: invalid value for debug: %q", parts[1])
 				}
-				break
 			default:
 				log.Printf("Err: unknown parameter: %q", param)
 			}
@@ -104,7 +104,7 @@ func main() {
 	if singlePackageMode {
 		registry = ggdescriptor.NewRegistry()
 		pgghelpers.SetRegistry(registry)
-		if err := registry.Load(g.Request); err != nil {
+		if err = registry.Load(g.Request); err != nil {
 			g.Error(err, "registry: failed to load the request")
 		}
 	}
@@ -113,7 +113,7 @@ func main() {
 	for _, file := range g.Request.GetProtoFile() {
 		if all {
 			if singlePackageMode {
-				if _, err := registry.LookupFile(file.GetName()); err != nil {
+				if _, err = registry.LookupFile(file.GetName()); err != nil {
 					g.Error(err, "registry: failed to lookup file %q", file.GetName())
 				}
 			}
