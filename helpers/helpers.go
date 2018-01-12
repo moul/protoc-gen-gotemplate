@@ -136,6 +136,8 @@ func InitPathMaps(files []*descriptor.FileDescriptorProto) {
 	}
 }
 
+// addToPathMap traverses through the AST adding SourceCodeInfo_Location entries to the pathMap.
+// Since the AST is a tree, the recursion finishes once it has gone through all the nodes.
 func addToPathMap(info *descriptor.SourceCodeInfo, i interface{}, path []int32) {
 	loc := findLoc(info, path)
 	if loc != nil {
