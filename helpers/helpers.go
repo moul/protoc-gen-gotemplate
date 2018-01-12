@@ -593,8 +593,9 @@ func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 }
 
 func goZeroValue(f *descriptor.FieldDescriptorProto) string {
+	const nilString = "nil"
 	if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
-		return "nil"
+		return nilString
 	}
 	switch *f.Type {
 	case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
@@ -614,13 +615,13 @@ func goZeroValue(f *descriptor.FieldDescriptorProto) string {
 	case descriptor.FieldDescriptorProto_TYPE_STRING:
 		return "\"\""
 	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
-		return "nil"
+		return nilString
 	case descriptor.FieldDescriptorProto_TYPE_BYTES:
 		return "0"
 	case descriptor.FieldDescriptorProto_TYPE_ENUM:
-		return "nil"
+		return nilString
 	default:
-		return "nil"
+		return nilString
 	}
 }
 
