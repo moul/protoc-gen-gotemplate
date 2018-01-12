@@ -220,7 +220,7 @@ func leadingDetachedComments(i interface{}) []string {
 	return loc.GetLeadingDetachedComments()
 }
 
-func stringFieldExtension(fieldId int32, f *descriptor.FieldDescriptorProto) string {
+func stringFieldExtension(fieldID int32, f *descriptor.FieldDescriptorProto) string {
 	if f == nil {
 		return ""
 	}
@@ -231,18 +231,18 @@ func stringFieldExtension(fieldId int32, f *descriptor.FieldDescriptorProto) str
 	var extensionType *string
 
 	eds := proto.RegisteredExtensions(f.Options)
-	if eds[fieldId] == nil {
+	if eds[fieldID] == nil {
 		ed := &proto.ExtensionDesc{
 			ExtendedType:  extendedType,
 			ExtensionType: extensionType,
-			Field:         fieldId,
-			Tag:           fmt.Sprintf("bytes,%d", fieldId),
+			Field:         fieldID,
+			Tag:           fmt.Sprintf("bytes,%d", fieldID),
 		}
 		proto.RegisterExtension(ed)
 		eds = proto.RegisteredExtensions(f.Options)
 	}
 
-	ext, err := proto.GetExtension(f.Options, eds[fieldId])
+	ext, err := proto.GetExtension(f.Options, eds[fieldID])
 	if err != nil {
 		return ""
 	}
@@ -255,7 +255,7 @@ func stringFieldExtension(fieldId int32, f *descriptor.FieldDescriptorProto) str
 	return *str
 }
 
-func boolFieldExtension(fieldId int32, f *descriptor.FieldDescriptorProto) bool {
+func boolFieldExtension(fieldID int32, f *descriptor.FieldDescriptorProto) bool {
 	if f == nil {
 		return false
 	}
@@ -266,18 +266,18 @@ func boolFieldExtension(fieldId int32, f *descriptor.FieldDescriptorProto) bool 
 	var extensionType *bool
 
 	eds := proto.RegisteredExtensions(f.Options)
-	if eds[fieldId] == nil {
+	if eds[fieldID] == nil {
 		ed := &proto.ExtensionDesc{
 			ExtendedType:  extendedType,
 			ExtensionType: extensionType,
-			Field:         fieldId,
-			Tag:           fmt.Sprintf("varint,%d", fieldId),
+			Field:         fieldID,
+			Tag:           fmt.Sprintf("varint,%d", fieldID),
 		}
 		proto.RegisterExtension(ed)
 		eds = proto.RegisteredExtensions(f.Options)
 	}
 
-	ext, err := proto.GetExtension(f.Options, eds[fieldId])
+	ext, err := proto.GetExtension(f.Options, eds[fieldID])
 	if err != nil {
 		return false
 	}
