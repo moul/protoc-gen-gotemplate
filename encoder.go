@@ -52,6 +52,7 @@ func NewGenericServiceTemplateBasedEncoder(templateDir string, service *descript
 	if debug {
 		log.Printf("new encoder: file=%q service=%q template-dir=%q", file.GetName(), service.GetName(), templateDir)
 	}
+	pgghelpers.InitPathMap(file)
 
 	return
 }
@@ -68,6 +69,7 @@ func NewGenericTemplateBasedEncoder(templateDir string, file *descriptor.FileDes
 	if debug {
 		log.Printf("new encoder: file=%q template-dir=%q", file.GetName(), templateDir)
 	}
+	pgghelpers.InitPathMap(file)
 
 	return
 }
