@@ -70,7 +70,6 @@ func NewGenericTemplateBasedEncoder(templateDir string, file *descriptor.FileDes
 		log.Printf("new encoder: file=%q template-dir=%q", file.GetName(), templateDir)
 	}
 	pgghelpers.InitPathMap(file)
-	pgghelpers.InitPathMap(file)
 
 	return
 }
