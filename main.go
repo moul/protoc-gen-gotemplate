@@ -46,7 +46,7 @@ func main() {
 		templateDir       = "./templates"
 		destinationDir    = "."
 		debug             = false
-		all               = false
+		templateType      = "service"
 		singlePackageMode = false
 	)
 	if parameter := g.Request.GetParameter(); parameter != "" {
@@ -80,11 +80,13 @@ func main() {
 			case "all":
 				switch strings.ToLower(parts[1]) {
 				case boolTrue, "t":
-					all = true
+					templateType = "file"
 				case boolFalse, "f":
 				default:
-					log.Printf("Err: invalid value for debug: %q", parts[1])
+					log.Printf("Err: invalid value for all: %q", parts[1])
 				}
+			case "type":
+				templateType = parts[1]
 			default:
 				log.Printf("Err: unknown parameter: %q", param)
 			}
@@ -101,6 +103,15 @@ func main() {
 		}
 	}
 
+	appendOnce := func(file *plugin_go.CodeGeneratorResponse_File) {
+		if _, ok := tmplMap[file.GetName()]; ok {
+			return
+		} else {
+			tmplMap[file.GetName()] = file
+			g.Response.File = append(g.Response.File, file)
+		}
+	}
+
 	if singlePackageMode {
 		registry = ggdescriptor.NewRegistry()
 		pgghelpers.SetRegistry(registry)
@@ -109,9 +120,25 @@ func main() {
 		}
 	}
 
+	files := g.Request.GetProtoFile()
+
 	// Generate the encoders
-	for _, file := range g.Request.GetProtoFile() {
-		if all {
+	for _, file := range files {
+		if !inStringSlice(file.GetName(), g.Request.FileToGenerate) {
+			continue
+		}
+		switch templateType {
+		case "none":
+			if singlePackageMode {
+				if _, err := registry.LookupFile(file.GetName()); err != nil {
+					g.Error(err, "registry: failed to lookup file %q", file.GetName())
+				}
+			}
+			encoder := NewGenericAllTemplateBasedEncoder(templateDir, files, debug, destinationDir)
+			for _, tmpl := range encoder.Files() {
+				appendOnce(tmpl)
+			}
+		case "file":
 			if singlePackageMode {
 				if _, err = registry.LookupFile(file.GetName()); err != nil {
 					g.Error(err, "registry: failed to lookup file %q", file.GetName())
@@ -121,15 +148,22 @@ func main() {
 			for _, tmpl := range encoder.Files() {
 				concatOrAppend(tmpl)
 			}
-
-			continue
-		}
-
-		for _, service := range file.GetService() {
-			encoder := NewGenericServiceTemplateBasedEncoder(templateDir, service, file, debug, destinationDir)
-			for _, tmpl := range encoder.Files() {
-				concatOrAppend(tmpl)
+		case "message":
+			for _, message := range file.GetMessageType() {
+				encoder := NewGenericMessageTemplateBasedEncoder(templateDir, message, file, debug, destinationDir)
+				for _, tmpl := range encoder.Files() {
+					concatOrAppend(tmpl)
+				}
 			}
+		case "service":
+			for _, service := range file.GetService() {
+				encoder := NewGenericServiceTemplateBasedEncoder(templateDir, service, file, debug, destinationDir)
+				for _, tmpl := range encoder.Files() {
+					concatOrAppend(tmpl)
+				}
+			}
+		default:
+			log.Printf("Err: invalid value for type: %q", templateType)
 		}
 	}
 
@@ -145,4 +179,13 @@ func main() {
 	if err != nil {
 		g.Error(err, "failed to write output proto")
 	}
+}
+
+func inStringSlice(needle string, haystack []string) bool {
+	for _, value := range haystack {
+		if value == needle {
+			return true
+		}
+	}
+	return false
 }

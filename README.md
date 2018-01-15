@@ -53,13 +53,14 @@ You can specify custom options, as follow:
 $> protoc --gotemplate_out=debug=true,template_dir=/path/to/template/directory:. input.proto
 ```
 
-| Option                | Default Value | Accepted Values           | Description
-|-----------------------|---------------|---------------------------|-----------------------
-| `template_dir`        | `./template`  | absolute or relative path | path to look for templates
-| `destination_dir`     | `.`           | absolute or relative path | base path to write output
-| `single-package-mode` | *false*       | `true` or `false`         | if *true*, `protoc` won't accept multiple packages to be compiled at once (*!= from `all`*), but will support `Message` lookup across the imported protobuf dependencies
-| `debug`               | *false*       | `true` or `false`         | if *true*, `protoc` will generate a more verbose output
-| `all`                 | *false*       | `true` or `false`         | if *true*, protobuf files without `Service` will also be parsed
+| Option                | Default Value | Accepted Values                         | Description
+|-----------------------|---------------|-----------------------------------------|-----------------------
+| `template_dir`        | `./template`  | absolute or relative path               | path to look for templates
+| `destination_dir`     | `.`           | absolute or relative path               | base path to write output
+| `single-package-mode` | *false*       | `true` or `false`                       | if *true*, `protoc` won't accept multiple packages to be compiled at once (*!= from `all`*), but will support `Message` lookup across the imported protobuf dependencies
+| `debug`               | *false*       | `true` or `false`                       | if *true*, `protoc` will generate a more verbose output
+| `type`                | `service`     | `none`, `service`, `file`, or `message` | Which type of definition to iterate over and generate templates for.
+| `all`                 | *false*       | `true` or `false`                       | if *true*, protobuf files without `Service` will also be parsed. Identical to type=file
 
 ##### Hints
 
