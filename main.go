@@ -106,10 +106,9 @@ func main() {
 	appendOnce := func(file *plugin_go.CodeGeneratorResponse_File) {
 		if _, ok := tmplMap[file.GetName()]; ok {
 			return
-		} else {
-			tmplMap[file.GetName()] = file
-			g.Response.File = append(g.Response.File, file)
 		}
+		tmplMap[file.GetName()] = file
+		g.Response.File = append(g.Response.File, file)
 	}
 
 	if singlePackageMode {
@@ -130,7 +129,7 @@ func main() {
 		switch templateType {
 		case "none":
 			if singlePackageMode {
-				if _, err := registry.LookupFile(file.GetName()); err != nil {
+				if _, err = registry.LookupFile(file.GetName()); err != nil {
 					g.Error(err, "registry: failed to lookup file %q", file.GetName())
 				}
 			}
