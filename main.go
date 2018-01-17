@@ -11,7 +11,7 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
 	ggdescriptor "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 
-	pgghelpers "github.com/moul/protoc-gen-gotemplate/helpers"
+	pgghelpers "github.com/webii/protoc-gen-gotemplate/helpers"
 )
 
 var (
