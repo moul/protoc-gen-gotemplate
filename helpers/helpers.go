@@ -160,6 +160,8 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"replaceDict":                  replaceDict,
 	"setStore":                     setStore,
 	"getStore":                     getStore,
+	"goPkg":                        goPkg,
+	"goPkgLastElement":             goPkgLastElement,
 }
 
 var pathMap map[interface{}]*descriptor.SourceCodeInfo_Location
@@ -1271,4 +1273,14 @@ func replaceDict(src string, dict map[string]interface{}) string {
 		src = strings.Replace(src, old, new, -1)
 	}
 	return src
+}
+
+func goPkg(f *descriptor.FileDescriptorProto) string {
+	return f.Options.GetGoPackage()
+}
+
+func goPkgLastElement(f *descriptor.FileDescriptorProto) string {
+	pkg := goPkg(f)
+	pkgSplitted := strings.Split(pkg, "/")
+	return pkgSplitted[len(pkgSplitted)-1]
 }
