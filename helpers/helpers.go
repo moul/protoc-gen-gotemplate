@@ -61,6 +61,9 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"last": func(a []string) string {
 		return a[len(a)-1]
 	},
+	"index": func(a []string, index int32) string {
+		return a[index]
+	},
 	"upperFirst": func(s string) string {
 		return strings.ToUpper(s[:1]) + s[1:]
 	},
