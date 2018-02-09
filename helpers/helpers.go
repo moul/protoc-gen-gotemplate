@@ -62,7 +62,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		return a[len(a)-1]
 	},
 	"index": func(a []string, index int32) string {
-		if len(a) > index {
+		if len(a) > index >= 0 {
 			return a[index]
 		}
 		return ""
