@@ -3,6 +3,7 @@ package pgghelpers
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"regexp"
 	"strings"
 	"text/template"
@@ -89,6 +90,16 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	},
 	"trimstr": func(cutset, s string) string {
 		return strings.Trim(s, cutset)
+	},
+	"index": func(array interface{}, i int) interface{} {
+		slice := reflect.ValueOf(array)
+		if slice.Kind() != reflect.Slice {
+			panic("index() given a non-slice type")
+		}
+		if slice.Len() > i && i >= 0 {
+			return slice.Index(i).Interface()
+		}
+		panic("Error: stack overflow / index out of bounds")
 	},
 	"snakeCase":               xstrings.ToSnakeCase,
 	"getProtoFile":            getProtoFile,
