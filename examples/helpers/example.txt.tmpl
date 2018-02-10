@@ -46,6 +46,9 @@
 {{`{{regexReplaceAllLiteral "a(x*)b" "-ab-axxb-" "${1}"}}`}}:                             {{regexReplaceAllLiteral "a(x*)b" "-ab-axxb-" "${1}"}}
 {{`{{regexSplit "z+" "pizza" -1}}`}}:                                                     {{regexSplit "z+" "pizza" -1}}
 
+# Get one specific method on array method using index
+{{`{{ index .Service.Method 1 }}`}}:                                                      {{ index .Service.Method 1 }}
+
 # Sprig: advanced
 {{`{{if contains "cat" "catch"}}yes{{else}}no{{end}}`}}:   {{if contains "cat" "catch"}}yes{{else}}no{{end}}
 {{`{{1 | plural "one anchovy" "many anchovies"}}`}}:       {{1 | plural "one anchovy" "many anchovies"}}
