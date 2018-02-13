@@ -101,36 +101,37 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		}
 		return slice.Index(int(i)).Interface()
 	},
-	"snakeCase":               xstrings.ToSnakeCase,
-	"getProtoFile":            getProtoFile,
-	"getMessageType":          getMessageType,
-	"getEnumValue":            getEnumValue,
-	"isFieldMessage":          isFieldMessage,
-	"isFieldMessageTimeStamp": isFieldMessageTimeStamp,
-	"isFieldRepeated":         isFieldRepeated,
-	"haskellType":             haskellType,
-	"goType":                  goType,
-	"goZeroValue":             goZeroValue,
-	"goTypeWithPackage":       goTypeWithPackage,
-	"jsType":                  jsType,
-	"jsSuffixReserved":        jsSuffixReservedKeyword,
-	"namespacedFlowType":      namespacedFlowType,
-	"httpVerb":                httpVerb,
-	"httpPath":                httpPath,
-	"httpBody":                httpBody,
-	"shortType":               shortType,
-	"urlHasVarsFromMessage":   urlHasVarsFromMessage,
-	"lowerGoNormalize":        lowerGoNormalize,
-	"goNormalize":             goNormalize,
-	"leadingComment":          leadingComment,
-	"trailingComment":         trailingComment,
-	"leadingDetachedComments": leadingDetachedComments,
-	"stringFieldExtension":    stringFieldExtension,
-	"boolFieldExtension":      boolFieldExtension,
-	"isFieldMap":              isFieldMap,
-	"fieldMapKeyType":         fieldMapKeyType,
-	"fieldMapValueType":       fieldMapValueType,
-	"replaceDict":             replaceDict,
+	"snakeCase":                   xstrings.ToSnakeCase,
+	"getProtoFile":                getProtoFile,
+	"getMessageType":              getMessageType,
+	"getEnumValue":                getEnumValue,
+	"isFieldMessage":              isFieldMessage,
+	"isFieldMessageTimeStamp":     isFieldMessageTimeStamp,
+	"isFieldRepeated":             isFieldRepeated,
+	"haskellType":                 haskellType,
+	"goType":                      goType,
+	"goZeroValue":                 goZeroValue,
+	"goTypeWithPackage":           goTypeWithPackage,
+	"jsType":                      jsType,
+	"jsSuffixReserved":            jsSuffixReservedKeyword,
+	"namespacedFlowType":          namespacedFlowType,
+	"httpVerb":                    httpVerb,
+	"httpPath":                    httpPath,
+	"httpPathsAdditionalBindings": httpPathsAdditionalBindings,
+	"httpBody":                    httpBody,
+	"shortType":                   shortType,
+	"urlHasVarsFromMessage":       urlHasVarsFromMessage,
+	"lowerGoNormalize":            lowerGoNormalize,
+	"goNormalize":                 goNormalize,
+	"leadingComment":              leadingComment,
+	"trailingComment":             trailingComment,
+	"leadingDetachedComments":     leadingDetachedComments,
+	"stringFieldExtension":        stringFieldExtension,
+	"boolFieldExtension":          boolFieldExtension,
+	"isFieldMap":                  isFieldMap,
+	"fieldMapKeyType":             fieldMapKeyType,
+	"fieldMapValueType":           fieldMapValueType,
+	"replaceDict":                 replaceDict,
 }
 
 var pathMap map[interface{}]*descriptor.SourceCodeInfo_Location
@@ -724,6 +725,40 @@ func httpPath(m *descriptor.MethodDescriptorProto) string {
 	case *options.HttpRule_Custom:
 		return t.Custom.Path
 	}
+}
+
+func httpPathsAdditionalBindings(m *descriptor.MethodDescriptorProto) []string {
+	ext, err := proto.GetExtension(m.Options, options.E_Http)
+	if err != nil {
+		panic(err.Error())
+	}
+	opts, ok := ext.(*options.HttpRule)
+	if !ok {
+		panic(fmt.Sprintf("extension is %T; want an HttpRule", ext))
+	}
+
+	var httpPaths []string
+	var optsAdditionalBindings = opts.GetAdditionalBindings()
+	for _, optAdditionalBindings := range optsAdditionalBindings {
+		switch t := optAdditionalBindings.Pattern.(type) {
+		case *options.HttpRule_Get:
+			httpPaths = append(httpPaths, t.Get)
+		case *options.HttpRule_Post:
+			httpPaths = append(httpPaths, t.Post)
+		case *options.HttpRule_Put:
+			httpPaths = append(httpPaths, t.Put)
+		case *options.HttpRule_Delete:
+			httpPaths = append(httpPaths, t.Delete)
+		case *options.HttpRule_Patch:
+			httpPaths = append(httpPaths, t.Patch)
+		case *options.HttpRule_Custom:
+			httpPaths = append(httpPaths, t.Custom.Path)
+		default:
+			// nothing
+		}
+	}
+
+	return httpPaths
 }
 
 func httpVerb(m *descriptor.MethodDescriptorProto) string {
