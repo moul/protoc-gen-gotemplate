@@ -101,37 +101,38 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		}
 		return slice.Index(int(i)).Interface()
 	},
-	"snakeCase":                   xstrings.ToSnakeCase,
-	"getProtoFile":                getProtoFile,
-	"getMessageType":              getMessageType,
-	"getEnumValue":                getEnumValue,
-	"isFieldMessage":              isFieldMessage,
-	"isFieldMessageTimeStamp":     isFieldMessageTimeStamp,
-	"isFieldRepeated":             isFieldRepeated,
-	"haskellType":                 haskellType,
-	"goType":                      goType,
-	"goZeroValue":                 goZeroValue,
-	"goTypeWithPackage":           goTypeWithPackage,
-	"jsType":                      jsType,
-	"jsSuffixReserved":            jsSuffixReservedKeyword,
-	"namespacedFlowType":          namespacedFlowType,
-	"httpVerb":                    httpVerb,
-	"httpPath":                    httpPath,
-	"httpPathsAdditionalBindings": httpPathsAdditionalBindings,
-	"httpBody":                    httpBody,
-	"shortType":                   shortType,
-	"urlHasVarsFromMessage":       urlHasVarsFromMessage,
-	"lowerGoNormalize":            lowerGoNormalize,
-	"goNormalize":                 goNormalize,
-	"leadingComment":              leadingComment,
-	"trailingComment":             trailingComment,
-	"leadingDetachedComments":     leadingDetachedComments,
-	"stringFieldExtension":        stringFieldExtension,
-	"boolFieldExtension":          boolFieldExtension,
-	"isFieldMap":                  isFieldMap,
-	"fieldMapKeyType":             fieldMapKeyType,
-	"fieldMapValueType":           fieldMapValueType,
-	"replaceDict":                 replaceDict,
+	"snakeCase":                    xstrings.ToSnakeCase,
+	"getProtoFile":                 getProtoFile,
+	"getMessageType":               getMessageType,
+	"getEnumValue":                 getEnumValue,
+	"isFieldMessage":               isFieldMessage,
+	"isFieldMessageTimeStamp":      isFieldMessageTimeStamp,
+	"isFieldRepeated":              isFieldRepeated,
+	"haskellType":                  haskellType,
+	"goType":                       goType,
+	"goZeroValue":                  goZeroValue,
+	"goTypeWithPackage":            goTypeWithPackage,
+	"jsType":                       jsType,
+	"jsSuffixReserved":             jsSuffixReservedKeyword,
+	"namespacedFlowType":           namespacedFlowType,
+	"httpVerb":                     httpVerb,
+	"httpPath":                     httpPath,
+	"httpPathsAdditionalBindings":  httpPathsAdditionalBindings,
+	"httpBody":                     httpBody,
+	"shortType":                    shortType,
+	"urlHasVarsFromMessage":        urlHasVarsFromMessage,
+	"lowerGoNormalize":             lowerGoNormalize,
+	"goNormalize":                  goNormalize,
+	"leadingComment":               leadingComment,
+	"trailingComment":              trailingComment,
+	"leadingDetachedComments":      leadingDetachedComments,
+	"stringFieldExtension":         stringFieldExtension,
+	"stringMethodOptionsExtension": stringMethodOptionsExtension,
+	"boolFieldExtension":           boolFieldExtension,
+	"isFieldMap":                   isFieldMap,
+	"fieldMapKeyType":              fieldMapKeyType,
+	"fieldMapValueType":            fieldMapValueType,
+	"replaceDict":                  replaceDict,
 }
 
 var pathMap map[interface{}]*descriptor.SourceCodeInfo_Location
@@ -232,6 +233,46 @@ func trailingComment(i interface{}) string {
 func leadingDetachedComments(i interface{}) []string {
 	loc := pathMap[i]
 	return loc.GetLeadingDetachedComments()
+}
+
+// stringMethodOptionsExtension extracts method options of a string type.
+// To define your own extensions see:
+// https://developers.google.com/protocol-buffers/docs/proto#customoptions
+// Typically the fieldID of private extensions should be in the range:
+// 50000-99999
+func stringMethodOptionsExtension(fieldID int32, f *descriptor.MethodDescriptorProto) string {
+	if f == nil {
+		return ""
+	}
+	if f.Options == nil {
+		return ""
+	}
+	var extendedType *descriptor.MethodOptions
+	var extensionType *string
+
+	eds := proto.RegisteredExtensions(f.Options)
+	if eds[fieldID] == nil {
+		ed := &proto.ExtensionDesc{
+			ExtendedType:  extendedType,
+			ExtensionType: extensionType,
+			Field:         fieldID,
+			Tag:           fmt.Sprintf("bytes,%d", fieldID),
+		}
+		proto.RegisterExtension(ed)
+		eds = proto.RegisteredExtensions(f.Options)
+	}
+
+	ext, err := proto.GetExtension(f.Options, eds[fieldID])
+	if err != nil {
+		return ""
+	}
+
+	str, ok := ext.(*string)
+	if !ok {
+		return ""
+	}
+
+	return *str
 }
 
 func stringFieldExtension(fieldID int32, f *descriptor.FieldDescriptorProto) string {
