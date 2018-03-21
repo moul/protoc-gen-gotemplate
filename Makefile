@@ -20,6 +20,7 @@ test:	install
 	cd examples/go-generate && make
 	cd examples/single-package-mode && make
 	cd examples/helpers && make
+	cd examples/arithmetics && make
 #	cd examples/go-kit && make
 
 .PHONY: docker.build

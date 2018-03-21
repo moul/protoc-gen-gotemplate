@@ -133,6 +133,21 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"fieldMapKeyType":              fieldMapKeyType,
 	"fieldMapValueType":            fieldMapValueType,
 	"replaceDict":                  replaceDict,
+	"add": func(a int, b int) int {
+		return a + b
+	},
+	"subtract": func(a int, b int) int {
+		return a - b
+	},
+	"multiply": func(a int, b int) int {
+		return a * b
+	},
+	"divide": func(a int, b int) int {
+		if b == 0 {
+			panic("psssst ... little help here ... you cannot divide by 0")
+		}
+		return a / b
+	},
 }
 
 var pathMap map[interface{}]*descriptor.SourceCodeInfo_Location
