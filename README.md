@@ -73,34 +73,59 @@ See [examples](./examples).
 
 This project uses [Masterminds/sprig](https://github.com/Masterminds/sprig) library and additional functions to extend the builtin [text/template](https://golang.org/pkg/text/template) helpers.
 
-Non-exhaustive list of new helpers:s
+Non-exhaustive list of new helpers:
 
 * **all the functions from [sprig](https://github.com/Masterminds/sprig)**
+* `string`
 * `json`
 * `prettyjson`
+* `splitArray`
 * `first`
 * `last`
-* `splitArray`
 * `upperFirst`
 * `lowerFirst`
 * `camelCase`
 * `lowerCamelCase`
 * `kebabCase`
+* `contains`
+* `trimstr`
+* `index`
 * `snakeCase`
 * `getProtoFile`
 * `getMessageType`
 * `getEnumValue`
 * `isFieldMessage`
+* `isFieldMessageTimeStamp`
 * `isFieldRepeated`
+* `haskellType`
 * `goType`
+* `goZeroValue`
 * `goTypeWithPackage`
 * `jsType`
 * `jsSuffixReserved`
 * `namespacedFlowType`
 * `httpVerb`
 * `httpPath`
+* `httpPathsAdditionalBindings`
+* `httpBody`
 * `shortType`
 * `urlHasVarsFromMessage`
+* `lowerGoNormalize`
+* `goNormalize`
+* `leadingComment`
+* `trailingComment`
+* `leadingDetachedComments`
+* `stringFieldExtension`
+* `stringMethodOptionsExtension`
+* `boolFieldExtension`
+* `isFieldMap`
+* `fieldMapKeyType`
+* `fieldMapValueType`
+* `replaceDict`
+* `add`
+* `subtract`
+* `multiply`
+* `divide`
 
 See the project helpers for the complete list.
 
