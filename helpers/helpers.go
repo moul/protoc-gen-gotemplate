@@ -22,6 +22,9 @@ var (
 	registry *ggdescriptor.Registry // some helpers need access to registry
 )
 
+// Utility to store some vars across multiple scope
+var store = make(map[string]interface{})
+
 func SetRegistry(reg *ggdescriptor.Registry) {
 	registry = reg
 }
@@ -62,6 +65,12 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"last": func(a []string) string {
 		return a[len(a)-1]
 	},
+	"concat": func(a string, b ...string) string {
+		return strings.Join(append([]string{a}, b...), "")
+	},
+	"join": func(sep string, a ...string) string {
+		return strings.Join(a, sep)
+	},
 	"upperFirst": func(s string) string {
 		return strings.ToUpper(s[:1]) + s[1:]
 	},
@@ -101,6 +110,22 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		}
 		return slice.Index(int(i)).Interface()
 	},
+	"add": func(a int, b int) int {
+		return a + b
+	},
+	"subtract": func(a int, b int) int {
+		return a - b
+	},
+	"multiply": func(a int, b int) int {
+		return a * b
+	},
+	"divide": func(a int, b int) int {
+		if b == 0 {
+			panic("psssst ... little help here ... you cannot divide by 0")
+		}
+		return a / b
+	},
+
 	"snakeCase":                    xstrings.ToSnakeCase,
 	"getProtoFile":                 getProtoFile,
 	"getMessageType":               getMessageType,
@@ -133,24 +158,24 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"fieldMapKeyType":              fieldMapKeyType,
 	"fieldMapValueType":            fieldMapValueType,
 	"replaceDict":                  replaceDict,
-	"add": func(a int, b int) int {
-		return a + b
-	},
-	"subtract": func(a int, b int) int {
-		return a - b
-	},
-	"multiply": func(a int, b int) int {
-		return a * b
-	},
-	"divide": func(a int, b int) int {
-		if b == 0 {
-			panic("psssst ... little help here ... you cannot divide by 0")
-		}
-		return a / b
-	},
+	"setStore":                     setStore,
+	"getStore":                     getStore,
 }
 
 var pathMap map[interface{}]*descriptor.SourceCodeInfo_Location
+
+func setStore(key string, i interface{}) string {
+	store[key] = i
+	return ""
+}
+
+func getStore(s string) interface{} {
+	if v, ok := store[s]; ok {
+		return v
+	}
+
+	panic(fmt.Sprintf("No key named '%s' found", s))
+}
 
 func InitPathMap(file *descriptor.FileDescriptorProto) {
 	pathMap = make(map[interface{}]*descriptor.SourceCodeInfo_Location)
