@@ -1,13 +1,25 @@
 syntax = "proto3";
 
-package article;
+package company;
 
 option go_package = "models/article;article";
 
 import "proto/common.proto";
 
-message GetArticleRequest {  common.GetArticle getarticle = 1;}
-message GetArticleResponse {  Article article = 1;}
+message GetArticleRequest {  
+  common.GetArticle getarticle = 1;
+}
+
+
+message GetArticleResponse {  
+  Article article = 1;
+  
+  message Storage {
+		string code = 1;
+  }
+  // The generated output should write []*GetArticleResponse_Storage.Storage for this field.
+  repeated Storage storages = 2;
+}
 
 message Article{
   string id = 1;

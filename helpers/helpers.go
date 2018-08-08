@@ -137,6 +137,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"goType":                       goType,
 	"goZeroValue":                  goZeroValue,
 	"goTypeWithPackage":            goTypeWithPackage,
+	"goTypeWithPackageV2":          goTypeWithPackageV2,
 	"jsType":                       jsType,
 	"jsSuffixReserved":             jsSuffixReservedKeyword,
 	"namespacedFlowType":           namespacedFlowType,
@@ -555,9 +556,47 @@ func fieldMapValueType(f *descriptor.FieldDescriptorProto, m *descriptor.Descrip
 
 }
 
+// goTypeWithPackageV2 type the field given with its package name.
+// This method is an evolution of goTypeWithPackage. It allows you to type a field with a message embedded.
+//
+// exemple:
+// ```proto
+// message GetArticleResponse {
+// 	Article article = 1;
+// 	message Storage {
+// 		  string code = 1;
+// 	}
+// 	repeated Storage storages = 2;
+// }
+// ```
+// Then the type of `storages` is `GetArticleResponse_Storage` for the go language.
+func goTypeWithPackageV2(p *descriptor.FileDescriptorProto, f *descriptor.FieldDescriptorProto) string {
+	pkg := ""
+	if *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE || *f.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
+		if isTimestampPackage(*f.TypeName) {
+			return "timestamp"
+		}
+
+		fieldPackage := strings.Split(*f.TypeName, ".")
+		filePackage := strings.Split(*p.Package, ".")
+		// check if we are working with a message embedded.
+		if len(fieldPackage) > 1 && len(fieldPackage)+1 > len(filePackage)+1 {
+			pkg = strings.Join(fieldPackage[len(filePackage)+1:len(fieldPackage)], "_")
+		} else {
+			pkg = getPackageTypeName(*f.TypeName)
+		}
+	}
+	res := goType(pkg, f)
+	return res
+}
+
+// Deprecated. Instead use goTypeWithPackageV2
 func goTypeWithPackage(f *descriptor.FieldDescriptorProto) string {
 	pkg := ""
 	if *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE || *f.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
+		if isTimestampPackage(*f.TypeName) {
+			return "timestamp"
+		}
 		pkg = getPackageTypeName(*f.TypeName)
 	}
 	return goType(pkg, f)
@@ -758,10 +797,14 @@ func jsSuffixReservedKeyword(s string) string {
 	return jsReservedRe.ReplaceAllString(s, "${1}${2}_${3}")
 }
 
-func getPackageTypeName(s string) string {
+func isTimestampPackage(s string) bool {
 	if strings.Compare(s, ".google.protobuf.Timestamp") == 0 {
-		return "timestamp"
+		return true
 	}
+	return false
+}
+
+func getPackageTypeName(s string) string {
 	if strings.Contains(s, ".") {
 		return strings.Split(s, ".")[1]
 	}
