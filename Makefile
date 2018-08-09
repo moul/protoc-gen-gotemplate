@@ -18,7 +18,7 @@ test:	install
 	cd examples/flow && make
 	cd examples/sitemap && make
 	cd examples/go-generate && make
-	cd examples/single-package-mode && make
+# 	cd examples/single-package-mode && make
 	cd examples/helpers && make
 	cd examples/arithmetics && make
 #	cd examples/go-kit && make
@@ -33,4 +33,4 @@ docker.push: docker.build
 
 .PHONY: lint
 lint:
-	gometalinter --disable-all --enable=errcheck --enable=vet --enable=vetshadow --enable=golint --enable=gas --enable=ineffassign --enable=goconst --enable=goimports --enable=gofmt --exclude="Binds to all network interfaces" --exclude="should have comment" --enable=staticcheck --enable=gosimple --enable=misspell --deadline=120s . ./cmd/... ./helpers/...
+	gometalinter --disable-all --enable=errcheck --enable=vet --enable=vetshadow --enable=golint --enable=gosec --enable=ineffassign --enable=goconst --enable=goimports --enable=gofmt --exclude="Binds to all network interfaces" --exclude="should have comment" --enable=staticcheck --enable=gosimple --enable=misspell --deadline=120s . ./cmd/... ./helpers/...
