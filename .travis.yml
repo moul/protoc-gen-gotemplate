@@ -2,8 +2,9 @@ language: go
 go: 1.8.x
 install:
 - go get github.com/Masterminds/glide
-- wget https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/.travis/install-protoc.sh && chmod +x install-protoc.sh && ./install-protoc.sh 3.2.0
+- wget https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/.travis/install-protoc.sh && chmod +x install-protoc.sh && ./install-protoc.sh 3.4.0
 - go get -u github.com/golang/protobuf/protoc-gen-go
+- go get github.com/securego/gosec/cmd/gosec/...
 - go get -u github.com/alecthomas/gometalinter
 - gometalinter --install
 script:

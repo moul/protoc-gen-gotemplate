@@ -137,6 +137,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"goType":                       goType,
 	"goZeroValue":                  goZeroValue,
 	"goTypeWithPackage":            goTypeWithPackage,
+	"goTypeWithGoPackage":          goTypeWithGoPackage,
 	"jsType":                       jsType,
 	"jsSuffixReserved":             jsSuffixReservedKeyword,
 	"namespacedFlowType":           namespacedFlowType,
@@ -555,10 +556,45 @@ func fieldMapValueType(f *descriptor.FieldDescriptorProto, m *descriptor.Descrip
 
 }
 
+// goTypeWithGoPackage types the field MESSAGE and ENUM with the go_package name.
+// This method is an evolution of goTypeWithPackage. It handles message embedded.
+//
+// example:
+// ```proto
+// message GetArticleResponse {
+// 	Article article = 1;
+// 	message Storage {
+// 		  string code = 1;
+// 	}
+// 	repeated Storage storages = 2;
+// }
+// ```
+// Then the type of `storages` is `GetArticleResponse_Storage` for the go language.
+//
+func goTypeWithGoPackage(p *descriptor.FileDescriptorProto, f *descriptor.FieldDescriptorProto) string {
+	pkg := ""
+	if *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE || *f.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
+		if isTimestampPackage(*f.TypeName) {
+			pkg = "timestamp"
+		} else {
+			pkg = *p.GetOptions().GoPackage
+			if strings.Contains(*p.GetOptions().GoPackage, ";") {
+				pkg = strings.Split(*p.GetOptions().GoPackage, ";")[1]
+			}
+		}
+	}
+	return goTypeWithEmbedded(pkg, f, p)
+}
+
+// Warning does not handle message embedded like goTypeWithGoPackage does.
 func goTypeWithPackage(f *descriptor.FieldDescriptorProto) string {
 	pkg := ""
 	if *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE || *f.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
-		pkg = getPackageTypeName(*f.TypeName)
+		if isTimestampPackage(*f.TypeName) {
+			pkg = "timestamp"
+		} else {
+			pkg = getPackageTypeName(*f.TypeName)
+		}
 	}
 	return goType(pkg, f)
 }
@@ -625,6 +661,84 @@ func haskellType(pkg string, f *descriptor.FieldDescriptorProto) string {
 	}
 }
 
+func goTypeWithEmbedded(pkg string, f *descriptor.FieldDescriptorProto, p *descriptor.FileDescriptorProto) string {
+	if pkg != "" {
+		pkg = pkg + "."
+	}
+	switch *f.Type {
+	case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]float64"
+		}
+		return "float64"
+	case descriptor.FieldDescriptorProto_TYPE_FLOAT:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]float32"
+		}
+		return "float32"
+	case descriptor.FieldDescriptorProto_TYPE_INT64:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]int64"
+		}
+		return "int64"
+	case descriptor.FieldDescriptorProto_TYPE_UINT64:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]uint64"
+		}
+		return "uint64"
+	case descriptor.FieldDescriptorProto_TYPE_INT32:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]int32"
+		}
+		return "int32"
+	case descriptor.FieldDescriptorProto_TYPE_UINT32:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]uint32"
+		}
+		return "uint32"
+	case descriptor.FieldDescriptorProto_TYPE_BOOL:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]bool"
+		}
+		return "bool"
+	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]string"
+		}
+		return "string"
+	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+		name := *f.TypeName
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			fieldPackage := strings.Split(*f.TypeName, ".")
+			filePackage := strings.Split(*p.Package, ".")
+			// check if we are working with a message embedded.
+			if len(fieldPackage) > 1 && len(fieldPackage)+1 > len(filePackage)+1 {
+				name = strings.Join(fieldPackage[len(filePackage)+1:], "_")
+			}
+
+			return fmt.Sprintf("[]*%s%s", pkg, shortType(name))
+		}
+		return fmt.Sprintf("*%s%s", pkg, shortType(name))
+	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		if *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return "[]byte"
+		}
+		return "byte"
+	case descriptor.FieldDescriptorProto_TYPE_ENUM:
+		name := *f.TypeName
+		fieldPackage := strings.Split(*f.TypeName, ".")
+		filePackage := strings.Split(*p.Package, ".")
+		// check if we are working with a message embedded.
+		if len(fieldPackage) > 1 && len(fieldPackage)+1 > len(filePackage)+1 {
+			name = strings.Join(fieldPackage[len(filePackage)+1:], "_")
+		}
+		return fmt.Sprintf("*%s%s", pkg, shortType(name))
+	default:
+		return "interface{}"
+	}
+}
+
+//Deprecated. Instead use goTypeWithEmbedded
 func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 	if pkg != "" {
 		pkg = pkg + "."
@@ -758,10 +872,15 @@ func jsSuffixReservedKeyword(s string) string {
 	return jsReservedRe.ReplaceAllString(s, "${1}${2}_${3}")
 }
 
-func getPackageTypeName(s string) string {
+func isTimestampPackage(s string) bool {
+	var isTimestampPackage bool
 	if strings.Compare(s, ".google.protobuf.Timestamp") == 0 {
-		return "timestamp"
+		isTimestampPackage = true
 	}
+	return isTimestampPackage
+}
+
+func getPackageTypeName(s string) string {
 	if strings.Contains(s, ".") {
 		return strings.Split(s, ".")[1]
 	}
