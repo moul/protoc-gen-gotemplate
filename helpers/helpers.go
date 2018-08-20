@@ -154,6 +154,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"leadingDetachedComments":      leadingDetachedComments,
 	"stringFieldExtension":         stringFieldExtension,
 	"stringMethodOptionsExtension": stringMethodOptionsExtension,
+	"boolMethodOptionsExtension":   boolMethodOptionsExtension,
 	"boolFieldExtension":           boolFieldExtension,
 	"isFieldMap":                   isFieldMap,
 	"fieldMapKeyType":              fieldMapKeyType,
@@ -175,7 +176,7 @@ func getStore(s string) interface{} {
 		return v
 	}
 
-	panic(fmt.Sprintf("No key named '%s' found", s))
+	return false
 }
 
 func InitPathMap(file *descriptor.FileDescriptorProto) {
@@ -351,6 +352,41 @@ func stringFieldExtension(fieldID int32, f *descriptor.FieldDescriptorProto) str
 	return *str
 }
 
+func boolMethodOptionsExtension(fieldID int32, f *descriptor.MethodDescriptorProto) bool {
+	if f == nil {
+		return false
+	}
+	if f.Options == nil {
+		return false
+	}
+	var extendedType *descriptor.MethodOptions
+	var extensionType *bool
+
+	eds := proto.RegisteredExtensions(f.Options)
+	if eds[fieldID] == nil {
+		ed := &proto.ExtensionDesc{
+			ExtendedType:  extendedType,
+			ExtensionType: extensionType,
+			Field:         fieldID,
+			Tag:           fmt.Sprintf("bytes,%d", fieldID),
+		}
+		proto.RegisterExtension(ed)
+		eds = proto.RegisteredExtensions(f.Options)
+	}
+
+	ext, err := proto.GetExtension(f.Options, eds[fieldID])
+	if err != nil {
+		return false
+	}
+
+	b, ok := ext.(*bool)
+	if !ok {
+		return false
+	}
+
+	return *b
+}
+
 func boolFieldExtension(fieldID int32, f *descriptor.FieldDescriptorProto) bool {
 	if f == nil {
 		return false
@@ -378,12 +414,12 @@ func boolFieldExtension(fieldID int32, f *descriptor.FieldDescriptorProto) bool 
 		return false
 	}
 
-	str, ok := ext.(*bool)
+	b, ok := ext.(*bool)
 	if !ok {
 		return false
 	}
 
-	return *str
+	return *b
 }
 
 func init() {
