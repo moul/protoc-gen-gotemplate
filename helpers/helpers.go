@@ -176,7 +176,7 @@ func getStore(s string) interface{} {
 		return v
 	}
 
-	panic(fmt.Sprintf("No key named '%s' found", s))
+	return false
 }
 
 func InitPathMap(file *descriptor.FileDescriptorProto) {
