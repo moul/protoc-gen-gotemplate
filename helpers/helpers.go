@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+	"sync"
 	"text/template"
 
 	"github.com/Masterminds/sprig"
@@ -21,13 +22,6 @@ var jsReservedRe = regexp.MustCompile(`(^|[^A-Za-z])(do|if|in|for|let|new|try|va
 var (
 	registry *ggdescriptor.Registry // some helpers need access to registry
 )
-
-// Utility to store some vars across multiple scope
-var store = make(map[string]interface{})
-
-func SetRegistry(reg *ggdescriptor.Registry) {
-	registry = reg
-}
 
 var ProtoHelpersFuncMap = template.FuncMap{
 	"string": func(i interface {
@@ -166,17 +160,48 @@ var ProtoHelpersFuncMap = template.FuncMap{
 
 var pathMap map[interface{}]*descriptor.SourceCodeInfo_Location
 
-func setStore(key string, i interface{}) string {
-	store[key] = i
-	return ""
+var store = newStore()
+
+// Utility to store some vars across multiple scope
+type globalStore struct {
+	store map[string]interface{}
+	mu    sync.Mutex
 }
 
-func getStore(s string) interface{} {
-	if v, ok := store[s]; ok {
+func newStore() *globalStore {
+	return &globalStore{
+		store: make(map[string]interface{}),
+	}
+}
+
+func (s *globalStore) getData(key string) interface{} {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if v, ok := s.store[key]; ok {
 		return v
 	}
 
 	return false
+}
+
+func (s *globalStore) setData(key string, o interface{}) {
+	s.mu.Lock()
+	s.store[key] = o
+	s.mu.Unlock()
+}
+
+func setStore(key string, o interface{}) string {
+	store.setData(key, o)
+	return ""
+}
+
+func getStore(key string) interface{} {
+	return store.getData(key)
+}
+
+func SetRegistry(reg *ggdescriptor.Registry) {
+	registry = reg
 }
 
 func InitPathMap(file *descriptor.FileDescriptorProto) {
