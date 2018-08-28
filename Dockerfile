@@ -1,4 +1,4 @@
-FROM		znly/protoc
+FROM		znly/protoc:0.3.0
 
 ENV		GOPATH=/go \
 		PATH=/go/bin:${PATH}
