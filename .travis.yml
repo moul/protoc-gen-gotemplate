@@ -1,5 +1,6 @@
 language: go
-go: 1.8.x
+go: 1.11.x
+go_import_path: moul.io/protoc-gen-gotemplate
 install:
 - go get github.com/Masterminds/glide
 - wget https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/.travis/install-protoc.sh && chmod +x install-protoc.sh && ./install-protoc.sh 3.4.0

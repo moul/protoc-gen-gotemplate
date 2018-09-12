@@ -17,7 +17,7 @@ package bbb
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import the_aaa_package "github.com/moul/protoc-gen-gotemplate/examples/single-package-mode/output/aaa"
+import the_aaa_package "moul.io/protoc-gen-gotemplate/examples/single-package-mode/output/aaa"
 
 import (
 	context "golang.org/x/net/context"

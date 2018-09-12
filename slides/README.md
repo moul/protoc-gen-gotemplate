@@ -26,7 +26,7 @@
 * the good old ./generate.sh bash script
 * go:generate
 * make
-* protobuf + [protoc-gen-gotemplate](https://github.com/moul/protoc-gen-gotemplate)
+* protobuf + [protoc-gen-gotemplate](https://moul.io/protoc-gen-gotemplate)
 
 ---
 
@@ -69,7 +69,7 @@ package sessionsvc
 import (
 	"fmt"
 	"golang.org/x/net/context"
-	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
+	pb "moul.io/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
 )
 
 type Service struct{}
@@ -94,8 +94,8 @@ package {{.File.Package}}_httptransport
 import (
     gokit_endpoint "github.com/go-kit/kit/endpoint"
 	httptransport "github.com/go-kit/kit/transport/http"
-	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/endpoints"
-	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/pb"
+	endpoints "moul.io/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/endpoints"
+	pb "moul.io/protoc-gen-gotemplate/examples/go-kit/services/{{.File.Package}}/gen/pb"
 )
 ```
 
@@ -105,8 +105,8 @@ package user_httptransport
 import (
 	gokit_endpoint "github.com/go-kit/kit/endpoint"
 	httptransport "github.com/go-kit/kit/transport/http"
-	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/endpoints"
-	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/pb"
+	endpoints "moul.io/protoc-gen-gotemplate/examples/go-kit/services/user/gen/endpoints"
+	pb "moul.io/protoc-gen-gotemplate/examples/go-kit/services/user/gen/pb"
 )
 ```
 
@@ -197,7 +197,7 @@ func RegisterHandlers(ctx context.Context, svc pb.UserServiceServer, mux *http.S
 
 # generation usages
 
-* go-kit boilerplate (see [examples/go-kit](https://github.com/moul/protoc-gen-gotemplate/tree/master/examples/go-kit))
+* go-kit boilerplate (see [examples/go-kit](https://moul.io/protoc-gen-gotemplate/tree/master/examples/go-kit))
 * k8s configuration
 * Dockerfile
 * documentation
@@ -243,5 +243,5 @@ func RegisterHandlers(ctx context.Context, svc pb.UserServiceServer, mux *http.S
 
 # questions?
 
-### github.com/moul/protoc-gen-gotemplate
+### moul.io/protoc-gen-gotemplate
 ### @moul

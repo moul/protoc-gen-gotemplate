@@ -9,8 +9,8 @@ import (
 	grpctransport "github.com/go-kit/kit/transport/grpc"
 	"google.golang.org/grpc"
 
-	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/endpoints"
-	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/pb"
+	endpoints "moul.io/protoc-gen-gotemplate/examples/go-kit/services/user/gen/endpoints"
+	pb "moul.io/protoc-gen-gotemplate/examples/go-kit/services/user/gen/pb"
 )
 
 func New(conn *grpc.ClientConn, logger log.Logger) pb.UserServiceServer {

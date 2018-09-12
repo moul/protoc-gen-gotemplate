@@ -2,8 +2,8 @@
 package company
 
 import (
-	"github.com/moul/protoc-gen-gotemplate/examples/import/output/models/article"
-    "github.com/moul/protoc-gen-gotemplate/examples/import/output/models/common"
+	"moul.io/protoc-gen-gotemplate/examples/import/output/models/article"
+    "moul.io/protoc-gen-gotemplate/examples/import/output/models/common"
 )
 
 type Repository interface {

@@ -17,7 +17,7 @@ package article
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import common "github.com/moul/protoc-gen-gotemplate/examples/import/output/models/common"
+import common "moul.io/protoc-gen-gotemplate/examples/import/output/models/common"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal

@@ -3,7 +3,7 @@ build:
 	mkdir -p output
 
 	# generate pb.go inluding imported proto
-	protoc --go_out=Mproto/common.proto=github.com/moul/protoc-gen-gotemplate/examples/import/output/models/common:./output proto/article.proto
+	protoc --go_out=Mproto/common.proto=moul.io/protoc-gen-gotemplate/examples/import/output/models/common:./output proto/article.proto
 	protoc --go_out=,plugins=grpc:./output proto/common.proto
 
 	# build our go file based on our template
