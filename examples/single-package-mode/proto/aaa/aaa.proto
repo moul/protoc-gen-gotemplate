@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/moul/protoc-gen-gotemplate/examples/single-package-mode/output/aaa";
+option go_package = "moul.io/protoc-gen-gotemplate/examples/single-package-mode/output/aaa";
 
 package the.aaa.package;
 

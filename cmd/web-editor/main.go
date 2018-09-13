@@ -57,7 +57,7 @@ func generate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// read output
-	content, err := ioutil.ReadFile(filepath.Join(dir, "example.output"))
+	content, err := ioutil.ReadFile(filepath.Join(dir, "example.output")) // #nosec
 	if err != nil {
 		returnError(w, err)
 		return

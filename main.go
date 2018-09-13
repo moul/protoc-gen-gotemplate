@@ -1,4 +1,4 @@
-package main
+package main // import "moul.io/protoc-gen-gotemplate"
 
 import (
 	"io/ioutil"
@@ -11,7 +11,7 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/plugin"
 	ggdescriptor "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 
-	pgghelpers "github.com/moul/protoc-gen-gotemplate/helpers"
+	pgghelpers "moul.io/protoc-gen-gotemplate/helpers"
 )
 
 var (

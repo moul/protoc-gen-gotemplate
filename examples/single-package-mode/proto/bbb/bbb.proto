@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package the.bbb.package;
 
-option go_package = "github.com/moul/protoc-gen-gotemplate/examples/single-package-mode/output/bbb";
+option go_package = "moul.io/protoc-gen-gotemplate/examples/single-package-mode/output/bbb";
 
 import "aaa/aaa.proto";
 

@@ -9,7 +9,7 @@ build:
 	protoc -I./proto --go_out=plugins=grpc:output proto/aaa/aaa.proto
 	protoc -I./proto --go_out=plugins=grpc:output proto/bbb/bbb.proto
 	@rm -rf output/aaa output/bbb
-	@mv output/github.com/moul/protoc-gen-gotemplate/examples/single-package-mode/output/* output/
+	@mv output/moul.io/protoc-gen-gotemplate/examples/single-package-mode/output/* output/
 	@rm -rf output/github.com
 
 	@# protoc-gen-gotemplate

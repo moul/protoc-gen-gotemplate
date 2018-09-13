@@ -8,8 +8,8 @@ import (
 
 	gokit_endpoint "github.com/go-kit/kit/endpoint"
 	httptransport "github.com/go-kit/kit/transport/http"
-	endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/endpoints"
-	pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/pb"
+	endpoints "moul.io/protoc-gen-gotemplate/examples/go-kit/services/user/gen/endpoints"
+	pb "moul.io/protoc-gen-gotemplate/examples/go-kit/services/user/gen/pb"
 )
 
 var _ = log.Printf

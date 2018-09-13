@@ -12,23 +12,23 @@ import (
 	"github.com/gorilla/handlers"
 	"google.golang.org/grpc"
 
-	session_svc "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session"
-	session_endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/endpoints"
-	session_pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
-	session_grpctransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/transports/grpc"
-	session_httptransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/session/gen/transports/http"
+	session_svc "moul.io/protoc-gen-gotemplate/examples/go-kit/services/session"
+	session_endpoints "moul.io/protoc-gen-gotemplate/examples/go-kit/services/session/gen/endpoints"
+	session_pb "moul.io/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
+	session_grpctransport "moul.io/protoc-gen-gotemplate/examples/go-kit/services/session/gen/transports/grpc"
+	session_httptransport "moul.io/protoc-gen-gotemplate/examples/go-kit/services/session/gen/transports/http"
 
-	sprint_svc "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint"
-	sprint_endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/endpoints"
-	sprint_pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/pb"
-	sprint_grpctransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/transports/grpc"
-	sprint_httptransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/transports/http"
+	sprint_svc "moul.io/protoc-gen-gotemplate/examples/go-kit/services/sprint"
+	sprint_endpoints "moul.io/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/endpoints"
+	sprint_pb "moul.io/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/pb"
+	sprint_grpctransport "moul.io/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/transports/grpc"
+	sprint_httptransport "moul.io/protoc-gen-gotemplate/examples/go-kit/services/sprint/gen/transports/http"
 
-	user_svc "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user"
-	user_endpoints "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/endpoints"
-	user_pb "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/pb"
-	user_grpctransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/transports/grpc"
-	user_httptransport "github.com/moul/protoc-gen-gotemplate/examples/go-kit/services/user/gen/transports/http"
+	user_svc "moul.io/protoc-gen-gotemplate/examples/go-kit/services/user"
+	user_endpoints "moul.io/protoc-gen-gotemplate/examples/go-kit/services/user/gen/endpoints"
+	user_pb "moul.io/protoc-gen-gotemplate/examples/go-kit/services/user/gen/pb"
+	user_grpctransport "moul.io/protoc-gen-gotemplate/examples/go-kit/services/user/gen/transports/grpc"
+	user_httptransport "moul.io/protoc-gen-gotemplate/examples/go-kit/services/user/gen/transports/http"
 )
 
 func main() {

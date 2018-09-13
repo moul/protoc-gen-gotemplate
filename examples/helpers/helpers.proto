@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dummy;
 
-option go_package = "github.com/moul/protoc-gen-gotemplate/examples/helpers";
+option go_package = "moul.io/protoc-gen-gotemplate/examples/helpers";
 
 message Dummy1 {
   float aaa = 1;

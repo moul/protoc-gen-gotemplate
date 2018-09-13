@@ -4,7 +4,7 @@ package bbb
 import (
 	"fmt"
 
-	"github.com/moul/protoc-gen-gotemplate/examples/single-package-mode/output/aaa"
+	"moul.io/protoc-gen-gotemplate/examples/single-package-mode/output/aaa"
 	"golang.org/x/net/context"
 )
 
