@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"log"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -94,6 +95,7 @@ func (e *GenericTemplateBasedEncoder) templates() ([]string, error) {
 		if e.debug {
 			log.Printf("new template: %q", rel)
 		}
+
 		filenames = append(filenames, rel)
 		return nil
 	})
@@ -135,6 +137,14 @@ func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, err
 		Enum:           e.enum,
 	}
 	buffer := new(bytes.Buffer)
+
+	unescaped, err := url.QueryUnescape(templateFilename)
+	if err != nil {
+		log.Printf("failed to unescape filepath %q: %v", templateFilename, err)
+	} else {
+		templateFilename = unescaped
+	}
+
 	tmpl, err := template.New("").Funcs(pgghelpers.ProtoHelpersFuncMap).Parse(templateFilename)
 	if err != nil {
 		return nil, err
