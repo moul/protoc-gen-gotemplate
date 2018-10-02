@@ -10,7 +10,7 @@ require (
 	github.com/go-stack/stack v1.5.3 // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/golang/protobuf v0.0.0-20161117033126-8ee79997227b
-	github.com/gorilla/context v0.0.0-20160226214623-1ea25387ff6f // indirect
+	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/handlers v0.0.0-20161028133215-e1b2144f2167
 	github.com/gorilla/mux v1.5.0
 	github.com/grpc-ecosystem/grpc-gateway v1.2.2
