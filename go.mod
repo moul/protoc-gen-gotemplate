@@ -7,7 +7,7 @@ require (
 	github.com/dgrijalva/jwt-go v0.0.0-20160621201154-c9eaceb2896d // indirect
 	github.com/go-kit/kit v0.0.0-20161109000648-9f5c614cd1e7 // indirect
 	github.com/go-logfmt/logfmt v0.3.0 // indirect
-	github.com/go-stack/stack v1.5.3 // indirect
+	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/golang/protobuf v0.0.0-20161117033126-8ee79997227b
 	github.com/gorilla/context v0.0.0-20160226214623-1ea25387ff6f // indirect
