@@ -22,6 +22,7 @@ github.com/grpc-ecosystem/grpc-gateway v1.2.2 h1:oR2ZMoJtQccW6NIJ9yFxRqAr2rkmcNs
 github.com/grpc-ecosystem/grpc-gateway v1.2.2/go.mod h1:RSKVYQBd5MCa4OVpNdGskqpgL2+G+NZTnrVHpWWfpdw=
 github.com/huandu/xstrings v0.0.0-20151130125119-3959339b3335 h1:KZOP9q7J/P4eMBibPuVwuloXgd2dTbLAHRPqxw7NXOw=
 github.com/huandu/xstrings v0.0.0-20151130125119-3959339b3335/go.mod h1:4qWG/gcEcfX4z/mBDHJ++3ReCw9ibxbsNJbcucJdbSo=
+github.com/huandu/xstrings v1.2.0/go.mod h1:DvyZB1rfVYsBIigL8HwpZgxHwXozlTgGqn63UyNX5k4=
 github.com/imdario/mergo v0.0.0-20171009183408-7fe0c75c13ab h1:k/Biv+LJL35wkk0Hveko1nj7as4tSHkHdZaNlzn/gcQ=
 github.com/imdario/mergo v0.0.0-20171009183408-7fe0c75c13ab/go.mod h1:2EnlNZ0deacrJVfApfmtdGgDfMuh/nq6Ok1EcJh5FfA=
 github.com/kr/fs v0.0.0-20131111012553-2788f0dbd169/go.mod h1:glhvuHOU9Hy7/8PwwdtnarXqLagOX0b/TbZx2zLMqEg=
