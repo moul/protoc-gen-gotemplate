@@ -15,7 +15,7 @@ require (
 	github.com/gorilla/mux v1.5.0
 	github.com/grpc-ecosystem/grpc-gateway v1.2.2
 	github.com/huandu/xstrings v0.0.0-20151130125119-3959339b3335
-	github.com/imdario/mergo v0.0.0-20171009183408-7fe0c75c13ab // indirect
+	github.com/imdario/mergo v0.3.6 // indirect
 	github.com/kr/fs v0.0.0-20131111012553-2788f0dbd169 // indirect
 	github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515 // indirect
 	github.com/satori/go.uuid v1.1.0 // indirect
