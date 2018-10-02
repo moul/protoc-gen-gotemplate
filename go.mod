@@ -18,7 +18,7 @@ require (
 	github.com/imdario/mergo v0.0.0-20171009183408-7fe0c75c13ab // indirect
 	github.com/kr/fs v0.0.0-20131111012553-2788f0dbd169 // indirect
 	github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515 // indirect
-	github.com/satori/go.uuid v1.1.0 // indirect
+	github.com/satori/go.uuid v1.2.0 // indirect
 	golang.org/x/crypto v0.0.0-20170516161655-0fe963104e9d // indirect
 	golang.org/x/net v0.0.0-20170108160505-da2b4fa28524 // indirect
 	golang.org/x/text v0.0.0-20161216064924-a49bea13b776 // indirect
