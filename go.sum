@@ -18,6 +18,7 @@ github.com/gorilla/handlers v0.0.0-20161028133215-e1b2144f2167 h1:uANqGlSIT3JwuQ
 github.com/gorilla/handlers v0.0.0-20161028133215-e1b2144f2167/go.mod h1:Qkdc/uu4tH4g6mTK6auzZ766c4CA0Ng8+o/OAirnOIQ=
 github.com/gorilla/mux v1.5.0 h1:mq8bRov+5x+pZNR/uAHyUEgovR9gLgYFwDQIeuYi9TM=
 github.com/gorilla/mux v1.5.0/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
+github.com/gorilla/mux v1.6.2/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
 github.com/grpc-ecosystem/grpc-gateway v1.2.2 h1:oR2ZMoJtQccW6NIJ9yFxRqAr2rkmcNsCaZKT66A9zt4=
 github.com/grpc-ecosystem/grpc-gateway v1.2.2/go.mod h1:RSKVYQBd5MCa4OVpNdGskqpgL2+G+NZTnrVHpWWfpdw=
 github.com/huandu/xstrings v0.0.0-20151130125119-3959339b3335 h1:KZOP9q7J/P4eMBibPuVwuloXgd2dTbLAHRPqxw7NXOw=
