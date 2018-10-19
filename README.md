@@ -1,4 +1,7 @@
 # `protoc-gen-gotemplate`
+
+[![GuardRails badge](https://badges.production.guardrails.io/moul/protoc-gen-gotemplate.svg)](https://www.guardrails.io)
+
 :open_file_folder: protocol generator + golang text/template (protobuf)
 
 A generic **code**/script/data generator based on [Protobuf](https://developers.google.com/protocol-buffers/).
