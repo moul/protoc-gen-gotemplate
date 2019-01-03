@@ -2,6 +2,7 @@ github.com/Masterminds/semver v1.2.2 h1:ptelpryog9A0pR4TGFvIAvw2c8SaNrYkFtfrxhSv
 github.com/Masterminds/semver v1.2.2/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF078ddwwvV3Y=
 github.com/Masterminds/sprig v2.14.1+incompatible h1:rTHERm50Xp1Cbb8x7xBCeDp//jMMqqR44EWw7KwSXUQ=
 github.com/Masterminds/sprig v2.14.1+incompatible/go.mod h1:y6hNFY5UBTIWBxnzTeuNhlNS5hqE0NB0E6fgfo2Br3o=
+github.com/Masterminds/sprig v2.17.1+incompatible/go.mod h1:y6hNFY5UBTIWBxnzTeuNhlNS5hqE0NB0E6fgfo2Br3o=
 github.com/aokoli/goutils v0.0.0-20170502144750-e57d01ace047 h1:Bn0iqJ/349f606hR0juIGyheAI6+hyg9XUOLhN9udLo=
 github.com/aokoli/goutils v0.0.0-20170502144750-e57d01ace047/go.mod h1:SijmP0QR8LtwsmDs8Yii5Z/S4trXFGFC2oO5g9DP+DQ=
 github.com/dgrijalva/jwt-go v0.0.0-20160621201154-c9eaceb2896d/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
