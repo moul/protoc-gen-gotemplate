@@ -22,6 +22,6 @@ require (
 	golang.org/x/crypto v0.0.0-20170516161655-0fe963104e9d // indirect
 	golang.org/x/net v0.0.0-20170108160505-da2b4fa28524 // indirect
 	golang.org/x/text v0.0.0-20161216064924-a49bea13b776 // indirect
-	google.golang.org/genproto v0.0.0-20170517234824-bb3573be0c48
+	google.golang.org/genproto v0.0.0-20190108162857-ae2f86662275
 	google.golang.org/grpc v1.0.4 // indirect
 )
