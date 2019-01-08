@@ -31,6 +31,7 @@ github.com/satori/go.uuid v1.1.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdh
 golang.org/x/crypto v0.0.0-20170516161655-0fe963104e9d h1:qjfFh1YMn6m60QTGoG+IlwUMhNlXJbDyCa6EkHM/N2w=
 golang.org/x/crypto v0.0.0-20170516161655-0fe963104e9d/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/net v0.0.0-20170108160505-da2b4fa28524/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
+golang.org/x/net v0.0.0-20190108232613-1e06a53dbb7e/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/text v0.0.0-20161216064924-a49bea13b776/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 google.golang.org/genproto v0.0.0-20170517234824-bb3573be0c48 h1:xfoW+Di7qQQUnjptcGb4/rpc701e3RvfNmaywfMxQVI=
 google.golang.org/genproto v0.0.0-20170517234824-bb3573be0c48/go.mod h1:JiN7NxoALGmiZfu7CAH4rXhgtRTLTxftemlI0sWmxmc=
