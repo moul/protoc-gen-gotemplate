@@ -20,6 +20,7 @@ github.com/gorilla/mux v1.5.0 h1:mq8bRov+5x+pZNR/uAHyUEgovR9gLgYFwDQIeuYi9TM=
 github.com/gorilla/mux v1.5.0/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
 github.com/grpc-ecosystem/grpc-gateway v1.2.2 h1:oR2ZMoJtQccW6NIJ9yFxRqAr2rkmcNsCaZKT66A9zt4=
 github.com/grpc-ecosystem/grpc-gateway v1.2.2/go.mod h1:RSKVYQBd5MCa4OVpNdGskqpgL2+G+NZTnrVHpWWfpdw=
+github.com/grpc-ecosystem/grpc-gateway v1.6.4/go.mod h1:RSKVYQBd5MCa4OVpNdGskqpgL2+G+NZTnrVHpWWfpdw=
 github.com/huandu/xstrings v0.0.0-20151130125119-3959339b3335 h1:KZOP9q7J/P4eMBibPuVwuloXgd2dTbLAHRPqxw7NXOw=
 github.com/huandu/xstrings v0.0.0-20151130125119-3959339b3335/go.mod h1:4qWG/gcEcfX4z/mBDHJ++3ReCw9ibxbsNJbcucJdbSo=
 github.com/imdario/mergo v0.0.0-20171009183408-7fe0c75c13ab h1:k/Biv+LJL35wkk0Hveko1nj7as4tSHkHdZaNlzn/gcQ=
