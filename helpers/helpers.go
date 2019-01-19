@@ -283,12 +283,12 @@ func samePath(a, b []int32) bool {
 	return true
 }
 
-func findSourceInfoLocation(i interface{}) *descriptor.SourceCodeInfo_Location {
+/*func findSourceInfoLocation(i interface{}) *descriptor.SourceCodeInfo_Location {
 	if pathMap == nil {
 		return nil
 	}
 	return pathMap[i]
-}
+}*/
 
 func leadingComment(i interface{}) string {
 	loc := pathMap[i]

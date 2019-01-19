@@ -4,8 +4,8 @@ package bbb
 import (
 	"fmt"
 
-	"moul.io/protoc-gen-gotemplate/examples/single-package-mode/output/aaa"
 	"golang.org/x/net/context"
+	"moul.io/protoc-gen-gotemplate/examples/single-package-mode/output/aaa"
 )
 
 type Service struct{}
