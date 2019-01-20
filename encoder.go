@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/golang/protobuf/protoc-gen-go/plugin"
+	plugin_go "github.com/golang/protobuf/protoc-gen-go/plugin"
 
 	pgghelpers "moul.io/protoc-gen-gotemplate/helpers"
 )

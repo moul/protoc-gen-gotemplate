@@ -147,6 +147,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"trailingComment":              trailingComment,
 	"leadingDetachedComments":      leadingDetachedComments,
 	"stringFieldExtension":         stringFieldExtension,
+	"int64FieldExtension":          int64FieldExtension,
 	"stringMethodOptionsExtension": stringMethodOptionsExtension,
 	"boolMethodOptionsExtension":   boolMethodOptionsExtension,
 	"boolFieldExtension":           boolFieldExtension,
@@ -282,12 +283,12 @@ func samePath(a, b []int32) bool {
 	return true
 }
 
-func findSourceInfoLocation(i interface{}) *descriptor.SourceCodeInfo_Location {
+/*func findSourceInfoLocation(i interface{}) *descriptor.SourceCodeInfo_Location {
 	if pathMap == nil {
 		return nil
 	}
 	return pathMap[i]
-}
+}*/
 
 func leadingComment(i interface{}) string {
 	loc := pathMap[i]
@@ -377,6 +378,41 @@ func stringFieldExtension(fieldID int32, f *descriptor.FieldDescriptorProto) str
 	return *str
 }
 
+func int64FieldExtension(fieldID int32, f *descriptor.FieldDescriptorProto) int64 {
+	if f == nil {
+		return 0
+	}
+	if f.Options == nil {
+		return 0
+	}
+	var extendedType *descriptor.FieldOptions
+	var extensionType *string
+
+	eds := proto.RegisteredExtensions(f.Options)
+	if eds[fieldID] == nil {
+		ed := &proto.ExtensionDesc{
+			ExtendedType:  extendedType,
+			ExtensionType: extensionType,
+			Field:         fieldID,
+			Tag:           fmt.Sprintf("bytes,%d", fieldID),
+		}
+		proto.RegisterExtension(ed)
+		eds = proto.RegisteredExtensions(f.Options)
+	}
+
+	ext, err := proto.GetExtension(f.Options, eds[fieldID])
+	if err != nil {
+		return 0
+	}
+
+	i, ok := ext.(*int64)
+	if !ok {
+		return 0
+	}
+
+	return *i
+}
+
 func boolMethodOptionsExtension(fieldID int32, f *descriptor.MethodDescriptorProto) bool {
 	if f == nil {
 		return false
@@ -393,7 +429,7 @@ func boolMethodOptionsExtension(fieldID int32, f *descriptor.MethodDescriptorPro
 			ExtendedType:  extendedType,
 			ExtensionType: extensionType,
 			Field:         fieldID,
-			Tag:           fmt.Sprintf("bytes,%d", fieldID),
+			Tag:           fmt.Sprintf("varint,%d", fieldID),
 		}
 		proto.RegisterExtension(ed)
 		eds = proto.RegisteredExtensions(f.Options)

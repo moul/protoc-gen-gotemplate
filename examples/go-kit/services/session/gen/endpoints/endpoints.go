@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
-	pb "moul.io/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
 	oldcontext "golang.org/x/net/context"
+	pb "moul.io/protoc-gen-gotemplate/examples/go-kit/services/session/gen/pb"
 )
 
 var _ = endpoint.Chain
