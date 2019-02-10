@@ -210,10 +210,8 @@ func (e *GenericTemplateBasedEncoder) Files() []*plugin_go.CodeGeneratorResponse
 		case f := <-resultChan:
 			files = append(files, f)
 		case err = <-errChan:
+			panic(err)
 		}
-	}
-	if err != nil {
-		panic(err)
 	}
 	return files
 }
