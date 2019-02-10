@@ -389,7 +389,7 @@ func int64FieldExtension(fieldID int32, f *descriptor.FieldDescriptorProto) int6
 		return 0
 	}
 	var extendedType *descriptor.FieldOptions
-	var extensionType *string
+	var extensionType *int64
 
 	eds := proto.RegisteredExtensions(f.Options)
 	if eds[fieldID] == nil {
@@ -397,7 +397,7 @@ func int64FieldExtension(fieldID int32, f *descriptor.FieldDescriptorProto) int6
 			ExtendedType:  extendedType,
 			ExtensionType: extensionType,
 			Field:         fieldID,
-			Tag:           fmt.Sprintf("bytes,%d", fieldID),
+			Tag:           fmt.Sprintf("varint,%d", fieldID),
 		}
 		proto.RegisterExtension(ed)
 		eds = proto.RegisteredExtensions(f.Options)
@@ -424,7 +424,7 @@ func int64MessageExtension(fieldID int32, f *descriptor.DescriptorProto) int64 {
 		return 0
 	}
 	var extendedType *descriptor.MessageOptions
-	var extensionType *string
+	var extensionType *int64
 
 	eds := proto.RegisteredExtensions(f.Options)
 	if eds[fieldID] == nil {
@@ -432,7 +432,7 @@ func int64MessageExtension(fieldID int32, f *descriptor.DescriptorProto) int64 {
 			ExtendedType:  extendedType,
 			ExtensionType: extensionType,
 			Field:         fieldID,
-			Tag:           fmt.Sprintf("bytes,%d", fieldID),
+			Tag:           fmt.Sprintf("varint,%d", fieldID),
 		}
 		proto.RegisterExtension(ed)
 		eds = proto.RegisteredExtensions(f.Options)
