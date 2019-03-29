@@ -48,7 +48,7 @@ func main() {
 		debug             = false
 		all               = false
 		singlePackageMode = false
-		fileMode 		  = false
+		fileMode          = false
 	)
 	if parameter := g.Request.GetParameter(); parameter != "" {
 		for _, param := range strings.Split(parameter, ",") {
@@ -135,7 +135,7 @@ func main() {
 		}
 
 		if fileMode {
-			if s := file.GetService(); s != nil && len(s) > 0{
+			if s := file.GetService(); s != nil && len(s) > 0 {
 				encoder := NewGenericTemplateBasedEncoder(templateDir, file, debug, destinationDir)
 				for _, tmpl := range encoder.Files() {
 					concatOrAppend(tmpl)
