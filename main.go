@@ -48,6 +48,7 @@ func main() {
 		debug             = false
 		all               = false
 		singlePackageMode = false
+		fileMode 		  = false
 	)
 	if parameter := g.Request.GetParameter(); parameter != "" {
 		for _, param := range strings.Split(parameter, ",") {
@@ -85,6 +86,14 @@ func main() {
 				default:
 					log.Printf("Err: invalid value for debug: %q", parts[1])
 				}
+			case "file-mode":
+				switch strings.ToLower(parts[1]) {
+				case boolTrue, "t":
+					fileMode = true
+				case boolFalse, "f":
+				default:
+					log.Printf("Err: invalid value for file-mode: %q", parts[1])
+				}
 			default:
 				log.Printf("Err: unknown parameter: %q", param)
 			}
@@ -120,6 +129,17 @@ func main() {
 			encoder := NewGenericTemplateBasedEncoder(templateDir, file, debug, destinationDir)
 			for _, tmpl := range encoder.Files() {
 				concatOrAppend(tmpl)
+			}
+
+			continue
+		}
+
+		if fileMode {
+			if s := file.GetService(); s != nil && len(s) > 0{
+				encoder := NewGenericTemplateBasedEncoder(templateDir, file, debug, destinationDir)
+				for _, tmpl := range encoder.Files() {
+					concatOrAppend(tmpl)
+				}
 			}
 
 			continue
