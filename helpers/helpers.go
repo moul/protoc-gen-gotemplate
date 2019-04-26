@@ -146,6 +146,7 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"leadingComment":               leadingComment,
 	"trailingComment":              trailingComment,
 	"leadingDetachedComments":      leadingDetachedComments,
+	"stringFileOptionsExtension":   stringFileOptionsExtension,
 	"stringMessageExtension":       stringMessageExtension,
 	"stringFieldExtension":         stringFieldExtension,
 	"int64FieldExtension":          int64FieldExtension,
@@ -321,6 +322,46 @@ func stringMethodOptionsExtension(fieldID int32, f *descriptor.MethodDescriptorP
 		return ""
 	}
 	var extendedType *descriptor.MethodOptions
+	var extensionType *string
+
+	eds := proto.RegisteredExtensions(f.Options)
+	if eds[fieldID] == nil {
+		ed := &proto.ExtensionDesc{
+			ExtendedType:  extendedType,
+			ExtensionType: extensionType,
+			Field:         fieldID,
+			Tag:           fmt.Sprintf("bytes,%d", fieldID),
+		}
+		proto.RegisterExtension(ed)
+		eds = proto.RegisteredExtensions(f.Options)
+	}
+
+	ext, err := proto.GetExtension(f.Options, eds[fieldID])
+	if err != nil {
+		return ""
+	}
+
+	str, ok := ext.(*string)
+	if !ok {
+		return ""
+	}
+
+	return *str
+}
+
+// stringFileOptionsExtension extracts file options of a string type.
+// To define your own extensions see:
+// https://developers.google.com/protocol-buffers/docs/proto#customoptions
+// Typically the fieldID of private extensions should be in the range:
+// 50000-99999
+func stringFileOptionsExtension(fieldID int32, f *descriptor.FileDescriptorProto) string {
+	if f == nil {
+		return ""
+	}
+	if f.Options == nil {
+		return ""
+	}
+	var extendedType *descriptor.FileOptions
 	var extensionType *string
 
 	eds := proto.RegisteredExtensions(f.Options)
