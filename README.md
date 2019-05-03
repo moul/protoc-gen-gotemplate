@@ -153,6 +153,10 @@ $> docker run --rm -v "$(pwd):$(pwd)" -w "$(pwd)" moul/protoc-gen-gotemplate -I.
 * [translator](https://github.com/moul/translator): Translator Micro-service using Gettext and Go-Kit
 * [acl](https://github.com/moul/acl): ACL micro-service (gRPC/protobuf + http/json)
 
+## See also
+
+* [pbhbs](https://github.com/gponsinet/pbhbs): protobuf gen based on handlebarjs template
+
 ## License
 
 MIT
