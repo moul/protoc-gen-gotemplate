@@ -19,7 +19,9 @@ import (
 type GenericTemplateBasedEncoder struct {
 	templateDir    string
 	service        *descriptor.ServiceDescriptorProto
+	message        *descriptor.DescriptorProto
 	file           *descriptor.FileDescriptorProto
+	files          []*descriptor.FileDescriptorProto
 	enum           []*descriptor.EnumDescriptorProto
 	debug          bool
 	destinationDir string
@@ -33,16 +35,19 @@ type Ast struct {
 	PWD            string                             `json:"pwd"`
 	Debug          bool                               `json:"debug"`
 	DestinationDir string                             `json:"destination-dir"`
+	Files          []*descriptor.FileDescriptorProto  `json:"file"`
 	File           *descriptor.FileDescriptorProto    `json:"file"`
 	RawFilename    string                             `json:"raw-filename"`
 	Filename       string                             `json:"filename"`
 	TemplateDir    string                             `json:"template-dir"`
 	Service        *descriptor.ServiceDescriptorProto `json:"service"`
+	Message        *descriptor.DescriptorProto        `json:"message"`
 	Enum           []*descriptor.EnumDescriptorProto  `json:"enum"`
 }
 
 func NewGenericServiceTemplateBasedEncoder(templateDir string, service *descriptor.ServiceDescriptorProto, file *descriptor.FileDescriptorProto, debug bool, destinationDir string) (e *GenericTemplateBasedEncoder) {
 	e = &GenericTemplateBasedEncoder{
+		message:        nil,
 		service:        service,
 		file:           file,
 		templateDir:    templateDir,
@@ -54,6 +59,40 @@ func NewGenericServiceTemplateBasedEncoder(templateDir string, service *descript
 		log.Printf("new encoder: file=%q service=%q template-dir=%q", file.GetName(), service.GetName(), templateDir)
 	}
 	pgghelpers.InitPathMap(file)
+
+	return
+}
+
+func NewGenericMessageTemplateBasedEncoder(templateDir string, message *descriptor.DescriptorProto, file *descriptor.FileDescriptorProto, debug bool, destinationDir string) (e *GenericTemplateBasedEncoder) {
+	e = &GenericTemplateBasedEncoder{
+		message:        message,
+		service:        nil,
+		file:           file,
+		templateDir:    templateDir,
+		debug:          debug,
+		destinationDir: destinationDir,
+		enum:           file.GetEnumType(),
+	}
+	if debug {
+		log.Printf("new encoder: file=%q message=%q template-dir=%q", file.GetName(), message.GetName(), templateDir)
+	}
+	pgghelpers.InitPathMap(file)
+
+	return
+}
+
+func NewGenericAllTemplateBasedEncoder(templateDir string, files []*descriptor.FileDescriptorProto, debug bool, destinationDir string) (e *GenericTemplateBasedEncoder) {
+	e = &GenericTemplateBasedEncoder{
+		service:        nil,
+		files:          files,
+		templateDir:    templateDir,
+		debug:          debug,
+		destinationDir: destinationDir,
+	}
+	if debug {
+		log.Printf("new encoder: all files template-dir=%q", templateDir)
+	}
+	pgghelpers.InitPathMaps(files)
 
 	return
 }
@@ -129,12 +168,14 @@ func (e *GenericTemplateBasedEncoder) genAst(templateFilename string) (*Ast, err
 		PWD:            pwd,
 		GoPWD:          goPwd,
 		File:           e.file,
+		Files:          e.files,
 		TemplateDir:    e.templateDir,
 		DestinationDir: e.destinationDir,
 		RawFilename:    templateFilename,
 		Filename:       "",
 		Service:        e.service,
 		Enum:           e.enum,
+		Message:        e.message,
 	}
 	buffer := new(bytes.Buffer)
 
