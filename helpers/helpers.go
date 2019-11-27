@@ -94,15 +94,15 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"trimstr": func(cutset, s string) string {
 		return strings.Trim(s, cutset)
 	},
-	"index": func(array interface{}, i int32) interface{} {
+	"index": func(array interface{}, i int) interface{} {
 		slice := reflect.ValueOf(array)
 		if slice.Kind() != reflect.Slice {
 			panic("Error in index(): given a non-slice type")
 		}
-		if i < 0 || int(i) >= slice.Len() {
+		if i < 0 || i >= slice.Len() {
 			panic("Error in index(): index out of bounds")
 		}
-		return slice.Index(int(i)).Interface()
+		return slice.Index(i).Interface()
 	},
 	"add": func(a int, b int) int {
 		return a + b
