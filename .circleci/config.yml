@@ -1,0 +1,17 @@
+version: 2.1
+
+orbs:
+  moul: moul/build@1.14.0 # https://github.com/moul/build
+
+workflows:
+  main:
+    jobs:
+      - moul/golang-build:
+          gopkg: moul.io/protoc-gen-gotemplate
+      - moul/golang-build:
+          gopkg: moul.io/protoc-gen-gotemplate
+          tag: '1.12'
+      - moul/golang-build:
+          gopkg: moul.io/protoc-gen-gotemplate
+          tag: '1.11'
+      - moul/docker-build
