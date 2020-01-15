@@ -1,14 +1,14 @@
-.PHONY: build
-build:
-	go build -v -i -o protoc-gen-gotemplate .
+GOPKG ?= moul.io/protoc-gen-gotemplate
+DOCKER_IMAGE ?= moul/golang-repo-template
+GOBINS ?= . ./cmd/web-editor
+GOLIBS ?= .
 
-.PHONY: install
-install:
-	go install .
-	go install ./cmd/web-editor
+all: test install
 
-.PHONY: test
-test:	install
+include rules.mk
+
+.PHONY: examples
+examples:	install
 	cd examples/time && make
 	cd examples/enum && make
 	cd examples/import && make
@@ -18,19 +18,7 @@ test:	install
 	cd examples/flow && make
 	cd examples/sitemap && make
 	cd examples/go-generate && make
-# 	cd examples/single-package-mode && make
+  #cd examples/single-package-mode && make
 	cd examples/helpers && make
 	cd examples/arithmetics && make
-#	cd examples/go-kit && make
-
-.PHONY: docker.build
-docker.build:
-	docker build --pull -t moul/protoc-gen-gotemplate .
-
-.PHONY: docker.push
-docker.push: docker.build
-	docker push moul/protoc-gen-gotemplate
-
-.PHONY: lint
-lint:
-	golangci-lint run --verbose . ./helpers ./cmd/...
+  #cd examples/go-kit && make
