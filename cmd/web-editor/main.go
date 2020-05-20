@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
+	packr "github.com/gobuffalo/packr/v2"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
@@ -101,7 +102,9 @@ func returnError(w http.ResponseWriter, err error) {
 func main() {
 	r := mux.NewRouter()
 
-	r.Handle("/", http.FileServer(http.Dir("static")))
+	box := packr.New("static", "./static")
+
+	r.Handle("/", http.FileServer(box))
 	r.HandleFunc("/generate", generate)
 	addr := fmt.Sprintf(":%s", os.Getenv("PORT"))
 	if addr == ":" {

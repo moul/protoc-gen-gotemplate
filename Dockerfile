@@ -1,14 +1,18 @@
-FROM		znly/protoc:0.3.0
+# builder
+FROM    golang:1.14-alpine as builder
+RUN     apk --no-cache add make git go rsync libc-dev
+RUN     go get -u golang.org/x/tools/cmd/goimports
+RUN     go get -u github.com/gobuffalo/packr/v2/packr2
+COPY    . /go/src/moul.io/protoc-gen-gotemplate
+WORKDIR /go/src/moul.io/protoc-gen-gotemplate
+RUN     packr2
+RUN     go install -a -tags netgo -ldflags '-w -extldflags "-static"' . ./cmd/web-editor
+RUN     ls -la /go/bin
 
-ENV		GOPATH=/go \
-		PATH=/go/bin:${PATH}
-
-# Install deps and common tools
-RUN		apk --update add make git go rsync libc-dev \
- &&		go get -u golang.org/x/tools/cmd/goimports
-
-# Install protoc-gen-gotemplate
-COPY		. /go/src/moul.io/protoc-gen-gotemplate
-WORKDIR		/go/src/moul.io/protoc-gen-gotemplate
-RUN		git remote set-url origin https://github.com/moul/protoc-gen-gotemplate
-RUN		go install . ./cmd/web-editor
+# runtime
+FROM    znly/protoc:0.3.0
+COPY    --from=builder  /go/bin/web-editor            /go/bin/
+COPY    --from=builder  /go/bin/protoc-gen-gotemplate /go/bin/
+ENV     PATH=$PATH:/go/bin
+EXPOSE  8080
+ENTRYPOINT []
