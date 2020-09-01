@@ -163,6 +163,8 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"getStore":                     getStore,
 	"goPkg":                        goPkg,
 	"goPkgLastElement":             goPkgLastElement,
+	"cppType":                      cppType,
+	"cppTypeWithPackage":           cppTypeWithPackage,
 }
 
 var pathMap map[interface{}]*descriptor.SourceCodeInfo_Location
@@ -907,6 +909,57 @@ func haskellType(pkg string, f *descriptor.FieldDescriptorProto) string {
 	default:
 		return "Generic"
 	}
+}
+
+// Warning does not handle message embedded like goTypeWithGoPackage does.
+func cppTypeWithPackage(f *descriptor.FieldDescriptorProto) string {
+	pkg := ""
+	if *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE || *f.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
+		if isTimestampPackage(*f.TypeName) {
+			pkg = "timestamp"
+		} else {
+			pkg = getPackageTypeName(*f.TypeName)
+		}
+	}
+	return cppType(pkg, f)
+}
+
+func cppType(pkg string, f *descriptor.FieldDescriptorProto) string {
+	isRepeat := *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED
+	typeName := "???"
+	switch *f.Type {
+	case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
+		typeName = "double"
+	case descriptor.FieldDescriptorProto_TYPE_FLOAT:
+		typeName = "float"
+	case descriptor.FieldDescriptorProto_TYPE_INT64:
+		typeName = "int64_t"
+	case descriptor.FieldDescriptorProto_TYPE_UINT64:
+		typeName = "uint64_t"
+	case descriptor.FieldDescriptorProto_TYPE_INT32:
+		typeName = "int32_t"
+	case descriptor.FieldDescriptorProto_TYPE_UINT32:
+		typeName = "uint32_t"
+	case descriptor.FieldDescriptorProto_TYPE_BOOL:
+		typeName = "bool"
+	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		typeName = "std::string"
+	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+		if pkg != "" {
+			pkg = pkg + "."
+		}
+		typeName = fmt.Sprintf("%s%s", pkg, shortType(*f.TypeName))
+	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		typeName = "std::vector<uint8_t>"
+	case descriptor.FieldDescriptorProto_TYPE_ENUM:
+		typeName = fmt.Sprintf("%s%s", pkg, shortType(*f.TypeName))
+	default:
+		break
+	}
+	if isRepeat {
+		return "std::vector<" + typeName + ">"
+	}
+	return typeName
 }
 
 func goTypeWithEmbedded(pkg string, f *descriptor.FieldDescriptorProto, p *descriptor.FileDescriptorProto) string {
