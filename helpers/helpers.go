@@ -85,6 +85,9 @@ var ProtoHelpersFuncMap = template.FuncMap{
 
 		return strings.ToLower(s[:1]) + s[1:]
 	},
+	"upperCase": func(s string) string {
+		return strings.ToUpper(s)
+	},
 	"kebabCase": func(s string) string {
 		return strings.Replace(xstrings.ToSnakeCase(s), "_", "-", -1)
 	},
@@ -165,6 +168,8 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"goPkgLastElement":             goPkgLastElement,
 	"cppType":                      cppType,
 	"cppTypeWithPackage":           cppTypeWithPackage,
+	"rustType":                     rustType,
+	"rustTypeWithPackage":          rustTypeWithPackage,
 }
 
 var pathMap map[interface{}]*descriptor.SourceCodeInfo_Location
@@ -909,6 +914,57 @@ func haskellType(pkg string, f *descriptor.FieldDescriptorProto) string {
 	default:
 		return "Generic"
 	}
+}
+
+// Warning does not handle message embedded like goTypeWithGoPackage does.
+func rustTypeWithPackage(f *descriptor.FieldDescriptorProto) string {
+	pkg := ""
+	if *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE || *f.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
+		if isTimestampPackage(*f.TypeName) {
+			pkg = "timestamp"
+		} else {
+			pkg = getPackageTypeName(*f.TypeName)
+		}
+	}
+	return rustType(pkg, f)
+}
+
+func rustType(pkg string, f *descriptor.FieldDescriptorProto) string {
+	isRepeat := *f.Label == descriptor.FieldDescriptorProto_LABEL_REPEATED
+	typeName := "???"
+	switch *f.Type {
+	case descriptor.FieldDescriptorProto_TYPE_DOUBLE:
+		typeName = "f64"
+	case descriptor.FieldDescriptorProto_TYPE_FLOAT:
+		typeName = "f32"
+	case descriptor.FieldDescriptorProto_TYPE_INT64:
+		typeName = "i64"
+	case descriptor.FieldDescriptorProto_TYPE_UINT64:
+		typeName = "u64"
+	case descriptor.FieldDescriptorProto_TYPE_INT32:
+		typeName = "i32"
+	case descriptor.FieldDescriptorProto_TYPE_UINT32:
+		typeName = "u32"
+	case descriptor.FieldDescriptorProto_TYPE_BOOL:
+		typeName = "bool"
+	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		typeName = "String"
+	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+		if pkg != "" {
+			pkg = pkg + "."
+		}
+		typeName = fmt.Sprintf("%s%s", pkg, shortType(*f.TypeName))
+	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		typeName = "Vec<u8>"
+	case descriptor.FieldDescriptorProto_TYPE_ENUM:
+		typeName = fmt.Sprintf("%s%s", pkg, shortType(*f.TypeName))
+	default:
+		break
+	}
+	if isRepeat {
+		return "Vec<" + typeName + ">"
+	}
+	return typeName
 }
 
 // Warning does not handle message embedded like goTypeWithGoPackage does.
