@@ -1,5 +1,5 @@
 # builder
-FROM    golang:1.14-alpine as builder
+FROM    golang:1.15-alpine as builder
 RUN     apk --no-cache add make git go rsync libc-dev
 RUN     go get -u golang.org/x/tools/cmd/goimports
 RUN     go get -u github.com/gobuffalo/packr/v2/packr2
@@ -10,7 +10,7 @@ RUN     go install -a -tags netgo -ldflags '-w -extldflags "-static"' . ./cmd/we
 RUN     ls -la /go/bin
 
 # runtime
-FROM    znly/protoc:0.3.0
+FROM    znly/protoc:0.4.0
 COPY    --from=builder  /go/bin/web-editor            /go/bin/
 COPY    --from=builder  /go/bin/protoc-gen-gotemplate /go/bin/
 ENV     PATH=$PATH:/go/bin
