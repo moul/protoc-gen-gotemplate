@@ -1366,6 +1366,13 @@ func urlHasVarsFromMessage(path string, d *ggdescriptor.Message) bool {
 			if strings.Contains(path, fmt.Sprintf("{%s}", *field.Name)) {
 				return true
 			}
+			// JSON name field is checked as fallback. The value set by the protocol compiler.
+			// If the user has set a "json_name" option on a field, that option's value
+			// will be used in this check. By default value in this property will be field name in
+			// camelCase format.
+			if strings.Contains(path, fmt.Sprintf("{%s}", *field.JsonName)) {
+				return true
+			}
 		}
 	}
 
