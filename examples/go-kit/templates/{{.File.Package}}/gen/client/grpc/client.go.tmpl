@@ -27,7 +27,7 @@ func New(conn *grpc.ClientConn, logger log.Logger) pb.{{.File.Package | title}}S
 					Encode{{.Name}}Request,
 					Decode{{.Name}}Response,
 					pb.{{.Name}}Response{},
-					append([]grpctransport.ClientOption{}, grpctransport.ClientBefore(jwt.FromGRPCContext()))...,
+					append([]grpctransport.ClientOption{}, grpctransport.ClientBefore(jwt.ContextToGRPC()))...,
 				).Endpoint()
 			}
 		{{end}}
