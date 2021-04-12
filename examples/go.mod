@@ -1,0 +1,1 @@
+module moul.io/protoc-gen-gotemplates/example

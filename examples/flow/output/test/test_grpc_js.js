@@ -261,7 +261,7 @@ export default {
   
   TestService: {
   
-    testNoStream: {
+    testnostream: {
       path: '/test.TestService/TestNoStream',
       requestStream: false,
       responseStream: false,
@@ -272,7 +272,7 @@ export default {
       responseSerialize: serialize_test_TestNoStreamReply,
       responseDeserialize: deserialize_test_TestNoStreamReply,
     },
-    testStreamRequest: {
+    teststreamrequest: {
       path: '/test.TestService/TestStreamRequest',
       requestStream: true,
       responseStream: false,
@@ -283,7 +283,7 @@ export default {
       responseSerialize: serialize_test_TestStreamRequestReply,
       responseDeserialize: deserialize_test_TestStreamRequestReply,
     },
-    testStreamReply: {
+    teststreamreply: {
       path: '/test.TestService/TestStreamReply',
       requestStream: false,
       responseStream: true,
@@ -294,7 +294,7 @@ export default {
       responseSerialize: serialize_test_TestStreamReplyReply,
       responseDeserialize: deserialize_test_TestStreamReplyReply,
     },
-    testStreamBoth: {
+    teststreamboth: {
       path: '/test.TestService/TestStreamBoth',
       requestStream: true,
       responseStream: true,

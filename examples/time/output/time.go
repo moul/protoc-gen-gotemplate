@@ -2,9 +2,9 @@
 package foo
 
 import (
-	"github.com/golang/protobuf/ptypes/timestamp"
+    "github.com/golang/protobuf/ptypes/timestamp"
 )
 
 type Repository interface {
-	GetFoo(timestamp *timestamp.Timestamp) (*timestamp.Timestamp, error)
+     GetFoo(timestamp *timestamp.Timestamp ) (string,  error)
 }
