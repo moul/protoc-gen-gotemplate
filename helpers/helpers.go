@@ -23,6 +23,8 @@ var (
 	registry *ggdescriptor.Registry // some helpers need access to registry
 )
 
+const timestamp = "timestamp"
+
 var ProtoHelpersFuncMap = template.FuncMap{
 	"string": func(i interface {
 		String() string
@@ -830,7 +832,7 @@ func goTypeWithGoPackage(p *descriptor.FileDescriptorProto, f *descriptor.FieldD
 	pkg := ""
 	if *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE || *f.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
 		if isTimestampPackage(*f.TypeName) {
-			pkg = "timestamp"
+			pkg = timestamp
 		} else {
 			pkg = *p.GetOptions().GoPackage
 			if strings.Contains(*p.GetOptions().GoPackage, ";") {
@@ -846,7 +848,7 @@ func goTypeWithPackage(f *descriptor.FieldDescriptorProto) string {
 	pkg := ""
 	if *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE || *f.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
 		if isTimestampPackage(*f.TypeName) {
-			pkg = "timestamp"
+			pkg = timestamp
 		} else {
 			pkg = getPackageTypeName(*f.TypeName)
 		}
@@ -921,7 +923,7 @@ func rustTypeWithPackage(f *descriptor.FieldDescriptorProto) string {
 	pkg := ""
 	if *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE || *f.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
 		if isTimestampPackage(*f.TypeName) {
-			pkg = "timestamp"
+			pkg = timestamp
 		} else {
 			pkg = getPackageTypeName(*f.TypeName)
 		}
@@ -972,7 +974,7 @@ func cppTypeWithPackage(f *descriptor.FieldDescriptorProto) string {
 	pkg := ""
 	if *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE || *f.Type == descriptor.FieldDescriptorProto_TYPE_ENUM {
 		if isTimestampPackage(*f.TypeName) {
-			pkg = "timestamp"
+			pkg = timestamp
 		} else {
 			pkg = getPackageTypeName(*f.TypeName)
 		}
