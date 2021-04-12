@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package example;
 
+option go_package = "./";
+
 service Sum {
   rpc Sum(SumRequest) returns (SumReply) {};
 }

@@ -1,10 +1,10 @@
 {
-  "build-date": "2017-05-19T20:09:45.954357761+02:00",
-  "build-hostname": "manfred-spacegray.aircard",
+  "build-date": "2021-04-12T10:42:31.388860713Z",
+  "build-hostname": "fwrz",
   "build-user": "moul",
-  "pwd": "/Users/moul/Git/moul/protoc-gen-gotemplate/examples/dummy",
+  "pwd": "/home/moul/go/src/moul.io/protoc-gen-gotemplate/examples/dummy",
   "debug": false,
-  "destination-dir": ".",
+  "destination-dir": "",
   "file": {
     "name": "dummy.proto",
     "package": "dummy",
@@ -118,8 +118,8 @@
           ],
           "span": [
             2,
-            8,
-            13
+            0,
+            14
           ]
         },
         {
@@ -156,21 +156,6 @@
           "span": [
             5,
             2,
-            16
-          ]
-        },
-        {
-          "path": [
-            4,
-            0,
-            2,
-            0,
-            4
-          ],
-          "span": [
-            5,
-            2,
-            4,
             16
           ]
         },
@@ -227,21 +212,6 @@
             6,
             2,
             17
-          ]
-        },
-        {
-          "path": [
-            4,
-            0,
-            2,
-            1,
-            4
-          ],
-          "span": [
-            6,
-            2,
-            5,
-            16
           ]
         },
         {
@@ -305,21 +275,6 @@
             0,
             2,
             2,
-            4
-          ],
-          "span": [
-            7,
-            2,
-            6,
-            17
-          ]
-        },
-        {
-          "path": [
-            4,
-            0,
-            2,
-            2,
             5
           ],
           "span": [
@@ -366,21 +321,6 @@
           "span": [
             8,
             2,
-            16
-          ]
-        },
-        {
-          "path": [
-            4,
-            0,
-            2,
-            3,
-            4
-          ],
-          "span": [
-            8,
-            2,
-            7,
             16
           ]
         },
@@ -538,21 +478,6 @@
             1,
             2,
             0,
-            4
-          ],
-          "span": [
-            13,
-            2,
-            12,
-            16
-          ]
-        },
-        {
-          "path": [
-            4,
-            1,
-            2,
-            0,
             5
           ],
           "span": [
@@ -600,21 +525,6 @@
             14,
             2,
             17
-          ]
-        },
-        {
-          "path": [
-            4,
-            1,
-            2,
-            1,
-            4
-          ],
-          "span": [
-            14,
-            2,
-            13,
-            16
           ]
         },
         {

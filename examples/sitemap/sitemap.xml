@@ -4,18 +4,18 @@
     <loc>/posts</loc>
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
-    <lastmod>2017-05-19</lastmod>
+    <lastmod>2021-04-12</lastmod>
   </url>
   <url>
     <loc>/authors</loc>
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
-    <lastmod>2017-05-19</lastmod>
+    <lastmod>2021-04-12</lastmod>
   </url>
   <url>
     <loc>/comments</loc>
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
-    <lastmod>2017-05-19</lastmod>
+    <lastmod>2021-04-12</lastmod>
   </url>
 </urlset>

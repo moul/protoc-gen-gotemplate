@@ -25,7 +25,7 @@
 {{abbrev 5 "hello world"}}:                                                         he...
 {{abbrevboth 5 10 "1234 5678 9123"}}:                                               ...5678...
 {{initials "First Try"}}:                                                           FT
-{{randNumeric 3}}:                                                                  528
+{{randNumeric 3}}:                                                                  616
 {{- /*{{wrap 80 $someText}}*/}}:
 {{wrapWith 5 "\t" "Hello World"}}:                                                  Hello	World
 {{contains "cat" "catch"}}:                                                         true
