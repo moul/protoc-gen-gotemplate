@@ -1,5 +1,5 @@
 # builder
-FROM    golang:1.15-alpine as builder
+FROM    golang:1.16-alpine as builder
 RUN     apk --no-cache add make git go rsync libc-dev
 RUN     go get -u golang.org/x/tools/cmd/goimports
 RUN     go get -u github.com/gobuffalo/packr/v2/packr2
