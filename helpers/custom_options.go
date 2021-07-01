@@ -6,6 +6,9 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
+	"google.golang.org/protobuf/runtime/protoimpl"
 )
 
 var protoregistryMutex sync.Mutex
@@ -19,7 +22,14 @@ func getExtension(extendedMessage proto.Message, extendedType proto.Message, fie
 	defer protoregistryMutex.Unlock()
 
 	// Query the registry for the given Message and field ID.
-	eds := proto.RegisteredExtensions(extendedMessage)
+	eds := make(map[int32]*protoimpl.ExtensionInfo)
+	protoregistry.GlobalTypes.RangeExtensionsByMessage(protoimpl.X.MessageDescriptorOf(extendedMessage).FullName(), func(xt protoreflect.ExtensionType) bool {
+		if xd, ok := xt.(*protoimpl.ExtensionInfo); ok {
+			eds[int32(xt.TypeDescriptor().Number())] = xd
+		}
+
+		return true
+	})
 	extensionInfo := eds[fieldID]
 
 	// Create the extension, if it was not yet found.
@@ -37,7 +47,10 @@ func getExtension(extendedMessage proto.Message, extendedType proto.Message, fie
 			Tag:           fmt.Sprintf("%s,%d", tagType, fieldID),
 			Name:          fmt.Sprintf("%d", fieldID),
 		}
-		proto.RegisterExtension(extensionInfo)
+		err := protoregistry.GlobalTypes.RegisterExtension(extensionInfo)
+		if err != nil {
+			return nil, fmt.Errorf("error registering extension: %w", err)
+		}
 	}
 
 	return proto.GetExtension(extendedMessage, extensionInfo)
