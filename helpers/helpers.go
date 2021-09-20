@@ -10,7 +10,7 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" // nolint:staticcheck
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	ggdescriptor "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/huandu/xstrings"
@@ -494,11 +494,11 @@ func fieldMapValueType(f *descriptor.FieldDescriptorProto, m *descriptor.Descrip
 // example:
 // ```proto
 // message GetArticleResponse {
-// 	Article article = 1;
-// 	message Storage {
-// 		  string code = 1;
-// 	}
-// 	repeated Storage storages = 2;
+//	Article article = 1;
+//	message Storage {
+//		  string code = 1;
+//	}
+//	repeated Storage storages = 2;
 // }
 // ```
 // Then the type of `storages` is `GetArticleResponse_Storage` for the go language.
