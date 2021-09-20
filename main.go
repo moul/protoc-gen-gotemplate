@@ -4,8 +4,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/protoc-gen-go/generator"
+	"github.com/golang/protobuf/proto"                   // nolint:staticcheck
+	"github.com/golang/protobuf/protoc-gen-go/generator" // nolint:staticcheck
 
 	pgghelpers "moul.io/protoc-gen-gotemplate/helpers"
 )

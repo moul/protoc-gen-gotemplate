@@ -4,7 +4,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/golang/protobuf/protoc-gen-go/generator"
+	"github.com/golang/protobuf/protoc-gen-go/generator" // nolint:staticcheck
 	plugin_go "github.com/golang/protobuf/protoc-gen-go/plugin"
 	ggdescriptor "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 )
