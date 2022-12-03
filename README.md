@@ -136,8 +136,8 @@ See the project helpers for the complete list.
 ## Install
 
 * Install the **Go** compiler and tools from https://golang.org/doc/install
-* Install **protobuf**: `go get -u github.com/golang/protobuf/{proto,protoc-gen-go}`
-* Install **protoc-gen-gotemplate**: `go get -u moul.io/protoc-gen-gotemplate`
+* Install **protobuf**: `go install github.com/golang/protobuf/protoc-gen-go@latest`
+* Install **protoc-gen-gotemplate**: `go install moul.io/protoc-gen-gotemplate@latest`
 
 ## Docker
 
