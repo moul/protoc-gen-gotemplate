@@ -16,7 +16,7 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	golang.org/x/crypto v0.0.0-20200115085410-6d4e4cb37c7d // indirect
 	google.golang.org/genproto v0.0.0-20200113173426-e1de0a7b01eb
-	google.golang.org/protobuf v1.27.1
+	google.golang.org/protobuf v1.33.0
 	gopkg.in/yaml.v2 v2.2.7 // indirect
 )
 
