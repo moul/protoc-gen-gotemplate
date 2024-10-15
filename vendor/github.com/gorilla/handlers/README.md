@@ -1,6 +1,9 @@
-gorilla/handlers
-================
-[![GoDoc](https://godoc.org/github.com/gorilla/handlers?status.svg)](https://godoc.org/github.com/gorilla/handlers) [![Build Status](https://travis-ci.org/gorilla/handlers.svg?branch=master)](https://travis-ci.org/gorilla/handlers)
+# gorilla/handlers
+
+![Testing](https://github.com/gorilla/handlers/actions/workflows/test.yml/badge.svg)
+[![Codecov](https://codecov.io/github/gorilla/handlers/branch/main/graph/badge.svg)](https://codecov.io/github/gorilla/handlers)
+[![GoDoc](https://godoc.org/github.com/gorilla/handlers?status.svg)](https://godoc.org/github.com/gorilla/handlers)
+[![Sourcegraph](https://sourcegraph.com/github.com/gorilla/handlers/-/badge.svg)](https://sourcegraph.com/github.com/gorilla/handlers?badge)
 
 Package handlers is a collection of handlers (aka "HTTP middleware") for use
 with Go's `net/http` package (or any framework supporting `http.Handler`), including:
@@ -23,7 +26,7 @@ with Go's `net/http` package (or any framework supporting `http.Handler`), inclu
 * [**RecoveryHandler**](https://godoc.org/github.com/gorilla/handlers#RecoveryHandler) for recovering from unexpected panics.
 
 Other handlers are documented [on the Gorilla
-website](http://www.gorillatoolkit.org/pkg/handlers).
+website](https://www.gorillatoolkit.org/pkg/handlers).
 
 ## Example
 
