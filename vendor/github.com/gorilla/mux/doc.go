@@ -10,18 +10,18 @@ http.ServeMux, mux.Router matches incoming requests against a list of
 registered routes and calls a handler for the route that matches the URL
 or other conditions. The main features are:
 
-	* Requests can be matched based on URL host, path, path prefix, schemes,
-	  header and query values, HTTP methods or using custom matchers.
-	* URL hosts, paths and query values can have variables with an optional
-	  regular expression.
-	* Registered URLs can be built, or "reversed", which helps maintaining
-	  references to resources.
-	* Routes can be used as subrouters: nested routes are only tested if the
-	  parent route matches. This is useful to define groups of routes that
-	  share common conditions like a host, a path prefix or other repeated
-	  attributes. As a bonus, this optimizes request matching.
-	* It implements the http.Handler interface so it is compatible with the
-	  standard http.ServeMux.
+  - Requests can be matched based on URL host, path, path prefix, schemes,
+    header and query values, HTTP methods or using custom matchers.
+  - URL hosts, paths and query values can have variables with an optional
+    regular expression.
+  - Registered URLs can be built, or "reversed", which helps maintaining
+    references to resources.
+  - Routes can be used as subrouters: nested routes are only tested if the
+    parent route matches. This is useful to define groups of routes that
+    share common conditions like a host, a path prefix or other repeated
+    attributes. As a bonus, this optimizes request matching.
+  - It implements the http.Handler interface so it is compatible with the
+    standard http.ServeMux.
 
 Let's start registering a couple of URL paths and handlers:
 
@@ -238,5 +238,68 @@ as well:
 	url, err := r.Get("article").URL("subdomain", "news",
 	                                 "category", "technology",
 	                                 "id", "42")
+
+Mux supports the addition of middlewares to a Router, which are executed in the order they are added if a match is found, including its subrouters. Middlewares are (typically) small pieces of code which take one request, do something with it, and pass it down to another middleware or the final handler. Some common use cases for middleware are request logging, header manipulation, or ResponseWriter hijacking.
+
+	type MiddlewareFunc func(http.Handler) http.Handler
+
+Typically, the returned handler is a closure which does something with the http.ResponseWriter and http.Request passed to it, and then calls the handler passed as parameter to the MiddlewareFunc (closures can access variables from the context where they are created).
+
+A very basic middleware which logs the URI of the request being handled could be written as:
+
+	func simpleMw(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// Do stuff here
+			log.Println(r.RequestURI)
+			// Call the next handler, which can be another middleware in the chain, or the final handler.
+			next.ServeHTTP(w, r)
+		})
+	}
+
+Middlewares can be added to a router using `Router.Use()`:
+
+	r := mux.NewRouter()
+	r.HandleFunc("/", handler)
+	r.Use(simpleMw)
+
+A more complex authentication middleware, which maps session token to users, could be written as:
+
+	// Define our struct
+	type authenticationMiddleware struct {
+		tokenUsers map[string]string
+	}
+
+	// Initialize it somewhere
+	func (amw *authenticationMiddleware) Populate() {
+		amw.tokenUsers["00000000"] = "user0"
+		amw.tokenUsers["aaaaaaaa"] = "userA"
+		amw.tokenUsers["05f717e5"] = "randomUser"
+		amw.tokenUsers["deadbeef"] = "user0"
+	}
+
+	// Middleware function, which will be called for each request
+	func (amw *authenticationMiddleware) Middleware(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			token := r.Header.Get("X-Session-Token")
+
+			if user, found := amw.tokenUsers[token]; found {
+				// We found the token in our map
+				log.Printf("Authenticated user %s\n", user)
+				next.ServeHTTP(w, r)
+			} else {
+				http.Error(w, "Forbidden", http.StatusForbidden)
+			}
+		})
+	}
+
+	r := mux.NewRouter()
+	r.HandleFunc("/", handler)
+
+	amw := authenticationMiddleware{tokenUsers: make(map[string]string)}
+	amw.Populate()
+
+	r.Use(amw.Middleware)
+
+Note: The handler chain will be stopped if your middleware doesn't call `next.ServeHTTP()` with the corresponding parameters. This can be used to abort a request if the middleware writer wants to.
 */
 package mux

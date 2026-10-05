@@ -4,7 +4,6 @@
 package xstrings
 
 import (
-	"bytes"
 	"strings"
 	"unicode/utf8"
 )
@@ -56,6 +55,10 @@ func Slice(str string, start, end int) string {
 		str = str[size:]
 	}
 
+	if start > 0 {
+		panic("out of range")
+	}
+
 	if end < 0 {
 		return origin[startPos:]
 	}
@@ -80,10 +83,12 @@ func Slice(str string, start, end int) string {
 // The return value is a slice of strings with head, match and tail.
 //
 // If str contains sep, for example "hello" and "l", Partition returns
-//     "he", "l", "lo"
+//
+//	"he", "l", "lo"
 //
 // If str doesn't contain sep, for example "hello" and "x", Partition returns
-//     "hello", "", ""
+//
+//	"hello", "", ""
 func Partition(str, sep string) (head, match, tail string) {
 	index := strings.Index(str, sep)
 
@@ -102,10 +107,12 @@ func Partition(str, sep string) (head, match, tail string) {
 // The return value is a slice of strings with head, match and tail.
 //
 // If str contains sep, for example "hello" and "l", LastPartition returns
-//     "hel", "l", "o"
+//
+//	"hel", "l", "o"
 //
 // If str doesn't contain sep, for example "hello" and "x", LastPartition returns
-//     "", "", "hello"
+//
+//	"", "", "hello"
 func LastPartition(str, sep string) (head, match, tail string) {
 	index := strings.LastIndex(str, sep)
 
@@ -128,10 +135,10 @@ func Insert(dst, src string, index int) string {
 	return Slice(dst, 0, index) + src + Slice(dst, index, -1)
 }
 
-// Scrubs invalid utf8 bytes with repl string.
+// Scrub scrubs invalid utf8 bytes with repl string.
 // Adjacent invalid bytes are replaced only once.
 func Scrub(str, repl string) string {
-	var buf *bytes.Buffer
+	var buf *stringBuilder
 	var r rune
 	var size, pos int
 	var hasError bool
@@ -144,7 +151,7 @@ func Scrub(str, repl string) string {
 		if r == utf8.RuneError {
 			if !hasError {
 				if buf == nil {
-					buf = &bytes.Buffer{}
+					buf = &stringBuilder{}
 				}
 
 				buf.WriteString(origin[:pos])
@@ -163,7 +170,11 @@ func Scrub(str, repl string) string {
 	}
 
 	if buf != nil {
-		buf.WriteString(origin)
+		if hasError {
+			buf.WriteString(repl)
+		} else {
+			buf.WriteString(origin)
+		}
 		return buf.String()
 	}
 
@@ -171,7 +182,7 @@ func Scrub(str, repl string) string {
 	return origin
 }
 
-// Splits a string into words. Returns a slice of words.
+// WordSplit splits a string into words. Returns a slice of words.
 // If there is no word in a string, return nil.
 //
 // Word is defined as a locale dependent string containing alphabetic characters,

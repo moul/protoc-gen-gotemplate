@@ -4,7 +4,6 @@
 package xstrings
 
 import (
-	"bytes"
 	"unicode"
 	"unicode/utf8"
 )
@@ -18,6 +17,7 @@ type runeRangeMap struct {
 
 type runeDict struct {
 	Dict [unicode.MaxASCII + 1]rune
+	Set  [unicode.MaxASCII + 1]bool
 }
 
 type runeMap map[rune]rune
@@ -26,11 +26,12 @@ type runeMap map[rune]rune
 // If a from/to pattern pair needs to be used more than once, it's recommended
 // to create a Translator and reuse it.
 type Translator struct {
-	quickDict  *runeDict       // A quick dictionary to look up rune by index. Only availabe for latin runes.
+	quickDict  *runeDict       // A quick dictionary to look up rune by index. Only available for latin runes.
 	runeMap    runeMap         // Rune map for translation.
 	ranges     []*runeRangeMap // Ranges of runes.
 	mappedRune rune            // If mappedRune >= 0, all matched runes are translated to the mappedRune.
-	reverted   bool            // If to pattern is empty, all matched characters will be deleted.
+	reverted   bool            // If from pattern starts with '^', only unmatched characters will be translated.
+	deletion   bool            // If to pattern is empty, all matched characters will be deleted.
 	hasPattern bool
 }
 
@@ -152,15 +153,16 @@ func NewTranslator(from, to string) *Translator {
 			continue
 		}
 
-		fromStart, toStart = tr.addRuneRange(fromStart, fromEnd, toStart, toStart, singleRunes)
+		_, toStart = tr.addRuneRange(fromStart, fromEnd, toStart, toStart, singleRunes)
 		fromEnd = utf8.RuneError
 	}
 
 	if fromEnd != utf8.RuneError {
-		singleRunes = tr.addRune(fromEnd, toStart, singleRunes)
+		tr.addRune(fromEnd, toStart, singleRunes)
 	}
 
 	tr.reverted = reverted
+	tr.deletion = deletion
 	tr.mappedRune = -1
 	tr.hasPattern = true
 
@@ -179,6 +181,7 @@ func (tr *Translator) addRune(from, to rune, singleRunes []rune) []rune {
 		}
 
 		tr.quickDict.Dict[from] = to
+		tr.quickDict.Set[from] = true
 	} else {
 		if tr.runeMap == nil {
 			tr.runeMap = make(runeMap)
@@ -216,6 +219,7 @@ func (tr *Translator) addRuneRange(fromLo, fromHi, toLo, toHi rune, singleRunes 
 		if rrm.FromLo <= r && r <= rrm.FromHi {
 			if r <= unicode.MaxASCII {
 				tr.quickDict.Dict[r] = 0
+				tr.quickDict.Set[r] = false
 			} else {
 				delete(tr.runeMap, r)
 			}
@@ -299,22 +303,29 @@ func (tr *Translator) Translate(str string) string {
 
 	var r rune
 	var size int
-	var needTr bool
+	var matched, deleted bool
 
 	orig := str
 
-	var output *bytes.Buffer
+	var output *stringBuilder
 
 	for len(str) > 0 {
 		r, size = utf8.DecodeRuneInString(str)
-		r, needTr = tr.TranslateRune(r)
+		r, matched, deleted = tr.translateRune(r)
 
-		if needTr && output == nil {
+		if matched && output == nil {
 			output = allocBuffer(orig, str)
 		}
 
-		if r != utf8.RuneError && output != nil {
-			output.WriteRune(r)
+		if output != nil && !deleted {
+			if matched {
+				output.WriteRune(r)
+			} else {
+				// An unmatched rune must be kept as is. Its original bytes are
+				// copied instead of the decoded rune, so that an invalid byte
+				// is not rewritten as utf8.RuneError.
+				output.WriteString(str[:size])
+			}
 		}
 
 		str = str[size:]
@@ -331,13 +342,26 @@ func (tr *Translator) Translate(str string) string {
 // TranslateRune return translated rune and true if r matches the from pattern.
 // If r doesn't match the pattern, original r is returned and translated is false.
 func (tr *Translator) TranslateRune(r rune) (result rune, translated bool) {
+	result, translated, _ = tr.translateRune(r)
+	return
+}
+
+// translateRune is the internal implementation of TranslateRune.
+//
+// It reports whether r matches the from pattern (matched) and whether the rune
+// must be dropped from the translation result (deleted). deleted is true only
+// when r matches a from pattern which has an empty to pattern, i.e. the rune is
+// removed by Delete or by Translate with an empty to pattern.
+//
+// The two flags can't be folded into the returned rune: utf8.RuneError is a
+// valid rune value which can be a translation result as well.
+func (tr *Translator) translateRune(r rune) (result rune, matched, deleted bool) {
 	switch {
 	case tr.quickDict != nil:
 		if r <= unicode.MaxASCII {
-			result = tr.quickDict.Dict[r]
-
-			if result != 0 {
-				translated = true
+			if tr.quickDict.Set[r] {
+				result = tr.quickDict.Dict[r]
+				matched = true
 
 				if tr.mappedRune >= 0 {
 					result = tr.mappedRune
@@ -353,7 +377,7 @@ func (tr *Translator) TranslateRune(r rune) (result rune, translated bool) {
 		var ok bool
 
 		if result, ok = tr.runeMap[r]; ok {
-			translated = true
+			matched = true
 
 			if tr.mappedRune >= 0 {
 				result = tr.mappedRune
@@ -372,7 +396,7 @@ func (tr *Translator) TranslateRune(r rune) (result rune, translated bool) {
 			rrm = ranges[i]
 
 			if rrm.FromLo <= r && r <= rrm.FromHi {
-				translated = true
+				matched = true
 
 				if tr.mappedRune >= 0 {
 					result = tr.mappedRune
@@ -394,16 +418,18 @@ func (tr *Translator) TranslateRune(r rune) (result rune, translated bool) {
 	}
 
 	if tr.reverted {
-		if !translated {
+		if !matched {
 			result = tr.mappedRune
 		}
 
-		translated = !translated
+		matched = !matched
 	}
 
-	if !translated {
+	if !matched {
 		result = r
 	}
+
+	deleted = matched && tr.deletion
 
 	return
 }
@@ -417,14 +443,16 @@ func (tr *Translator) HasPattern() bool {
 //
 // From and to are patterns representing a set of characters. Pattern is defined as following.
 //
-//     * Special characters
-//       * '-' means a range of runes, e.g.
-//         * "a-z" means all characters from 'a' to 'z' inclusive;
-//         * "z-a" means all characters from 'z' to 'a' inclusive.
-//       * '^' as first character means a set of all runes excepted listed, e.g.
-//         * "^a-z" means all characters except 'a' to 'z' inclusive.
-//       * '\' escapes special characters.
-//     * Normal character represents itself, e.g. "abc" is a set including 'a', 'b' and 'c'.
+// Special characters:
+//
+//  1. '-' means a range of runes, e.g.
+//     "a-z" means all characters from 'a' to 'z' inclusive;
+//     "z-a" means all characters from 'z' to 'a' inclusive.
+//  2. '^' as first character means a set of all runes excepted listed, e.g.
+//     "^a-z" means all characters except 'a' to 'z' inclusive.
+//  3. '\' escapes special characters.
+//
+// Normal character represents itself, e.g. "abc" is a set including 'a', 'b' and 'c'.
 //
 // Translate will try to find a 1:1 mapping from from to to.
 // If to is smaller than from, last rune in to will be used to map "out of range" characters in from.
@@ -434,12 +462,13 @@ func (tr *Translator) HasPattern() bool {
 // If the to pattern is an empty string, Translate works exactly the same as Delete.
 //
 // Samples:
-//     Translate("hello", "aeiou", "12345")    => "h2ll4"
-//     Translate("hello", "a-z", "A-Z")        => "HELLO"
-//     Translate("hello", "z-a", "a-z")        => "svool"
-//     Translate("hello", "aeiou", "*")        => "h*ll*"
-//     Translate("hello", "^l", "*")           => "**ll*"
-//     Translate("hello ^ world", `\^lo`, "*") => "he*** * w*r*d"
+//
+//	Translate("hello", "aeiou", "12345")    => "h2ll4"
+//	Translate("hello", "a-z", "A-Z")        => "HELLO"
+//	Translate("hello", "z-a", "a-z")        => "svool"
+//	Translate("hello", "aeiou", "*")        => "h*ll*"
+//	Translate("hello", "^l", "*")           => "**ll*"
+//	Translate("hello ^ world", `\^lo`, "*") => "he*** * w*r*d"
 func Translate(str, from, to string) string {
 	tr := NewTranslator(from, to)
 	return tr.Translate(str)
@@ -449,9 +478,10 @@ func Translate(str, from, to string) string {
 // Pattern is defined in Translate function.
 //
 // Samples:
-//     Delete("hello", "aeiou") => "hll"
-//     Delete("hello", "a-k")   => "llo"
-//     Delete("hello", "^a-k")  => "he"
+//
+//	Delete("hello", "aeiou") => "hll"
+//	Delete("hello", "a-k")   => "llo"
+//	Delete("hello", "^a-k")  => "he"
 func Delete(str, pattern string) string {
 	tr := NewTranslator(pattern, "")
 	return tr.Translate(str)
@@ -461,9 +491,10 @@ func Delete(str, pattern string) string {
 // Pattern is defined in Translate function.
 //
 // Samples:
-//     Count("hello", "aeiou") => 3
-//     Count("hello", "a-k")   => 3
-//     Count("hello", "^a-k")  => 2
+//
+//	Count("hello", "aeiou") => 3
+//	Count("hello", "a-k")   => 3
+//	Count("hello", "^a-k")  => 2
 func Count(str, pattern string) int {
 	if pattern == "" || str == "" {
 		return 0
@@ -492,14 +523,16 @@ func Count(str, pattern string) int {
 // If pattern is not empty, only runes matching the pattern will be squeezed.
 //
 // Samples:
-//     Squeeze("hello", "")    => "helo"
-//     Squeeze("hello", "m-z") => "hello"
+//
+//	Squeeze("hello", "")             => "helo"
+//	Squeeze("hello", "m-z")          => "hello"
+//	Squeeze("hello   world", " ")    => "hello world"
 func Squeeze(str, pattern string) string {
 	var last, r rune
 	var size int
 	var skipSqueeze, matched bool
 	var tr *Translator
-	var output *bytes.Buffer
+	var output *stringBuilder
 
 	orig := str
 	last = -1
@@ -532,6 +565,7 @@ func Squeeze(str, pattern string) string {
 			}
 
 			last = r
+			skipSqueeze = false
 		}
 
 		str = str[size:]
