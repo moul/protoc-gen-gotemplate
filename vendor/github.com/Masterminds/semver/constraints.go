@@ -65,13 +65,30 @@ func (cs Constraints) Check(v *Version) bool {
 func (cs Constraints) Validate(v *Version) (bool, []error) {
 	// loop over the ORs and check the inner ANDs
 	var e []error
+
+	// Capture the prerelease message only once. When it happens the first time
+	// this var is marked
+	var prerelesase bool
 	for _, o := range cs.constraints {
 		joy := true
 		for _, c := range o {
-			if !c.check(v) {
-				em := fmt.Errorf(c.msg, v, c.orig)
-				e = append(e, em)
+			// Before running the check handle the case there the version is
+			// a prerelease and the check is not searching for prereleases.
+			if c.con.pre == "" && v.pre != "" {
+				if !prerelesase {
+					em := fmt.Errorf("%s is a prerelease version and the constraint is only looking for release versions", v)
+					e = append(e, em)
+					prerelesase = true
+				}
 				joy = false
+
+			} else {
+
+				if !c.check(v) {
+					em := fmt.Errorf(c.msg, v, c.orig)
+					e = append(e, em)
+					joy = false
+				}
 			}
 		}
 
@@ -151,6 +168,7 @@ type constraint struct {
 	// When an x is used as part of the version (e.g., 1.x)
 	minorDirty bool
 	dirty      bool
+	patchDirty bool
 }
 
 // Check if a version meets the constraint
@@ -169,16 +187,18 @@ func parseConstraint(c string) (*constraint, error) {
 	ver := m[2]
 	orig := ver
 	minorDirty := false
+	patchDirty := false
 	dirty := false
 	if isX(m[3]) {
 		ver = "0.0.0"
 		dirty = true
-	} else if isX(strings.TrimPrefix(m[4], ".")) {
+	} else if isX(strings.TrimPrefix(m[4], ".")) || m[4] == "" {
 		minorDirty = true
 		dirty = true
 		ver = fmt.Sprintf("%s.0.0%s", m[3], m[6])
 	} else if isX(strings.TrimPrefix(m[5], ".")) {
 		dirty = true
+		patchDirty = true
 		ver = fmt.Sprintf("%s%s.0%s", m[3], m[4], m[6])
 	}
 
@@ -196,6 +216,7 @@ func parseConstraint(c string) (*constraint, error) {
 		con:        con,
 		orig:       orig,
 		minorDirty: minorDirty,
+		patchDirty: patchDirty,
 		dirty:      dirty,
 	}
 	return cs, nil
@@ -229,12 +250,6 @@ func constraintNotEqual(v *Version, c *constraint) bool {
 
 func constraintGreaterThan(v *Version, c *constraint) bool {
 
-	// An edge case the constraint is 0.0.0 and the version is 0.0.0-someprerelease
-	// exists. This that case.
-	if !isNonZero(c.con) && isNonZero(v) {
-		return true
-	}
-
 	// If there is a pre-release on the version but the constraint isn't looking
 	// for them assume that pre-releases are not compatible. See issue 21 for
 	// more details.
@@ -267,11 +282,6 @@ func constraintLessThan(v *Version, c *constraint) bool {
 }
 
 func constraintGreaterThanEqual(v *Version, c *constraint) bool {
-	// An edge case the constraint is 0.0.0 and the version is 0.0.0-someprerelease
-	// exists. This that case.
-	if !isNonZero(c.con) && isNonZero(v) {
-		return true
-	}
 
 	// If there is a pre-release on the version but the constraint isn't looking
 	// for them assume that pre-releases are not compatible. See issue 21 for
@@ -324,7 +334,8 @@ func constraintTilde(v *Version, c *constraint) bool {
 
 	// ~0.0.0 is a special case where all constraints are accepted. It's
 	// equivalent to >= 0.0.0.
-	if c.con.Major() == 0 && c.con.Minor() == 0 && c.con.Patch() == 0 {
+	if c.con.Major() == 0 && c.con.Minor() == 0 && c.con.Patch() == 0 &&
+		!c.minorDirty && !c.patchDirty {
 		return true
 	}
 
@@ -409,13 +420,4 @@ func rewriteRange(i string) string {
 	}
 
 	return o
-}
-
-// Detect if a version is not zero (0.0.0)
-func isNonZero(v *Version) bool {
-	if v.Major() != 0 || v.Minor() != 0 || v.Patch() != 0 || v.Prerelease() != "" {
-		return true
-	}
-
-	return false
 }
